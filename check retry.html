@@ -1,0 +1,165 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<title>core.js 재시도 규칙 감사</title>
+<style>
+  body{font-family:-apple-system,"Segoe UI",Roboto,"Malgun Gothic",sans-serif;
+       max-width:860px;margin:36px auto;padding:0 20px;color:#1e293b;line-height:1.6}
+  h1{font-size:1.5rem;margin:0 0 4px}
+  .sub{color:#64748b;font-size:.92rem;margin:0 0 24px}
+  #verdict{padding:16px 20px;border-radius:12px;font-size:1.15rem;font-weight:700;margin-bottom:22px}
+  .pass{background:#ecfdf5;border:1px solid #6ee7b7;color:#047857}
+  .fail{background:#fef2f2;border:1px solid #fca5a5;color:#b91c1c}
+  h2{font-size:1.02rem;margin:26px 0 8px;color:#3730a3}
+  table{border-collapse:collapse;width:100%;font-size:.92rem}
+  td{padding:7px 10px;border-bottom:1px solid #e2e8f0}
+  td:first-child{width:26px;text-align:center;font-weight:700}
+  td:last-child{text-align:right;color:#475569;font-variant-numeric:tabular-nums}
+  .ok td:first-child{color:#059669}
+  .no td:first-child{color:#dc2626}
+  .no{background:#fef2f2}
+  .want{color:#b91c1c;font-weight:700}
+  button{background:#4338ca;color:#fff;border:none;font-size:.95rem;font-weight:600;
+         padding:11px 22px;border-radius:9px;cursor:pointer;margin-top:26px}
+  #stage{position:absolute;left:-9999px;top:-9999px}
+</style>
+</head>
+<body>
+
+<h1>core.js 재시도 규칙 감사</h1>
+<p class="sub">이 파일을 <strong>core.js 옆에 두고</strong> 더블클릭하면 됩니다. 아무것도 설치할 필요 없습니다.</p>
+
+<div id="verdict">돌리는 중…</div>
+<div id="out"></div>
+
+<button onclick="showPopupDemo()">팝업 실제로 보기</button>
+
+<!-- 엔진이 찾는 요소들. 화면 밖에 둔다. -->
+<div id="stage">
+  <input id="first-name" value="Test"><input id="last-name" value="Student">
+  <select id="question-select">
+    <option value="b1">Type 1: Rational Numbers</option>
+    <option value="b2">Type 2: Integer Operations</option>
+  </select>
+  <div id="placeholder"></div>
+  <div id="quiz-station">
+    <div id="question-statement-display"></div>
+    <div id="asset-viewport-mount-point"></div>
+    <div id="input-prompt-label"></div>
+    <div id="dynamic-input-mount-point"></div>
+    <div id="hint-box"></div>
+    <div id="feedback-msg"></div>
+    <button id="check-ans-btn"></button><button id="reveal-sol-btn"></button>
+  </div>
+  <div id="solution-reveal-layer"><div id="method-toggle-bar"></div>
+    <div id="solution-workspace-injected"></div></div>
+  <span id="hud-score"></span><span id="hud-attempts"></span>
+</div>
+
+<script src="core.js"></script>
+<script src="../core.js"></script>
+<script>
+/* ── 준비 ─────────────────────────────────────────────────────── */
+var out = document.getElementById("out"), fails = 0, missing = false;
+
+if (typeof MCF === "undefined") {
+  missing = true;
+} else {
+  MCF.init({
+    generate: function (t) {
+      return { title: t, type: "mc", options: ["A) 1", "B) 2", "C) 3", "D) 4"],
+        ans: "A", fullStatement: "q", prompt: "p", hint: "h", steps: [],
+        review: "Type 5 (Integer Subtraction) and Type 7 (Models)" };
+    },
+    retry: true,
+    backUrl: "Unit 1 Lesson 5 Integer Subtraction.html"
+  });
+}
+
+var SEL = document.getElementById("question-select");
+function answer(ok) {
+  generateNewProblem();
+  selectMcOptionCard(ok ? "A" : "B");
+  evaluateStudentAnswer();
+}
+function rec(t) {
+  var b = MCF.retryReport().byType[t || SEL.value];
+  return b || { tries: 0, correct: 0, wrong: 0, streak: 0 };
+}
+function need() { var r = rec(); return (r.wrong + 1) - r.correct; }
+function reset(t) { MCF.retryReport().byType[t] = { tries: 0, correct: 0, wrong: 0, streak: 0 }; }
+
+function head(t) { out.innerHTML += "<h2>" + t + "</h2><table id='t" + (++head.n) + "'></table>"; }
+head.n = 0;
+function is(label, got, want) {
+  var ok = String(got) === String(want);
+  if (!ok) fails++;
+  document.getElementById("t" + head.n).innerHTML +=
+    "<tr class='" + (ok ? "ok" : "no") + "'><td>" + (ok ? "\u2714" : "\u2718") + "</td><td>" +
+    label + "</td><td>" + got +
+    (ok ? "" : " <span class='want'>(\uae30\ub300 " + want + ")</span>") + "</td></tr>";
+}
+
+/* ── 시나리오 ─────────────────────────────────────────────────── */
+function run() {
+  head("1. \ud2c0\ub9bc\u00b7\ub9de\ud798\uc744 \ubc88\uac08\uc544 3\ubc88\uc529 \u2014 \ub204\uc801 \uc624\ub2f5 3, \uc5f0\uc18d\uc740 \uc544\ub2c8\ub2e4");
+  reset("b1"); SEL.value = "b1";
+  [false, true, false, true, false, true].forEach(answer);
+  is("\ub204\uc801 \uc624\ub2f5", rec().wrong, 3);
+  is("\ub204\uc801 \uc815\ub2f5", rec().correct, 3);
+  is("\ub354 \ub9de\ud600\uc57c \ud560 \uc218", need(), 1);
+  is("\ud31d\uc5c5 \ub5b4\ub098", MCF.retryReport().halted, false);
+  answer(true);
+  is("1\uac1c \ub354 \ub9de\ud78c \ub4a4 \ub0a8\uc740 \uc218", need(), 0);
+  is("\uc720\ud615 \uc7a0\uae08 \ud480\ub838\ub098", MCF.retryReport().lockedType, "null");
+
+  head("2. 3\uc5f0\uc18d \uc624\ub2f5\uc774\uba74 \ud31d\uc5c5");
+  reset("b1"); state_dismiss();
+  answer(false); is("1\ud68c \ub4a4 \ud31d\uc5c5", MCF.retryReport().halted, false);
+  answer(false); is("2\ud68c \ub4a4 \ud31d\uc5c5", MCF.retryReport().halted, false);
+  answer(false); is("3\ud68c \ub4a4 \ud31d\uc5c5", MCF.retryReport().halted, true);
+  is("\uadf8\ub54c \ub354 \ub9de\ud600\uc57c \ud560 \uc218", need(), 4);
+  dismissRetryHalt();
+  is("\ub2eb\uc73c\uba74 \uc9c4\ud589 \uc7ac\uac1c", MCF.retryReport().halted, false);
+  is("\ube5a\uc740 \ub0a8\uc544 \uc788\ub098", need(), 4);
+  is("\uc5f0\uc18d \uce74\uc6b4\ud130\ub9cc 0", rec().streak, 0);
+
+  head("3. \ud1b5\uacfc \ubabb\ud55c \uc720\ud615\uc5d0\uc11c \ubabb \ubc97\uc5b4\ub09c\ub2e4");
+  reset("b1"); reset("b2"); SEL.value = "b1"; state_dismiss();
+  answer(false);
+  is("\ub4dc\ub86d\ub2e4\uc6b4 \uc7a0\uae40", SEL.disabled, true);
+  SEL.value = "b2"; generateNewProblem();
+  is("\uac15\uc81c\ub85c \ub418\ub3cc\ub838\ub098", SEL.value, "b1");
+
+  head("4. \uc624\ub2f5\uc740 \uadf8 \ubb38\uc81c\uc5d0\uc11c \ud655\uc815\ub41c\ub2e4 (\ubcf4\uc2a4\ub294 \uc2dc\ud5d8)");
+  reset("b1"); SEL.value = "b1"; state_dismiss();
+  generateNewProblem(); selectMcOptionCard("B"); evaluateStudentAnswer();
+  var w = rec().wrong;
+  selectMcOptionCard("A"); evaluateStudentAnswer();   // \ub2e4\uc2dc \uace0\ub974\uae30 \uc2dc\ub3c4
+  is("\ub2e4\uc2dc \uace0\ub974\uae30\uac00 \ubb34\uc2dc\ub418\ub098", rec().wrong + "/" + rec().correct, w + "/0");
+
+  var v = document.getElementById("verdict");
+  v.className = fails ? "fail" : "pass";
+  v.innerHTML = fails
+    ? "\uc2e4\ud328 " + fails + "\uac74 \u2014 \uc544\ub798 \ubd89\uc740 \uc904\uc744 \ubcf4\uc138\uc694."
+    : "\uc804\ubd80 \ud1b5\uacfc \u2014 \uc7ac\uc2dc\ub3c4 \uaddc\uce59\uc774 \uc124\uacc4\ub300\ub85c \ub3d5\ub2c8\ub2e4.";
+}
+
+function state_dismiss() { if (MCF.retryReport().halted) dismissRetryHalt(); }
+
+function showPopupDemo() {
+  reset("b1"); SEL.value = "b1"; state_dismiss();
+  answer(false); answer(false); answer(false);
+}
+
+if (missing) {
+  var v = document.getElementById("verdict");
+  v.className = "fail";
+  v.innerHTML = "core.js \ub97c \ucc3e\uc744 \uc218 \uc5c6\uc2b5\ub2c8\ub2e4. \uc774 \ud30c\uc77c\uc744 core.js \uc640 \uac19\uc740 \ud3f4\ub354\uc5d0 \ub450\uc138\uc694.";
+} else {
+  run();
+}
+</script>
+</body>
+</html>

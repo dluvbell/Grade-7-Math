@@ -1,0 +1,263 @@
+/* ============================================================================
+   mcf-core.css  —  mcf-core.js 가 그리는 요소들의 기본 스타일  (v1, 2026-08-05)
+
+   왜 있나:
+     mcf-core.js 는 .mc-option-card / .step-block / .criss-cross-box 같은
+     클래스로 화면을 그린다. 그런데 그 CSS 는 레슨 파일마다 따로 들어 있어서,
+     어떤 파일에는 있고 어떤 파일에는 없었다. 실제로 세 번 터졌다:
+       · Unit 1 L6&7  — 대각선 곱 상자가 세로로 흘러내림 (상자 CSS 없음)
+       · Unit 1 L6&7  — 풀이 방법 토글 바가 안 보임 (토글 CSS 없음)
+       · Unit 2 연습시험 — 보기가 스타일 없이 나오고 선택 반응이 안 보임
+                          (이 파일만 Tailwind 유틸리티 클래스로 그렸었다)
+     그래서 코어가 쓰는 클래스를 여기 한 곳에 모은다. 새 코스를 만들 때도
+     이 파일만 걸면 된다.
+
+   어떻게 붙이나:
+     레슨 파일의 <style> **앞에** 넣는다.
+       <link rel="stylesheet" href="../mcf-core.css">
+       <link rel="stylesheet" href="mcf-core.css">     <- 폴더 위치 폴백
+       <style> ...파일 고유 스타일... </style>
+     순서가 중요하다. 뒤에 오는 파일 쪽 <style> 이 이기므로, 지금 잘 나오는
+     파일의 겉모습은 그대로고 빠진 곳만 여기서 메워진다.
+
+   색은 전부 var(--x, 기본값) 형태다. 파일이 변수를 정의했으면 그 값이 쓰이고,
+   변수가 아예 없는 파일(Unit 2 연습시험)에서도 기본값으로 정상 동작한다.
+   ========================================================================== */
+
+/* ───────────────── 보기(객관식) ───────────────── */
+
+.mc-options-list {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+    margin-top: 10px;
+}
+
+.mc-option-card {
+    background: #ffffff;
+    border: 2px solid var(--border-color, #e2e8f0);
+    padding: 14px 20px;
+    border-radius: 8px;
+    cursor: pointer;
+    font-weight: 600;
+    font-size: 1.05rem;
+    transition: all 0.2s ease;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+}
+
+.mc-option-card:hover:not(.disabled) {
+    border-color: var(--secondary-color, #2563eb);
+    background-color: #f8fafc;
+}
+
+.mc-option-card.selected {
+    border-color: var(--secondary-color, #2563eb);
+    background-color: #dbeafe;
+    color: #1e40af;
+}
+
+.mc-option-card.disabled {
+    cursor: not-allowed;
+    opacity: 0.7;
+}
+
+.mc-badge {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 28px;
+    height: 28px;
+    border-radius: 50%;
+    background-color: #e2e8f0;
+    color: var(--primary-color, #0f172a);
+    font-weight: 800;
+    font-size: 0.9rem;
+    flex-shrink: 0;
+}
+
+.mc-option-card.selected .mc-badge {
+    background-color: var(--secondary-color, #2563eb);
+    color: #ffffff;
+}
+
+/* 그래프 보기 — 코어가 .graph-grid / .graph-card / .option-graph 로 그린다 */
+.mc-options-list.graph-grid {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 14px;
+}
+
+.mc-option-card.graph-card {
+    flex-direction: column;
+    align-items: flex-start;
+    padding: 12px;
+}
+
+.option-graph {
+    width: 100%;
+    margin-top: 6px;
+    border: 1px solid var(--border-color, #e2e8f0);
+    border-radius: 8px;
+    overflow: hidden;
+}
+
+@media (max-width: 640px) {
+    .mc-options-list.graph-grid { grid-template-columns: 1fr; }
+}
+
+/* ───────────────── 풀이 단계 ───────────────── */
+
+.step-block {
+    margin-bottom: 25px;
+    padding-bottom: 20px;
+    border-bottom: 1px solid #e2e8f0;
+    display: none;              /* 코어가 한 단계씩 열어준다 */
+}
+
+.step-title {
+    font-weight: 800;
+    color: var(--secondary-color, #2563eb);
+    display: block;
+    font-size: 1.1rem;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    margin-bottom: 8px;
+}
+
+.step-math {
+    font-size: 1.3rem;
+    font-weight: 700;
+    background-color: var(--explanation-bg, #f1f5f9);
+    padding: 14px 20px;
+    border-radius: 8px;
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    margin: 8px 0;
+    color: var(--math-color, #0f172a);
+    letter-spacing: 0.02em;
+    flex-wrap: wrap;
+}
+
+.step-explanation {
+    display: block;
+    font-size: 1.05rem;
+    color: #334155;
+    margin-top: 6px;
+    line-height: 1.6;
+}
+
+.math-rule {
+    background-color: var(--rule-bg, #fefce8);
+    color: var(--rule-text, #713f12);
+    padding: 12px 16px;
+    border-radius: 6px;
+    font-size: 1rem;
+    font-weight: 600;
+    margin: 10px 0;
+    display: block;
+    border-left: 4px solid #eab308;
+}
+
+.final-answer-box {
+    background-color: var(--highlight-bg, #eff6ff);
+    border-left: 6px solid var(--secondary-color, #2563eb);
+    padding: 20px 25px;
+    border-radius: 0 8px 8px 0;
+    margin-top: 30px;
+    display: none;
+}
+
+.final-answer-label {
+    font-weight: 800;
+    color: var(--secondary-color, #2563eb);
+    display: block;
+    font-size: 0.95rem;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+}
+
+.final-answer-math {
+    font-size: 1.5rem;
+    font-weight: 800;
+    color: var(--primary-color, #0f172a);
+    margin-top: 6px;
+    display: inline-flex;
+    align-items: center;
+    letter-spacing: 0.02em;
+}
+
+/* ───────────────── 풀이 방법 토글 (Product&Sum / Criss-Cross / 근의공식) ───────────────── */
+
+.method-toggle-container {
+    display: none;              /* 코어가 방법이 있을 때만 flex 로 켠다 */
+    background-color: #e2e8f0;
+    padding: 6px;
+    border-radius: 8px;
+    margin-bottom: 25px;
+    gap: 8px;
+}
+
+.method-btn {
+    flex: 1;
+    padding: 12px;
+    font-size: 1rem;
+    font-weight: 700;
+    border: none;
+    background: transparent;
+    color: var(--text-color, #1e293b);
+    cursor: pointer;
+    border-radius: 6px;
+    transition: all 0.2s ease;
+}
+
+.method-btn.active {
+    background-color: var(--secondary-color, #2563eb);
+    color: #ffffff;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+/* ───────────────── 대각선 곱 상자 (Criss-Cross) ───────────────── */
+
+.criss-cross-box {
+    background-color: var(--matrix-bg, #f8fafc);
+    border: 2px dashed var(--border-color, #e2e8f0);
+    border-radius: 12px;
+    padding: 20px 25px;
+    margin: 15px 0;
+    display: inline-block;
+}
+
+.matrix-grid {
+    display: grid;
+    grid-template-columns: 1fr 80px 1fr 40px 1.2fr;
+    align-items: center;
+    justify-items: center;
+    gap: 10px 5px;
+    font-size: 1.3rem;
+    font-weight: 700;
+}
+
+.svg-intersection-container {
+    grid-row: span 2;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.grid-arrow-label {
+    color: var(--disabled-color, #94a3b8);
+    font-size: 1.5rem;
+}
+
+.matrix-total-line {
+    grid-column: 1 / -1;
+    border-top: 2px solid var(--border-color, #e2e8f0);
+    margin-top: 12px;
+    padding-top: 12px;
+    text-align: left;
+    font-size: 1.15rem;
+    color: var(--primary-color, #0f172a);
+}

@@ -1,0 +1,1893 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Unit 2 Lesson 2: Equivalent Fractions</title>
+    
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.8/dist/katex.min.css">
+    <script src="https://cdn.jsdelivr.net/npm/katex@0.16.8/dist/katex.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/katex@0.16.8/dist/contrib/auto-render.min.js"></script>
+
+    <!-- core.js 가 그리는 요소들의 기본 스타일. 아래 <style> 보다 먼저 와야
+         파일 고유 스타일이 이기고, 빠진 클래스만 여기서 메워진다.
+         폴더 위치를 몰라도 되게 두 경로를 다 건다(없는 쪽은 404 로 무시). -->
+    <link rel="stylesheet" href="../mcf-core.css">
+    <link rel="stylesheet" href="mcf-core.css">
+    <style>
+        :root {
+            --primary-color: #0f172a;
+            --secondary-color: #2563eb;
+            --disabled-color: #94a3b8;
+            --text-color: #334155;
+            --math-color: #000000;
+            --bg-color: #f8fafc;
+            --card-bg: #ffffff;
+            --border-color: #cbd5e1;
+            --highlight-bg: #eff6ff;
+            --explanation-bg: #f1f5f9;
+            --rule-bg: #fef08a;
+            --rule-text: #713f12;
+            --success-color: #16a34a;
+            --error-color: #dc2626;
+        }
+
+        body {
+            font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+            background-color: var(--bg-color);
+            color: var(--text-color);
+            line-height: 1.8;
+            margin: 0;
+            padding: 0;
+            -webkit-font-smoothing: antialiased;
+        }
+
+        header {
+            background-color: var(--primary-color);
+            color: white;
+            padding: 40px 20px;
+            text-align: center;
+        }
+
+        header h1 {
+            margin: 0;
+            font-size: 2rem;
+            font-weight: 800;
+            letter-spacing: -0.025em;
+        }
+
+        .scoreboard {
+            background-color: #1e293b;
+            color: white;
+            display: inline-flex;
+            gap: 20px;
+            padding: 12px 24px;
+            border-radius: 50px;
+            font-weight: 700;
+            margin-top: 15px;
+            box-shadow: 0 4px 6px -1px rgba(0,0,0,0.2);
+        }
+
+        .scoreboard span {
+            color: #60a5fa;
+        }
+
+        .container {
+            max-width: 850px;
+            margin: 40px auto;
+            padding: 0 20px;
+        }
+
+        .profile-box, .selector-box {
+            background-color: var(--card-bg);
+            padding: 25px;
+            border-radius: 12px;
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+            border: 1px solid var(--border-color);
+            margin-bottom: 25px;
+        }
+
+        .profile-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 15px;
+        }
+
+        .profile-grid input {
+            width: 100%;
+            padding: 12px;
+            font-size: 1rem;
+            border-radius: 6px;
+            border: 1px solid var(--border-color);
+            box-sizing: border-box;
+            outline: none;
+        }
+
+        .profile-grid input:focus {
+            border-color: var(--secondary-color);
+        }
+
+        label {
+            display: block;
+            font-weight: 700;
+            color: var(--primary-color);
+            font-size: 1.1rem;
+            margin-bottom: 12px;
+        }
+
+        .control-group {
+            display: flex;
+            gap: 15px;
+            margin-top: 10px;
+        }
+
+        select {
+            flex: 1;
+            padding: 16px;
+            font-size: 1.1rem;
+            font-family: inherit;
+            border-radius: 8px;
+            border: 2px solid var(--border-color);
+            background-color: white;
+            color: var(--primary-color);
+            outline: none;
+            cursor: pointer;
+        }
+
+        .btn-generate {
+            padding: 16px 24px;
+            font-size: 1.1rem;
+            font-weight: 700;
+            background-color: var(--primary-color);
+            color: white;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: background-color 0.2s ease;
+            white-space: nowrap;
+        }
+
+        .btn-generate:hover {
+            background-color: #1e293b;
+        }
+
+        .solution-container {
+            background-color: var(--card-bg);
+            padding: 40px;
+            border-radius: 12px;
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+            border: 1px solid var(--border-color);
+            min-height: 200px;
+        }
+
+        .placeholder-text {
+            color: #64748b;
+            text-align: center;
+            font-style: italic;
+            padding: 60px 0;
+            font-size: 1.1rem;
+        }
+
+        .quiz-interface-box {
+            background-color: var(--explanation-bg);
+            border: 1px solid var(--border-color);
+            padding: 25px;
+            border-radius: 10px;
+            margin-bottom: 30px;
+        }
+
+        .question-statement-card {
+            background: #ffffff;
+            border-left: 4px solid var(--secondary-color);
+            padding: 16px 20px;
+            font-size: 1.1rem;
+            font-weight: 600;
+            color: var(--primary-color);
+            margin-bottom: 20px;
+            border-radius: 0 6px 6px 0;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.05);
+        }
+
+        .math-render-viewport {
+            background: #ffffff;
+            border: 1px solid var(--border-color);
+            border-radius: 8px;
+            padding: 24px;
+            margin-bottom: 20px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            box-shadow: inset 0 2px 4px rgba(0,0,0,0.02);
+        }
+
+        .mc-options-list {
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+            margin-top: 10px;
+        }
+
+        .mc-option-card {
+            background: white;
+            border: 2px solid var(--border-color);
+            padding: 14px 20px;
+            border-radius: 8px;
+            cursor: pointer;
+            font-weight: 600;
+            font-size: 1.05rem;
+            transition: all 0.2s ease;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+
+        /* ── 긴 보기가 카드 밖으로 넘치는 것 막기 ─────────────────────────
+           KaTeX 는 하나의 \( \) 안에서 절대 줄을 바꾸지 않는다. 그래서 긴
+           문장 보기가 통째로 한 줄이 되어 카드를 뚫고 나간다.
+           근본 해결은 생성기 쪽에서 문장을 작은 조각으로 끊는 것이고
+           (exp-common.js 의 proseTex), 아래는 그 조각들이 카드 안에서
+           제대로 접히게 하는 규칙이다.
+           주의: 배지도 <span> 이다. 자식 span 을 통째로 늘리면 A B C D 동그라미가
+           가로로 쭉 늘어난다. 반드시 배지를 빼고 지정할 것. */
+        .mc-option-card {
+            align-items: flex-start;
+            min-width: 0;
+        }
+        .mc-option-card > .mc-badge {
+            flex: 0 0 auto;
+        }
+        .mc-option-card > span:not(.mc-badge),
+        .mc-option-card > div:not(.option-graph) {
+            flex: 1 1 auto;
+            min-width: 0;
+            overflow-wrap: anywhere;
+            line-height: 1.5;
+        }
+        .mc-option-card .katex {
+            max-width: 100%;
+            white-space: normal;
+        }
+
+        .mc-option-card:hover:not(.disabled) {
+            border-color: var(--secondary-color);
+            background-color: var(--highlight-bg);
+        }
+
+        .mc-option-card.selected {
+            border-color: var(--secondary-color);
+            background-color: #dbeafe;
+            color: #1e40af;
+        }
+
+        .mc-option-card.disabled {
+            cursor: not-allowed;
+            opacity: 0.7;
+        }
+
+        .mc-badge {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            width: 28px;
+            height: 28px;
+            border-radius: 50%;
+            background-color: #e2e8f0;
+            color: var(--primary-color);
+            font-weight: 800;
+            font-size: 0.9rem;
+        }
+
+        .mc-option-card.selected .mc-badge {
+            background-color: var(--secondary-color);
+            color: white;
+        }
+
+        .feedback-msg-area {
+            font-size: 1.1rem;
+            font-weight: 700;
+            margin-bottom: 15px;
+            display: none;
+            padding: 10px 15px;
+            border-radius: 6px;
+        }
+
+        .feedback-success {
+            background-color: #dcfce7;
+            color: var(--success-color);
+            border-left: 5px solid var(--success-color);
+        }
+
+        .feedback-error {
+            background-color: #fee2e2;
+            color: var(--error-color);
+            border-left: 5px solid var(--error-color);
+        }
+
+        .quiz-action-bar {
+            display: flex;
+            gap: 12px;
+            flex-wrap: wrap;
+        }
+
+        .solution-reveal-window {
+            display: none;
+            border-top: 3px double var(--border-color);
+            margin-top: 30px;
+            padding-top: 30px;
+        }
+
+        .step-block {
+            margin-bottom: 25px;
+            padding-bottom: 20px;
+            border-bottom: 1px solid #e2e8f0;
+            display: none;
+        }
+
+        .step-title {
+            font-weight: 800;
+            color: var(--secondary-color);
+            display: block;
+            font-size: 1.1rem;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+            margin-bottom: 8px;
+        }
+
+        .step-math {
+            font-size: 1.3rem;
+            font-weight: 700;
+            background-color: var(--explanation-bg);
+            padding: 14px 20px;
+            border-radius: 8px;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            margin: 8px 0;
+            color: var(--math-color);
+            letter-spacing: 0.02em;
+            flex-wrap: wrap;
+        }
+
+        /* hint.figure — 힌트를 눌렀을 때 나오는 상황 그림 */
+        .hint-figure {
+            display: flex;
+            justify-content: center;
+            margin-top: 10px;
+        }
+        .hint-figure svg {
+            max-width: 100%;
+            height: auto;
+        }
+
+        /* step.figure — 풀이 단계의 그림. core.js 가 그린다.
+           나중에 mcf-core.css 로 옮기면 옛 파일도 같이 받는다. */
+        .step-figure {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 14px;
+            align-items: flex-start;
+            margin: 10px 0 4px;
+        }
+        .step-figure svg {
+            max-width: 100%;
+            height: auto;
+        }
+
+        .step-explanation {
+            display: block;
+            font-size: 1.05rem;
+            color: #334155;
+            margin-top: 6px;
+        }
+
+        .final-answer-box {
+            background-color: var(--highlight-bg);
+            border-left: 6px solid var(--secondary-color);
+            padding: 20px 25px;
+            border-radius: 0 8px 8px 0;
+            margin-top: 30px;
+            display: none;
+        }
+
+        .final-answer-label {
+            font-weight: 800;
+            color: var(--secondary-color);
+            display: block;
+            font-size: 0.95rem;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+        }
+
+        .final-answer-math {
+            font-size: 1.5rem;
+            font-weight: 800;
+            color: var(--primary-color);
+            margin-top: 6px;
+            display: inline-flex;
+            align-items: center;
+            letter-spacing: 0.02em;
+        }
+
+        .control-panel {
+            display: flex;
+            justify-content: space-between;
+            margin-top: 30px;
+            padding-top: 20px;
+            border-top: 2px solid var(--border-color);
+            gap: 15px;
+        }
+
+        .btn {
+            padding: 14px 24px;
+            font-size: 1.05rem;
+            font-weight: 700;
+            border-radius: 8px;
+            cursor: pointer;
+            border: none;
+            transition: all 0.2s ease;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .btn-primary { background-color: var(--secondary-color); color: white; }
+        .btn-primary:hover:not(:disabled) { background-color: #1d4ed8; }
+        .btn-success { background-color: var(--success-color); color: white; }
+        .btn-success:hover:not(:disabled) { background-color: #166534; }
+        .btn-secondary { background-color: var(--explanation-bg); color: var(--primary-color); border: 1px solid var(--border-color); }
+        .btn-secondary:hover:not(:disabled) { background-color: #e2e8f0; }
+
+        .btn:disabled {
+            background-color: var(--disabled-color);
+            color: #f1f5f9;
+            cursor: not-allowed;
+            opacity: 0.6;
+        }
+
+        .hint-box {
+            display: none;
+            background-color: #fef9c3;
+            border-left: 5px solid #eab308;
+            color: #713f12;
+            padding: 12px 16px;
+            border-radius: 0 6px 6px 0;
+            margin-bottom: 15px;
+            font-size: 1.05rem;
+            font-weight: 600;
+        }
+
+        .btn-hint { background-color: #fde047; color: #713f12; }
+        .btn-hint:hover:not(:disabled) { background-color: #facc15; }
+
+        /* 그래프 문항용. Unit 2 Lesson 3 에서 가져왔다. */
+        .coord-svg {
+            width: 100%;
+            height: auto;
+            display: block;
+            background: #ffffff;
+            border-radius: 6px;
+        }
+        .math-render-viewport .coord-svg { width: 330px; max-width: 100%; }
+
+
+
+        /* ── 난이도 버튼 (Grade 7 부터) ─────────────────────────────
+           유형 드롭다운이 "무엇을" 이라면 이 버튼은 "얼마나 어렵게" 다.
+           온타리오 성취도 카테고리 K / A / T 에 맞춰 둘씩 짝지어 쓴다.
+           레슨 = Easy(K) / Medium(A),  보스 = Medium(A) / Hard(T) */
+        .level-group{display:flex;align-items:center;gap:9px;margin-top:13px;flex-wrap:wrap}
+        .level-label{font-size:.83rem;font-weight:700;color:#64748b;
+                     text-transform:uppercase;letter-spacing:.05em;margin-right:3px}
+        .level-btn{background:#f1f5f9;border:1.5px solid #cbd5e1;color:#475569;
+                   font-size:.93rem;font-weight:600;padding:8px 20px;border-radius:999px;
+                   cursor:pointer;transition:all .12s}
+        .level-btn:hover{background:#e2e8f0}
+        .level-btn.active{background:#4338ca;border-color:#4338ca;color:#fff}
+        .level-btn:disabled{opacity:.45;cursor:not-allowed}
+
+        /* ── 규칙 박스 (Grade 7 부터) ───────────────────────────────
+           MCR3U 는 공식을 문제 안에서만 썼는데, 7학년은 규칙 자체가
+           아직 안 굳어 있어서 화면에 상시로 띄운다. */
+        .rule-box{background:#f5f3ff;border:1px solid #ddd6fe;border-left:5px solid #7c3aed;
+                  border-radius:12px;padding:16px 20px;margin:0 0 22px}
+        .rule-title{font-size:.8rem;font-weight:800;color:#6d28d9;text-transform:uppercase;
+                    letter-spacing:.06em;margin-bottom:11px}
+        .rule-box ul{margin:0;padding-left:20px}
+        .rule-box li{margin:0 0 9px;font-size:.95rem;line-height:1.62;color:#1e293b}
+        .rule-box li:last-child{margin-bottom:0}
+        .rule-box b{color:#5b21b6}
+    </style>
+</head>
+<body>
+
+    <header>
+        <h1>Unit 2 Lesson 2: Equivalent Fractions</h1>
+        <p>Building, simplifying, and comparing fractions (B1.4)</p>
+        <div class="scoreboard">
+            <div>Score: <span id="hud-score">0</span></div>
+            <div>Tries: <span id="hud-attempts">0</span></div>
+        </div>
+    </header>
+
+    <div class="container">
+        <div class="profile-box">
+            <label>Student Profile Setup:</label>
+            <div class="profile-grid">
+                <input type="text" id="first-name" placeholder="First name" autocomplete="off">
+                <input type="text" id="last-name" placeholder="Last name" autocomplete="off">
+            </div>
+        </div>
+
+        <div class="selector-box">
+            <label for="question-select">Practice Target Menu:</label>
+            <div class="control-group">
+                <select id="question-select">
+                    <option value="t1">Type 1: Equivalent Fractions</option>
+                    <option value="t2">Type 2: Lowest Terms</option>
+                    <option value="t3">Type 3: Common Denominators</option>
+                    <option value="t4">Type 4: Comparing and Ordering</option>
+                    <option value="t5">Type 5: Improper and Mixed Numbers</option>
+                </select>
+                <button class="btn-generate" onclick="generateNewProblem()">Generate</button>
+            </div>
+            <div class="level-group" id="level-group">
+                <span class="level-label">Difficulty</span>
+                <button class="level-btn active" id="lvl-1" onclick="setLevel(1)">Easy</button>
+                <button class="level-btn" id="lvl-2" onclick="setLevel(2)">Medium</button>
+            </div>
+        </div>
+
+        <!-- 규칙 박스. 문제 위에 항상 떠 있다. 학생이 풀이를 열기 전에
+             먼저 보는 자리라, 이 레슨에서 반복해 쓰이는 규칙만 짧게 박는다. -->
+        <div class="rule-box" id="rule-box">
+            <div class="rule-title">Rules to remember</div>
+            <ul>
+                <li><b>Equivalent fractions.</b> Multiply <b>or</b> divide the top and the bottom by
+                    the <b>same</b> number. 3/4 = (3&times;5)/(4&times;5) = 15/20. Adding the same number
+                    to the top and bottom does <b>not</b> work: 3/4 is not 8/9.</li>
+                <li><b>Lowest terms.</b> Divide the top and the bottom by their greatest common
+                    factor. 18/24 has GCF 6, so 18/24 = 3/4. If you can still divide both by
+                    something bigger than 1, you are not finished.</li>
+                <li><b>Common denominator.</b> Use the lowest common multiple of the two bottoms.
+                    For 5/6 and 3/8, the LCM of 6 and 8 is 24, so 5/6 = 20/24 and 3/8 = 9/24.
+                    Whatever you multiply a bottom by, multiply that top by the same.</li>
+                <li><b>Comparing.</b> Same bottom &rarr; compare the tops. Different bottoms &rarr;
+                    give them a common denominator first, then compare the tops.</li>
+                <li><b>Improper and mixed.</b> 7/3 = 2 and 1/3, because 7 &divide; 3 is 2 with 1 left
+                    over. Going back: 2 and 1/3 = (2&times;3 + 1)/3 = 7/3.</li>
+                <li><b>How answers are written in this unit.</b> Every final answer is a fraction in
+                    lowest terms, not a mixed number.</li>
+            </ul>
+        </div>
+
+        <div class="solution-container" id="display-window">
+            <div id="placeholder" class="placeholder-text">
+                Select a topic and click "Generate" to start practicing.
+            </div>
+
+            <div id="quiz-station" class="quiz-interface-box" style="display: none;">
+                <div id="asset-viewport-mount-point" class="math-render-viewport" style="display: none;"></div>
+
+                <div id="question-statement-display" class="question-statement-card"></div>
+
+                <label id="input-prompt-label" style="margin-bottom: 12px; font-weight: 700; display: block;"></label>
+                
+                <div id="dynamic-input-mount-point" style="margin-top: 10px;"></div>
+
+                <div id="hint-box" class="hint-box"></div>
+                <div id="feedback-msg" class="feedback-msg-area"></div>
+
+                <div class="quiz-action-bar">
+                    <button class="btn btn-success" id="check-ans-btn" onclick="evaluateStudentAnswer()">Check Answer</button>
+                    <button class="btn btn-hint" id="hint-btn" onclick="toggleHint()">Hint</button>
+                    <button class="btn btn-secondary" id="reveal-sol-btn" disabled onclick="unlockSolutionPanel()">Show Solution Steps</button>
+                </div>
+            </div>
+
+            <div class="method-toggle-container" id="method-toggle-bar"></div>
+
+            <div class="solution-reveal-window" id="solution-reveal-layer">
+                <div id="solution-workspace-injected"></div>
+                
+                <div class="control-panel" id="controls-panel">
+                    <button class="btn btn-secondary" id="restart-btn" onclick="restartSolution()">Restart Steps</button>
+                    <button class="btn btn-primary" id="next-btn" onclick="showNextStep()">Next Step &rarr;</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- core.js 는 보통 상위 폴더(index.html·progress.js 옆)에 둔다.
+         같은 폴더에 두는 경우도 있어 두 경로를 다 건다. 없는 쪽은 404 로 무시되고,
+         둘 다 있으면 두 번째는 core 내부 가드가 막는다. -->
+    <script src="../core.js"></script>
+    <script src="core.js"></script>
+    <script>
+    /* core 를 못 찾으면 Generate 가 조용히 무반응이 된다. 원인이 안 보이므로 안내를 띄운다. */
+    if (typeof MCF === "undefined") {
+      document.addEventListener("DOMContentLoaded", function () {
+        var box = document.getElementById("placeholder");
+        if (box) {
+          box.innerHTML =
+            '<strong style="color:#b91c1c">core.js \uB97C \uCC3E\uC744 \uC218 \uC5C6\uC2B5\uB2C8\uB2E4.</strong><br><br>' +
+            'This lesson needs <code>core.js</code>.<br>' +
+            'Put it next to <code>progress.js</code> and <code>index.html</code> ' +
+            '(the folder above this one), or in this same folder.';
+          box.style.display = "block";
+        }
+        var b = document.querySelector(".btn-generate");
+        if (b) b.disabled = true;
+      });
+    }
+    </script>
+    <script>
+        function gdef(v, d) { return (v === undefined || v === null) ? d : v; }
+
+        // --- SVG Graphing Engine ---
+        function buildGraph(spec) {
+            const xmin = gdef(spec.xmin, -7), xmax = gdef(spec.xmax, 7);
+            const ymin = gdef(spec.ymin, -7), ymax = gdef(spec.ymax, 7);
+            /* MCR3U Trigonometric Functions 추가 — 축 눈금 간격.
+               예전에는 격자선이 정수 한 칸으로 박혀 있어서 degree 로 그리면
+               xmax=720 일 때 격자선이 721 개 나왔다. 기본값은 예전 동작 그대로라
+               spec 에 아무것도 안 넣은 옛 파일은 픽셀 하나까지 같게 나온다.
+                 spec.xstep / spec.ystep       — 격자선 간격 (기본 1)
+                 spec.xlabelEvery / ylabelEvery — 격자 몇 칸마다 글자를 적을지 (기본 2)
+                 spec.xsuffix / spec.ysuffix    — 눈금 글자 뒤에 붙일 것 (기본 없음, 사인곡선은 "°")
+                 spec.W / spec.H                — 그림 크기 (기본 300 x 300, 사인곡선은 가로로 넓게) */
+            const xstep = gdef(spec.xstep, 1), ystep = gdef(spec.ystep, 1);
+            const xlabelEvery = gdef(spec.xlabelEvery, 2), ylabelEvery = gdef(spec.ylabelEvery, 2);
+            const xsuf = gdef(spec.xsuffix, ""), ysuf = gdef(spec.ysuffix, "");
+            const W = gdef(spec.W, 300), H = gdef(spec.H, 300), pad = 10;
+            /* 눈금 좌표를 부동소수 오차 없이 만든다. gridVals(-7, 7, 1) = -7..7 */
+            const gridVals = function (lo, hi, st) {
+                const out = [];
+                const i0 = Math.ceil(lo / st - 1e-9);
+                const i1 = Math.floor(hi / st + 1e-9);
+                for (let i = i0; i <= i1; i++) out.push(i * st);
+                return out;
+            };
+            const isLabel = function (v, st, every) {
+                if (v === 0) return false;
+                const m = st * every;
+                return Math.abs(v / m - Math.round(v / m)) < 1e-9;
+            };
+            /* 축선은 창 안에 머무른다. 0 이 창 밖이면 가장자리에 붙인다
+               (조수·기온 모형처럼 y 가 전부 양수인 그림에서 축이 사라지지 않게). */
+            const axY = Math.min(Math.max(0, ymin), ymax);
+            const axX = Math.min(Math.max(0, xmin), xmax);
+            const hasOrigin = (xmin <= 0 && 0 <= xmax && ymin <= 0 && 0 <= ymax);
+            const X = function (x) { return pad + (x - xmin) / (xmax - xmin) * (W - 2 * pad); };
+            const Y = function (y) { return pad + (ymax - y) / (ymax - ymin) * (H - 2 * pad); };
+            const uid = "g" + Math.random().toString(36).slice(2, 8);
+            
+            let s = `<svg viewBox="0 0 ${W} ${H}" xmlns="http://www.w3.org/2000/svg" class="coord-svg">`;
+            /* Arrow direction fix: orient="auto" rotates a marker to the direction the
+               path is travelling AT that point. At the start of a path that direction
+               points inward, so a start arrowhead pointed back into the curve instead of
+               away from it. The -s markers below are the same triangle mirrored, and are
+               used for every marker-start. */
+            s += '<defs>';
+            /* audit fix 2026-07-30: 화살촉은 격자 경계 바깥으로 4 * stroke-width 만큼
+               뻗기 때문에, 클립 사각형이 격자에 딱 맞으면 촉이 잘려 안 보였다.
+               곡선 자체는 drawCurve에서 이미 격자 안으로 잘라 그린다. */
+            const clipPad = 10;
+            s += `<clipPath id="clip-${uid}"><rect x="${pad - clipPad}" y="${pad - clipPad}" width="${W - 2 * pad + 2 * clipPad}" height="${H - 2 * pad + 2 * clipPad}"/></clipPath>`;
+            s += `<marker id="ax-${uid}" markerWidth="8" markerHeight="8" refX="4" refY="4" orient="auto"><path d="M0,0 L8,4 L0,8 Z" fill="#0f172a"/></marker>`;
+            s += `<marker id="ax-s-${uid}" markerWidth="8" markerHeight="8" refX="4" refY="4" orient="auto"><path d="M8,0 L0,4 L8,8 Z" fill="#0f172a"/></marker>`;
+            s += `<marker id="cv-${uid}" markerWidth="8" markerHeight="8" refX="4" refY="4" orient="auto"><path d="M0,0 L8,4 L0,8 Z" fill="#2563eb"/></marker>`;
+            s += `<marker id="cv-s-${uid}" markerWidth="8" markerHeight="8" refX="4" refY="4" orient="auto"><path d="M8,0 L0,4 L8,8 Z" fill="#2563eb"/></marker>`;
+            s += '</defs>';
+            
+            /* spec.labelHalo — 눈금 글자에 흰 테두리를 둘러 곡선이 지나가도 읽히게 한다.
+               기본은 꺼짐이라 옛 파일은 그대로다. 사인곡선은 축을 자주 가로지르므로 켠다. */
+            const halo = spec.labelHalo ? ' stroke="#ffffff" stroke-width="3.5" paint-order="stroke"' : "";
+            const gxs = gridVals(xmin, xmax, xstep), gys = gridVals(ymin, ymax, ystep);
+            for (let i = 0; i < gxs.length; i++) s += `<line x1="${X(gxs[i])}" y1="${Y(ymax)}" x2="${X(gxs[i])}" y2="${Y(ymin)}" stroke="#e8edf3" stroke-width="1"/>`;
+            for (let i = 0; i < gys.length; i++) s += `<line x1="${X(xmin)}" y1="${Y(gys[i])}" x2="${X(xmax)}" y2="${Y(gys[i])}" stroke="#e8edf3" stroke-width="1"/>`;
+            s += `<line x1="${X(xmin)}" y1="${Y(axY)}" x2="${X(xmax)}" y2="${Y(axY)}" stroke="#0f172a" stroke-width="2" marker-start="url(#ax-s-${uid})" marker-end="url(#ax-${uid})"/>`;
+            s += `<line x1="${X(axX)}" y1="${Y(ymin)}" x2="${X(axX)}" y2="${Y(ymax)}" stroke="#0f172a" stroke-width="2" marker-start="url(#ax-s-${uid})" marker-end="url(#ax-${uid})"/>`;
+            
+            /* 글자는 원래 곡선보다 먼저 그린다(옛 동작). labelHalo 를 켜면
+               곡선 위로 올려야 흰 테두리가 뜻이 있으므로 끝으로 미룬다. */
+            /* 축이 창 가장자리에 붙으면 글자가 그림 밖으로 나간다(조수 모형에서 실제로 잘렸다).
+               그때만 반대쪽으로 넘긴다. 0 이 창 안에 있는 옛 파일은 이 갈래를 타지 않는다. */
+            const labY = (Y(axY) + 12 > H - 2) ? Y(axY) - 6 : Y(axY) + 12;
+            const flipY = (X(axX) - 5 < 14);
+            const labX = flipY ? X(axX) + 5 : X(axX) - 5;
+            const anchY = flipY ? "start" : "end";
+            let lab = "";
+            for (let i = 0; i < gxs.length; i++) { const gx = gxs[i]; if (isLabel(gx, xstep, xlabelEvery)) lab += `<text x="${X(gx)}" y="${labY}" font-size="10" font-weight="bold" fill="#0f172a" text-anchor="middle"${halo}>${gx}${xsuf}</text>`; }
+            for (let i = 0; i < gys.length; i++) { const gy = gys[i]; if (isLabel(gy, ystep, ylabelEvery)) lab += `<text x="${labX}" y="${Y(gy) + 3}" font-size="10" font-weight="bold" fill="#0f172a" text-anchor="${anchY}"${halo}>${gy}${ysuf}</text>`; }
+            if (hasOrigin) lab += `<text x="${X(0) - 5}" y="${Y(0) + 12}" font-size="10" font-weight="bold" fill="#0f172a" text-anchor="end"${halo}>0</text>`;
+            if (!spec.labelHalo) s += lab;
+            
+            const curves = spec.curves || [];
+            for (let i = 0; i < curves.length; i++) s += `<g clip-path="url(#clip-${uid})">${drawCurve(curves[i], X, Y, xmin, xmax, ymin, ymax, uid)}</g>`;
+            /* MCR3U 추가 — 점근선(파선). spec.asym = [{x: 3}, {y: -1}] */
+            const asym = spec.asym || [];
+            for (let i = 0; i < asym.length; i++) {
+                const a = asym[i];
+                if (a.x !== undefined) s += `<line x1="${X(a.x)}" y1="${Y(ymax)}" x2="${X(a.x)}" y2="${Y(ymin)}" stroke="#b91c1c" stroke-width="1.6" stroke-dasharray="6 4"/>`;
+                if (a.y !== undefined) s += `<line x1="${X(xmin)}" y1="${Y(a.y)}" x2="${X(xmax)}" y2="${Y(a.y)}" stroke="#b91c1c" stroke-width="1.6" stroke-dasharray="6 4"/>`;
+            }
+            /* MCR3U 추가 — 안내선(회색 파선). spec.guides = [{m:1, b:0}]
+               역함수 레슨에서 y = x 대칭선을 깔아 주는 데 쓴다. */
+            const guides = spec.guides || [];
+            for (let i = 0; i < guides.length; i++) {
+                const gd = guides[i];
+                const x1 = xmin, x2 = xmax;
+                const y1 = gd.m * x1 + gd.b, y2 = gd.m * x2 + gd.b;
+                s += `<line x1="${X(x1)}" y1="${Y(y1)}" x2="${X(x2)}" y2="${Y(y2)}" stroke="#94a3b8" stroke-width="1.6" stroke-dasharray="5 5"/>`;
+            }
+
+            const dots = spec.dots || [];
+            for (let i = 0; i < dots.length; i++) { 
+                const dd = dots[i]; 
+                s += `<circle cx="${X(dd.x)}" cy="${Y(dd.y)}" r="4.5" fill="${dd.open ? '#ffffff' : '#2563eb'}" stroke="#2563eb" stroke-width="2"/>`; 
+            }
+            if (spec.labelHalo) s += lab;
+            s += '</svg>';
+            return s;
+        }
+
+        /* --- audit fix 2026-07-30: 화살촉이 화면에서 사라지던 문제 ---
+           곡선은 clipPath로 잘리는데 SVG marker는 자르기 전 path 끝점에 붙는다.
+           포물선처럼 끝점이 격자 밖인 곡선은 화살촉이 통째로 잘려 나가서,
+           "화살표를 보고 무한히 뻗는지 판단하라"는 문항이 성립하지 않았다.
+           이제 곡선을 격자 안으로 먼저 자르고, 그 끝에서 화살촉을 붙인다. */
+        function mcfClipRuns(pts, xmin, xmax, ymin, ymax) {
+            const EPS = 1e-9;
+            /* Liang-Barsky. 선분의 양 끝이 둘 다 격자 밖이면서 격자를 가로지르는
+               경우(기울기 큰 직선)도 놓치지 않으려면 구간별 정식 클리핑이 필요하다. */
+            function clipSeg(a, b) {
+                let t0 = 0, t1 = 1;
+                const dx = b[0] - a[0], dy = b[1] - a[1];
+                const pp = [-dx, dx, -dy, dy];
+                const qq = [a[0] - xmin, xmax - a[0], a[1] - ymin, ymax - a[1]];
+                for (let i = 0; i < 4; i++) {
+                    if (Math.abs(pp[i]) < EPS) { if (qq[i] < -EPS) return null; continue; }
+                    const r = qq[i] / pp[i];
+                    if (pp[i] < 0) { if (r > t1) return null; if (r > t0) t0 = r; }
+                    else { if (r < t0) return null; if (r < t1) t1 = r; }
+                }
+                return [[a[0] + dx * t0, a[1] + dy * t0], [a[0] + dx * t1, a[1] + dy * t1]];
+            }
+            const runs = [];
+            let cur = null;
+            for (let i = 0; i + 1 < pts.length; i++) {
+                const seg = clipSeg(pts[i], pts[i + 1]);
+                if (!seg) { if (cur) { runs.push(cur); cur = null; } continue; }
+                if (!cur) { cur = [seg[0], seg[1]]; continue; }
+                const last = cur[cur.length - 1];
+                if (Math.abs(last[0] - seg[0][0]) > 1e-7 || Math.abs(last[1] - seg[0][1]) > 1e-7) {
+                    runs.push(cur); cur = [seg[0], seg[1]];
+                } else cur.push(seg[1]);
+            }
+            if (cur) runs.push(cur);
+            return runs;
+        }
+
+        /* 화살촉 자체가 약 7px이라, 경계에 정확히 놓으면 clipPath에 반쯤 잘린다.
+           화살표가 붙는 쪽만 화면 좌표로 몇 px 물러나게 해서 전부 보이게 한다. */
+        function mcfRetreat(run, px, fromStart) {
+            const pts = fromStart ? run.slice().reverse() : run.slice();
+            let need = px;
+            while (pts.length >= 2 && need > 0) {
+                const a = pts[pts.length - 2], b = pts[pts.length - 1];
+                const dx = b[0] - a[0], dy = b[1] - a[1];
+                const len = Math.sqrt(dx * dx + dy * dy);
+                if (len <= 1e-9) { pts.pop(); continue; }
+                if (len > need) {
+                    const t = (len - need) / len;
+                    pts[pts.length - 1] = [a[0] + dx * t, a[1] + dy * t];
+                    need = 0;
+                } else {
+                    need -= len;
+                    pts.pop();
+                }
+            }
+            return fromStart ? pts.reverse() : pts;
+        }
+
+        function drawCurve(c, X, Y, xmin, xmax, ymin, ymax, uid) {
+            function path(pts, aStart, aEnd) {
+                if (pts.length < 2) return "";
+                const runs = mcfClipRuns(pts, xmin, xmax, ymin, ymax);
+                if (!runs.length) return "";
+                let out = "";
+                for (let r = 0; r < runs.length; r++) {
+                    let run = [];
+                    for (let i = 0; i < runs[r].length; i++) run.push([X(runs[r][i][0]), Y(runs[r][i][1])]);
+                    const headArrow = aStart && r === 0;
+                    const tailArrow = aEnd && r === runs.length - 1;
+                    /* 화살촉은 refX=4 * stroke-width 만큼 끝점 너머로 뻗는다.
+                       그만큼 물러나야 촉 끝이 정확히 격자 경계에 놓인다. */
+                    const arrowPad = 4 * 2.5;
+                    if (headArrow) run = mcfRetreat(run, arrowPad, true);
+                    if (tailArrow) run = mcfRetreat(run, arrowPad, false);
+                    if (run.length < 2) continue;
+                    let span = 0;
+                    for (let i = 1; i < run.length; i++) span += Math.abs(run[i][0] - run[i - 1][0]) + Math.abs(run[i][1] - run[i - 1][1]);
+                    if (span < 1) continue;
+                    let d = "";
+                    for (let i = 0; i < run.length; i++) d += (i === 0 ? "M" : "L") + run[i][0].toFixed(1) + "," + run[i][1].toFixed(1) + " ";
+                    let attr = 'stroke="#2563eb" stroke-width="2.5" fill="none" stroke-linejoin="round" stroke-linecap="round"';
+                    if (tailArrow) attr += ` marker-end="url(#cv-${uid})"`;
+                    if (headArrow) attr += ` marker-start="url(#cv-s-${uid})"`;
+                    out += `<path d="${d.trim()}" ${attr}/>`;
+                }
+                return out;
+            }
+            const lo = c.dom ? c.dom[0] : xmin, hi = c.dom ? c.dom[1] : xmax;
+            if (c.kind === "line") { return path([[lo, c.m * lo + c.b], [hi, c.m * hi + c.b]], c.arrowLeft, c.arrowRight); }
+            if (c.kind === "hline") { return path([[lo, c.y], [hi, c.y]], c.arrowLeft, c.arrowRight); }
+            if (c.kind === "vline") { const a = c.dom ? c.dom[0] : ymin, b = c.dom ? c.dom[1] : ymax; return path([[c.x, a], [c.x, b]], c.arrowLeft, c.arrowRight); }
+            if (c.kind === "abs") { const f = function (x) { return c.a * Math.abs(x - c.h) + c.k; }; return path([[lo, f(lo)], [c.h, f(c.h)], [hi, f(hi)]], c.arrowLeft, c.arrowRight); }
+            if (c.kind === "circle") { const rpx = (X(c.cx + c.r) - X(c.cx)).toFixed(1); return `<circle cx="${X(c.cx)}" cy="${Y(c.cy)}" r="${rpx}" stroke="#2563eb" stroke-width="2.5" fill="none"/>`; }
+            if (c.kind === "xparab") { const a = c.ydom ? c.ydom[0] : ymin, b = c.ydom ? c.ydom[1] : ymax; let pts = []; for (let i = 0; i <= 80; i++) { const y = a + (b - a) * i / 80; pts.push([c.a * (y - c.k) * (y - c.k) + c.h, y]); } return path(pts, false, false); }
+            /* MCR3U Intro to Functions 추가 0 — 꺾은선 y = poly(pts).
+               Dan 의 함수표기 그래프가 전부 이 모양이다. 꼭짓점은 정수 좌표라
+               정수 x 마다 값이 정확히 읽힌다. 끝에 화살표는 붙이지 않는다. */
+            if (c.kind === "poly") {
+                return path(c.pts.map(function (q) { return [q[0], q[1]]; }),
+                            c.arrowLeft, c.arrowRight);
+            }
+            /* MCR3U Intro to Functions 추가 1 — 제곱근 곡선 y = a*sqrt(b(x - c)) + d.
+               뿌리 안이 음수인 구간은 아예 점을 만들지 않는다. 시작점(c, d)은 항상 포함. */
+            if (c.kind === "sqrt") {
+                const b = gdef(c.b, 1), cc = gdef(c.c, 0), dd = gdef(c.d, 0), aa = gdef(c.a, 1);
+                let sp = [];
+                for (let i = 0; i <= 120; i++) {
+                    const x = lo + (hi - lo) * i / 120;
+                    const inside = b * (x - cc);
+                    if (inside < 0) continue;
+                    sp.push([x, aa * Math.sqrt(inside) + dd]);
+                }
+                if (b < 0) sp.reverse();
+                if (sp.length && (sp[0][0] !== cc || sp[0][1] !== dd)) sp.unshift([cc, dd]);
+                return path(sp, false, c.arrowRight !== false);
+            }
+            /* MCR3U Intro to Functions 추가 2 — 유리함수 y = a/(b(x - c)) + d.
+               점근선 양쪽을 따로 그린다. 한 덩어리로 그리면 점근선을 세로선처럼 이어 그려버린다. */
+            if (c.kind === "recip") {
+                const b = gdef(c.b, 1), cc = gdef(c.c, 0), dd = gdef(c.d, 0), aa = gdef(c.a, 1);
+                const GAP = 0.02;
+                let out = "";
+                /* 화살촉은 붙이지 않는다. 바깥 끝이 축과 거의 붙어 있어서
+                   화살촉을 달면 축의 화살표와 겹쳐 지저분해진다(실제로 그랬다).
+                   곡선이 격자 끝까지 그려지는 것만으로 계속 간다는 게 보인다. */
+                [[lo, cc - GAP, false, false], [cc + GAP, hi, false, false]].forEach(function (seg) {
+                    if (seg[1] - seg[0] < 1e-6) return;
+                    let sp = [];
+                    for (let i = 0; i <= 160; i++) {
+                        const x = seg[0] + (seg[1] - seg[0]) * i / 160;
+                        const den = b * (x - cc);
+                        if (Math.abs(den) < 1e-9) continue;
+                        sp.push([x, aa / den + dd]);
+                    }
+                    out += path(sp, c.arrowLeft === false ? false : seg[2],
+                                    c.arrowRight === false ? false : seg[3]);
+                });
+                return out;
+            }
+            /* y = a * k^( b(x - c) ) + d
+               지수는 격자를 순식간에 벗어난다. 창 밖으로 나간 뒤의 점은
+               버리고, 나가는 구간만 그린다. 표본을 촘촘히 깔아야 급한
+               구간이 각지지 않는다. */
+            if (c.kind === "expo") {
+                const A = c.a === undefined ? 1 : c.a, K = c.k,
+                      B = c.b === undefined ? 1 : c.b, C = c.c || 0, D = c.d || 0;
+                const f = x => A * Math.pow(K, B * (x - C)) + D;
+                const pad = (ymax - ymin) * 0.35;
+                let run = [], out = "", first = true;
+                const flush = (lastPiece) => {
+                    if (run.length > 1) out += path(run, first ? c.arrowLeft : false,
+                                                        lastPiece ? c.arrowRight : false);
+                    if (run.length > 1) first = false;
+                    run = [];
+                };
+                const STEPS = 400;
+                for (let i = 0; i <= STEPS; i++) {
+                    const x = lo + (hi - lo) * i / STEPS, y = f(x);
+                    if (!isFinite(y) || y > ymax + pad || y < ymin - pad) { flush(false); continue; }
+                    run.push([x, y]);
+                }
+                flush(true);
+                return out;
+            }
+            /* MCR3U Trigonometric Functions 추가 — y = a f(b(x - c)) + d, f = sin | cos | tan.
+               x 는 degree. expo 갈래와 같은 구조다: 400 등분해서 창 밖으로 나가면
+               그 자리에서 선을 끊고 다시 잇는다. tan 의 점근선 양쪽이 세로선으로
+               이어져 버리는 사고를 이 구조가 그대로 막아 준다.
+               점근선 자체는 spec.asym = [{x: 90}] 로 따로 그린다. */
+            if (c.kind === "trig") {
+                const FN = c.fn || "sin";
+                const A = gdef(c.a, 1), B = gdef(c.b, 1), C = gdef(c.c, 0), D = gdef(c.d, 0);
+                const base = function (t) {
+                    const r = t * Math.PI / 180;
+                    if (FN === "cos") return Math.cos(r);
+                    if (FN === "tan") return Math.tan(r);
+                    return Math.sin(r);
+                };
+                const f = function (x) { return A * base(B * (x - C)) + D; };
+                /* sin·cos 는 창을 살짝 넘겨도 이어 그려야 곡선이 위쪽 격자선에 닿는다.
+                   tan 은 반대로 빨리 끊어야 두 가지가 붙지 않는다. */
+                const pad = (ymax - ymin) * (FN === "tan" ? 0.06 : 0.35);
+                const STEPS = FN === "tan" ? 1600 : 600;
+                let run = [], out = "", first = true;
+                const flush = function (lastPiece) {
+                    if (run.length > 1) {
+                        out += path(run, first ? c.arrowLeft : false, lastPiece ? c.arrowRight : false);
+                        first = false;
+                    }
+                    run = [];
+                };
+                for (let i = 0; i <= STEPS; i++) {
+                    const x = lo + (hi - lo) * i / STEPS, y = f(x);
+                    if (!isFinite(y) || y > ymax + pad || y < ymin - pad) { flush(false); continue; }
+                    run.push([x, y]);
+                }
+                flush(true);
+                return out;
+            }
+            let pts = [];
+            for (let i = 0; i <= 80; i++) {
+                const x = lo + (hi - lo) * i / 80; let y;
+                if (c.kind === "parab") y = c.a * (x - c.h) * (x - c.h) + c.k;
+                else if (c.kind === "cubic") y = c.a * (x - c.h) * (x - c.h) * (x - c.h) + c.k;
+                else y = 0;
+                pts.push([x, y]);
+            }
+            return path(pts, c.arrowLeft, c.arrowRight);
+        }
+
+
+        /* ====================================================================
+           if-common.js  —  Intro to Functions 유닛 공용 프렐류드
+
+           각 레슨 생성기 앞에 붙여 빌드한다. 유리식 유닛의 re-common.js 와
+           같은 역할이다. 여기 있는 것:
+             · 집합 표기 헬퍼 (Dan 표기: {x | x ∈ R, 조건})
+             · 보기 조립 (mcBuild / mcGraph)
+             · 사상도 그리기 (buildMapping)
+             · 점 만들기 (randPoints / breakPoints / distinctInts)
+           레슨마다 다른 것(생성기, MCF.init 의 lessonId)은 여기 넣지 않는다.
+           ==================================================================== */
+
+        const TEACHER_SPREADSHEET_SCRIPT_URL = "";
+
+        const randInt = MCF.randInt;
+        const mcfPick = MCF.pick, M = MCF.M, mshuffle = MCF.shuffle;
+        const fmtTerm = MCF.fmtTerm;
+        const METHODS = MCF.METHODS_FACTORING;
+
+        /* ───────────── 인수분해 두 방법 공용 (Unit 0 Review 에서 그대로 가져옴) ─────────────
+           Dan 은 인수분해를 전부 Criss-Cross 로 가르치고 Product & Sum 도 보여준다.
+           그래서 인수분해가 나오는 자리에는 두 방법을 탭으로 다 띄운다.
+           탭이 뜨려면 문제 객체에 hasMethods: true, methods: METHODS 가 있어야 하고,
+           HTML 에 #method-toggle-bar 가 있어야 한다. 둘 중 하나만 빠져도 조용히
+           Product & Sum 에 고정된다(Unit 0 에서 실제로 터졌던 자리). */
+
+        /* 음수를 문장 안에 넣을 때 괄호를 씌운다. "-4" 보다 "(-4)" 가 읽기 쉽다. */
+        function par(n) { return n < 0 ? "(" + n + ")" : String(n); }
+        /* 항상 괄호를 씌운다. 계수 옆이나 지수 밑에 들어갈 때는 부호와 상관없이 필요하다. */
+        function brk(n) { return "(" + n + ")"; }
+        function pw(v, e) { return e === 0 ? "" : e === 1 ? v : v + "^{" + e + "}"; }
+        function tm(c, v, e, isFirst) { return fmtTerm(c, pw(v, e), isFirst); }
+
+        /* |n| 의 곱 짝을 나열한다. Product & Sum 에서 학생이 실제로 손으로 적는 목록이다. */
+        function pairListTex(n) {
+          const a = Math.abs(n), out = [];
+          for (let i = 1; i * i <= a; i++) if (a % i === 0) out.push("(" + i + ")(" + (a / i) + ")");
+          return out.join(",\\ ");
+        }
+
+        /* (a1 v + c1)(a2 v + c2) 한 벌에서 대각선 곱 상자의 칸을 만든다. */
+        function ccData(v, a1, c1, a2, c2) {
+          return {
+            lt: tm(a1, v, 1, true), lb: tm(a2, v, 1, true),
+            rt: fmtTerm(c1, "", true), rb: fmtTerm(c2, "", true),
+            pt: tm(a1 * c2, v, 1, true), pb: tm(a2 * c1, v, 1, true),
+            sum: tm(a1 * c2 + a2 * c1, v, 1, true)
+          };
+        }
+        function ccBoxStep(stepNo, d, explanation) {
+          return {
+            title: "Step " + stepNo + " (Criss-Cross): Fill In the Box",
+            mode: "cc", isMatrix: true, matrixData: d,
+            explanation: explanation
+          };
+        }
+        function ccCheckStep(stepNo, d, extra) {
+          return {
+            title: "Step " + stepNo + " (Criss-Cross): Check the Diagonals",
+            mode: "cc",
+            math: "(" + d.pt + ") + (" + d.pb + ") = " + (String(d.sum).trim() || "0"),
+            explanation: "Multiply along each arrow, then add the two answers together. You get " +
+              M(d.sum) + ", and that matches the middle term. " +
+              "Trap: if it does not match, swap the two numbers on the right side and try again." +
+              (extra || "")
+          };
+        }
+
+        /* ───────────── 집합 표기 (Dan 표기) ───────────── */
+
+        const RSET = "\\mathbb{R}";
+        function sAll(v) { return "\\{" + v + " \\mid " + v + " \\in " + RSET + "\\}"; }
+        function sCond(v, cond) { return "\\{" + v + " \\mid " + v + " \\in " + RSET + ", " + cond + "\\}"; }
+        function sList(v, vals) {
+          const u = [];
+          vals.forEach(function (x) { if (u.indexOf(x) === -1) u.push(x); });
+          u.sort(function (a, b) { return a - b; });
+          return "\\{" + v + " \\mid " + v + " = " + u.join(", ") + "\\}";
+        }
+        /* 보기 한 덩어리 = 정의역 + 치역. 통째로 \( \) 로 감싸 둔다.
+           코어의 wrapMath 는 \( 로 시작하는 문자열을 그대로 통과시킨다. */
+        function DR(d, r) { return M("\\text{D: }" + d + "\\quad \\text{R: }" + r); }
+
+        /* 부등호 방향만 뒤집는다. 전체집합이면 "0 이상"이라는 흔한 오해로 바꾼다.
+           오답 보기를 만들 때만 쓴다. */
+        function flipIneq(setTex, v) {
+          if (setTex.indexOf("\\ge") !== -1) return setTex.replace("\\ge", "\\le");
+          if (setTex.indexOf("\\le") !== -1) return setTex.replace("\\le", "\\ge");
+          return sCond(v, v + " \\ge 0");
+        }
+
+        function ptsTex(pts) {
+          return "\\{" + pts.map(function (p) { return "(" + p[0] + ", " + p[1] + ")"; }).join(", ") + "\\}";
+        }
+
+        /* ───────────── 보기 조립 ─────────────
+           숫자를 밀어 예비 보기를 만드는 shuffleMC 는 여기서 쓰지 않는다.
+           점 집합이나 집합 표기의 숫자를 임의로 밀면 "우연히 정답이 하나 더"
+           생길 수 있기 때문이다. 대신 서로 다른 후보 4개를 직접 확보한다. */
+        function mcBuild(correct, list, more) {
+          const pool = [correct];
+          const push = function (d) {
+            if (d && pool.length < 4 && pool.indexOf(d) === -1) pool.push(d);
+          };
+          (list || []).forEach(push);
+          for (let k = 0; k < 400 && pool.length < 4; k++) push(more ? more(k) : null);
+          const mixed = mshuffle(pool.slice(0, 4));
+          const L = ["A", "B", "C", "D"];
+          return {
+            options: mixed.map(function (m, i) { return L[i] + ") " + m; }),
+            ans: L[mixed.indexOf(correct)],
+            rawAns: correct
+          };
+        }
+
+        /* 그래프 보기: 정답 사양 1개 + 오답 사양 3개를 섞고 글자를 붙인다. */
+        function mcGraph(correctSpec, wrongSpecs) {
+          const all = mshuffle([{ s: correctSpec, ok: true }].concat(
+            wrongSpecs.slice(0, 3).map(function (s) { return { s: s, ok: false }; })));
+          const L = ["A", "B", "C", "D"];
+          let ans = "A";
+          const specs = [], options = [];
+          all.forEach(function (o, i) {
+            specs.push(o.s);
+            options.push(L[i] + ") graph");
+            if (o.ok) ans = L[i];
+          });
+          return { options: options, optionSpecs: specs, ans: ans };
+        }
+
+        /* ───────────── 점 만들기 ───────────── */
+
+        function randPoints(n) {
+          const xs = [];
+          while (xs.length < n) { const x = randInt(-5, 5); if (xs.indexOf(x) === -1) xs.push(x); }
+          return xs.map(function (x) { return [x, randInt(-6, 6)]; });
+        }
+        /* 첫 번째 숫자 하나를 일부러 반복시켜 함수가 아니게 만든다. */
+        function breakPoints(pts) {
+          const p = pts.slice();
+          const i = randInt(0, p.length - 1);
+          const rx = p[i][0];
+          let ny = randInt(-6, 6);
+          while (ny === p[i][1]) ny = randInt(-6, 6);
+          p.splice(randInt(0, p.length), 0, [rx, ny]);
+          return { pts: p, repeated: rx };
+        }
+        function xsOf(pts) { return pts.map(function (p) { return p[0]; }); }
+        function ysOf(pts) { return pts.map(function (p) { return p[1]; }); }
+
+        /* ───────────── 사상도 (mapping diagram) ───────────── */
+
+        let mapSeq = 0;
+        function buildMapping(ins, outs, links) {
+          const uid = "mp" + (++mapSeq);
+          const step = 30, W = 330;
+          const rows = Math.max(ins.length, outs.length);
+          const H = 66 + rows * step;
+          const cy = H / 2 + 8;
+          const ryL = 14 + ins.length * step / 2;
+          const ryR = 14 + outs.length * step / 2;
+          const yAt = function (i, total) { return cy - (total - 1) * step / 2 + i * step; };
+
+          let s = '<svg viewBox="0 0 ' + W + ' ' + H + '" xmlns="http://www.w3.org/2000/svg" class="coord-svg" style="max-width:340px">';
+          s += '<defs><marker id="' + uid + '" markerWidth="8" markerHeight="8" refX="7" refY="4" orient="auto">' +
+               '<path d="M0,0 L8,4 L0,8 Z" fill="#0f172a"/></marker></defs>';
+          s += '<text x="85" y="22" font-size="13" font-weight="800" fill="#0f172a" text-anchor="middle">INPUT</text>';
+          s += '<text x="245" y="22" font-size="13" font-weight="800" fill="#0f172a" text-anchor="middle">OUTPUT</text>';
+          s += '<ellipse cx="85" cy="' + cy + '" rx="48" ry="' + ryL + '" fill="none" stroke="#0f172a" stroke-width="2"/>';
+          s += '<ellipse cx="245" cy="' + cy + '" rx="48" ry="' + ryR + '" fill="none" stroke="#0f172a" stroke-width="2"/>';
+          ins.forEach(function (v, i) {
+            s += '<text x="85" y="' + (yAt(i, ins.length) + 5) + '" font-size="15" font-weight="700" fill="#0f172a" text-anchor="middle">' + v + '</text>';
+          });
+          outs.forEach(function (v, i) {
+            s += '<text x="245" y="' + (yAt(i, outs.length) + 5) + '" font-size="15" font-weight="700" fill="#0f172a" text-anchor="middle">' + v + '</text>';
+          });
+          links.forEach(function (lk) {
+            const y1 = yAt(lk[0], ins.length), y2 = yAt(lk[1], outs.length);
+            s += '<line x1="136" y1="' + y1 + '" x2="192" y2="' + y2 + '" stroke="#2563eb" stroke-width="2" marker-end="url(#' + uid + ')"/>';
+          });
+          s += '</svg>';
+          return s;
+        }
+
+        /* 서로 다른 정수 n 개 */
+        function distinctInts(n, lo, hi) {
+          const out = [];
+          let guard = 0;
+          while (out.length < n && guard++ < 500) {
+            const v = randInt(lo, hi);
+            if (out.indexOf(v) === -1) out.push(v);
+          }
+          return out;
+        }
+
+        /* ══════════════════════════════════════════════════════════════
+           함수 이름·변수 문자, 항 쓰기 — Lesson 2 에서 만들어 Lesson 4 도 쓴다
+           ══════════════════════════════════════════════════════════════ */
+
+        /* Dan 은 f 말고도 g, h, k, P 를 쓴다. 이름과 변수 문자가 매번 바뀌어야
+           학생이 "f 와 x" 라는 겉모습이 아니라 구조를 읽게 된다. */
+        const FN_PAIRS = [
+          ["f", "x"], ["g", "x"], ["h", "a"], ["h", "m"],
+          ["k", "a"], ["P", "t"], ["C", "n"], ["g", "p"]
+        ];
+        function fnPair() { return mcfPick(FN_PAIRS); }
+
+        /* 계수를 붙여 항을 쓴다. 1 과 -1 은 숫자를 생략한다. */
+        function term(coef, sym) {
+          if (coef === 0) return "";
+          if (sym === "") return String(coef);
+          if (coef === 1) return sym;
+          if (coef === -1) return "-" + sym;
+          return coef + sym;
+        }
+        /* 뒤에 붙는 항. 부호를 앞에 띄워 쓴다. */
+        function addTerm(coef, sym) {
+          if (coef === 0) return "";
+          const t = term(Math.abs(coef), sym);
+          return (coef > 0 ? " + " : " - ") + t;
+        }
+        function sgn(n) { return n < 0 ? "(" + n + ")" : String(n); }
+
+        /* ══════════════════════════════════════════════════════════════
+           변환 어휘 — Lesson 5 에서 만들어 Lesson 7 도 그대로 쓴다
+
+             y = a f( b(x - c) ) + d
+
+           a 와 d 는 함수 바깥이라 y 를 건드리고,
+           b 와 c 는 함수 안쪽이라 x 를 건드린다.
+           점 옮기기: (x, y) -> (x/b + c, ay + d)
+
+           약어도 Dan 것을 그대로 쓴다. 화면 위 범례와 글자 하나까지 같아야
+           한다: VS / VC / VROX / HS / HC / HROY / b.f.o
+           ══════════════════════════════════════════════════════════════ */
+
+        /* 분수를 사람이 읽는 모양으로. 정수면 정수로. */
+        function fracTex(n, d) {
+          if (d === 0) return "0";
+          let s = (n < 0) !== (d < 0) ? -1 : 1;
+          let N = Math.abs(n), D = Math.abs(d);
+          const g = (function gg(x, y) { return y === 0 ? x : gg(y, x % y); })(N, D);
+          N /= g; D /= g;
+          if (D === 1) return (s < 0 ? "-" : "") + N;
+          return (s < 0 ? "-" : "") + "\\dfrac{" + N + "}{" + D + "}";
+        }
+        function fracWord(n, d) {
+          return fracTex(n, d).replace("\\dfrac", "\\tfrac");
+        }
+
+        /* b 값을 예쁘게 (1/2 같은 분수도 쓴다) */
+        const B_VALUES = [
+          { tex: "2", num: 2 }, { tex: "3", num: 3 }, { tex: "4", num: 4 },
+          { tex: "-2", num: -2 }, { tex: "-3", num: -3 },
+          { tex: "\\tfrac{1}{2}", num: 0.5 }, { tex: "\\tfrac{1}{3}", num: 1 / 3 },
+          { tex: "\\tfrac{1}{4}", num: 0.25 },
+          { tex: "-\\tfrac{1}{2}", num: -0.5 }, { tex: "-\\tfrac{1}{3}", num: -1 / 3 }
+        ];
+        const A_VALUES = [
+          { tex: "2", num: 2 }, { tex: "3", num: 3 }, { tex: "5", num: 5 },
+          { tex: "-2", num: -2 }, { tex: "-3", num: -3 }, { tex: "-4", num: -4 },
+          { tex: "\\tfrac{1}{2}", num: 0.5 }, { tex: "\\tfrac{1}{3}", num: 1 / 3 },
+          { tex: "-\\tfrac{1}{2}", num: -0.5 }, { tex: "-\\tfrac{1}{4}", num: -0.25 }
+        ];
+
+        /* ── a 가 하는 일을 Dan 의 말로 ── */
+        function aWords(a) {
+          const m = Math.abs(a);
+          const out = [];
+          if (m > 1) out.push("VS b.f.o " + fracWord(Math.round(m * 12), 12));
+          else if (m < 1) out.push("VC b.f.o " + fracWord(Math.round(m * 12), 12));
+          if (a < 0) out.push("VROX");
+          if (!out.length) out.push("no vertical change");
+          return out;
+        }
+        /* ── b 가 하는 일을 Dan 의 말로. 늘고 줄어드는 배율은 1/|b| 다 ── */
+        function bWords(b) {
+          const m = Math.abs(b);
+          const out = [];
+          if (m > 1) out.push("HC b.f.o " + fracWord(12, Math.round(m * 12)));
+          else if (m < 1) out.push("HS b.f.o " + fracWord(12, Math.round(m * 12)));
+          if (b < 0) out.push("HROY");
+          if (!out.length) out.push("no horizontal change");
+          return out;
+        }
+        function cWords(c) {
+          if (c === 0) return ["no horizontal shift"];
+          return ["HT " + (c > 0 ? "R" : "L") + " by " + Math.abs(c)];
+        }
+        function dWords(d) {
+          if (d === 0) return ["no vertical shift"];
+          return ["VT " + (d > 0 ? "U" : "D") + " by " + Math.abs(d)];
+        }
+        function joinWords(list) { return list.join(", "); }
+        /* 약어 문장은 반드시 \text{} 로 감싼다. 안 그러면 산문으로 판정되어
+           보기 넷의 글꼴이 갈린다(Lesson 3 에서 실제로 터진 자리).
+
+           그런데 \text{} 안에서는 \tfrac 을 쓸 수 없다. KaTeX 가 텍스트 모드
+           에서 수식 명령을 만나면 통째로 실패해서 원문을 빨간 글씨로 뱉는다
+           (Dan 화면에서 실제로 그렇게 나왔다). 그래서 분수만 \text{} 밖으로
+           빼내고 나머지 글자만 감싼다. */
+        function abbrTex(s) {
+          const parts = String(s).split(/(\\t?d?frac\{\d+\}\{\d+\})/);
+          let out = "";
+          parts.forEach(function (t) {
+            if (!t) return;
+            if (/^\\t?d?frac\{/.test(t)) out += t;
+            else out += "\\text{" + t + "}";
+          });
+          return out || "\\text{}";
+        }
+        function wordTex(s) { return M(abbrTex(s)); }
+
+        /* ── 식 조립 ── */
+        function innerTex(bTex, c, V) {
+          const shifted = c === 0 ? V : "(" + V + (c > 0 ? " - " + c : " + " + (-c)) + ")";
+          if (bTex === "1") return shifted;
+          if (bTex === "-1") return "-" + shifted;
+          return bTex + shifted;
+        }
+        function fullTex(aTex, bTex, c, d, F, V) {
+          let s = "y = ";
+          if (aTex === "1") s += "";
+          else if (aTex === "-1") s += "-";
+          else s += aTex;
+          s += F + "\\left(" + innerTex(bTex, c, V) + "\\right)";
+          if (d !== 0) s += (d > 0 ? " + " + d : " - " + (-d));
+          return s;
+        }
+
+        /* ══════════════════════════════════════════════════════════════
+           되돌리기 어휘 — Lesson 7 에서 만들어 보스 2단도 그대로 쓴다
+
+           Dan 의 손글씨 Lesson 6 을 그대로 따른다.
+
+             y = f(x)  --a, b, c, d-->  y = a f( b(x - c) ) + d
+                       <--되돌리기-----
+
+           되돌리는 순서는 d → c → b → a. 나중에 한 일을 먼저 푼다.
+           각 글자의 되돌리기:
+             d  d>0 이면 VT D by d,  d<0 이면 VT U by |d|
+             c  c>0 이면 HT L by c,  c<0 이면 HT R by |c|
+             b  |b|>1 이면 HS b.f.o |b|,  |b|<1 이면 HC b.f.o |b|,  b<0 이면 HROY
+             a  |a|>1 이면 VC b.f.o 1/|a|, |a|<1 이면 VS b.f.o 1/|a|, a<0 이면 VROX
+
+           b 와 a 의 배율이 서로 반대라는 점에 주의. 원래 변환에서 b 의 배율은
+           1/|b| 였으므로 되돌릴 때는 |b| 가 되고, a 는 |a| 였으므로 1/|a| 가 된다.
+
+           점 옮기기는 변환과 같다: (x, y) -> (x/b + c, ay + d)
+           ══════════════════════════════════════════════════════════════ */
+
+        /* ── 아주 작은 유리수 도구. 소수로 다루면 1/3 이 3333/10000 이 된다. ── */
+        function R(n, d) {
+          d = d === undefined ? 1 : d;
+          if (d < 0) { n = -n; d = -d; }
+          const g = (function gg(x, y) { return y === 0 ? Math.abs(x) : gg(y, x % y); })(Math.abs(n), Math.abs(d)) || 1;
+          return { n: n / g, d: d / g };
+        }
+        const rNum = r => r.n / r.d;
+        const rAbs = r => R(Math.abs(r.n), r.d);
+        const rInv = r => R(r.d * (r.n < 0 ? -1 : 1), Math.abs(r.n));
+        const rMul = (p, q) => R(p.n * q.n, p.d * q.d);
+        const rDiv = (p, q) => R(p.n * q.d, p.d * q.n);
+        const rAdd = (p, q) => R(p.n * q.d + q.n * p.d, p.d * q.d);
+        const rNeg = r => R(-r.n, r.d);
+        const rCmp1 = r => Math.abs(r.n) - r.d;          /* |r| 과 1 의 대소 */
+        function rTex(r) {
+          if (r.d === 1) return String(r.n);
+          return (r.n < 0 ? "-" : "") + "\\tfrac{" + Math.abs(r.n) + "}{" + r.d + "}";
+        }
+        function rDisp(r) {
+          if (r.d === 1) return String(r.n);
+          return (r.n < 0 ? "-" : "") + "\\dfrac{" + Math.abs(r.n) + "}{" + r.d + "}";
+        }
+
+        /* ── 되돌리기 문구 ── */
+        function undoD(d) {
+          if (d === 0) return [];
+          return ["VT " + (d > 0 ? "D" : "U") + " by " + Math.abs(d)];
+        }
+        function undoC(c) {
+          if (c === 0) return [];
+          return ["HT " + (c > 0 ? "L" : "R") + " by " + Math.abs(c)];
+        }
+        function undoB(bR) {
+          const m = rAbs(bR), out = [], k = rCmp1(m);
+          if (k > 0) out.push("HS b.f.o " + rTex(m));
+          else if (k < 0) out.push("HC b.f.o " + rTex(m));
+          if (bR.n < 0) out.push("HROY");
+          return out;
+        }
+        function undoA(aR) {
+          const m = rAbs(aR), out = [], k = rCmp1(m);
+          if (k > 0) out.push("VC b.f.o " + rTex(rInv(m)));
+          else if (k < 0) out.push("VS b.f.o " + rTex(rInv(m)));
+          if (aR.n < 0) out.push("VROX");
+          return out;
+        }
+        /* 되돌리는 전체 순서: d -> c -> b -> a */
+        function undoAll(aR, bR, c, d) {
+          return [].concat(undoD(d), undoC(c), undoB(bR), undoA(aR));
+        }
+        /* 부모에서 새 함수로 가는 순서: a -> b -> c -> d (Dan 의 ⑤⑥⑦ 순서) */
+        function doAll(aR, bR, c, d) {
+          const out = [];
+          const ma = rAbs(aR), ka = rCmp1(ma);
+          if (ka > 0) out.push("VS b.f.o " + rTex(ma));
+          else if (ka < 0) out.push("VC b.f.o " + rTex(ma));
+          if (aR.n < 0) out.push("VROX");
+          const mb = rAbs(bR), kb = rCmp1(mb);
+          if (kb > 0) out.push("HC b.f.o " + rTex(rInv(mb)));
+          else if (kb < 0) out.push("HS b.f.o " + rTex(rInv(mb)));
+          if (bR.n < 0) out.push("HROY");
+          if (c !== 0) out.push("HT " + (c > 0 ? "R" : "L") + " by " + Math.abs(c));
+          if (d !== 0) out.push("VT " + (d > 0 ? "U" : "D") + " by " + Math.abs(d));
+          return out;
+        }
+        function numbered(list) {
+          return list.map(function (s, i) { return (i + 1) + ". " + s; }).join("  ");
+        }
+
+        /* ── 식 조립 (유리수 계수) ── */
+        const AR = [R(2), R(3), R(-2), R(-3), R(1, 2), R(1, 3), R(3, 2), R(-1, 2), R(2, 5), R(-4)];
+        const BR = [R(2), R(3), R(-2), R(1, 2), R(1, 4), R(-1, 3), R(4, 5), R(-4, 5), R(8, 7)];
+
+        function innerR(bR, c, V) {
+          const shifted = c === 0 ? V : "(" + V + (c > 0 ? " - " + c : " + " + (-c)) + ")";
+          if (bR.n === 1 && bR.d === 1) return shifted;
+          if (bR.n === -1 && bR.d === 1) return "-" + shifted;
+          return rTex(bR) + shifted;
+        }
+        function eqR(aR, bR, c, d, F, V) {
+          let s = "y = ";
+          if (aR.n === 1 && aR.d === 1) s += "";
+          else if (aR.n === -1 && aR.d === 1) s += "-";
+          else s += rTex(aR);
+          s += F + "\\left(" + innerR(bR, c, V) + "\\right)";
+          if (d !== 0) s += (d > 0 ? " + " + d : " - " + (-d));
+          return s;
+        }
+
+
+        /* ══════════════════════════════════════════════════════════════
+           Grade 7 — Unit 2 Lesson 2: Equivalent Fractions          (B1.4)
+
+             t1  Equivalent Fractions
+             t2  Lowest Terms
+             t3  Common Denominators     ← Lesson 3 이 이걸 전제한다
+             t4  Comparing and Ordering
+             t5  Improper and Mixed Numbers
+
+           커리큘럼 근거 (B1.4):
+             "use equivalent fractions to simplify fractions, when appropriate"
+             Note — 동치분수를 만드는 것은 분모가 다른 분수를 더하고 뺄 때 쓰인다.
+             Note — 분수 연산의 결과는 보통 기약분수로 쓴다.
+           그래서 t3 를 여기 둔다. Lesson 3 이 통분+덧셈을 동시에 시키면 안 된다.
+
+           Unit 2 확정 규칙: 양의 분수만. 답은 기약 가분수. 문자 금지.
+           오답 규칙 예외: "기약분수로 써라" 를 묻는 t2·t5 에서는 덜 약분한 보기를
+             오답으로 쓴다. 값은 같지만 그 문제에 대해서는 거짓이고, 학생이 실제로
+             내는 유일한 오답이다. 식 보기(Unit 1) 규칙과는 별개다.
+           ══════════════════════════════════════════════════════════════ */
+
+        let LEVEL = 1;
+        const LEVEL_KEY = { 1: "k", 2: "a" };
+
+        function setLevel(v) {
+          if (v === LEVEL) return;
+          if (MCF.setRetryLevel && MCF.setRetryLevel(LEVEL_KEY[v]) === false) return;
+          LEVEL = v;
+          for (const n of [1, 2]) {
+            const b = document.getElementById("lvl-" + n);
+            if (b) b.classList.toggle("active", n === LEVEL);
+          }
+          const st = document.getElementById("quiz-station");
+          if (st && st.style.display !== "none") generateNewProblem();
+        }
+        window.setLevel = setLevel;
+        if (MCF.setRetryLevel) MCF.setRetryLevel(LEVEL_KEY[1]);
+
+        /* ── 수 도우미 ───────────────────────────────────────────────── */
+
+        function gcd2(a, b) { return b ? gcd2(b, a % b) : a; }
+        function lcm2(a, b) { return a / gcd2(a, b) * b; }
+
+        function FT(n, d) { return "\\dfrac{" + n + "}{" + d + "}"; }
+        function F(n, d) { return { v: n / d, tex: FT(n, d), key: "f" + n + "/" + d }; }
+        function V(n) { return { v: n, tex: String(n), key: "n" + n }; }
+        function MIX(w, n, d) { return { v: w + n / d, tex: w + FT(n, d), key: "m" + w + "_" + n + "/" + d }; }
+        function PR(a, b, c, d) {
+          return { tex: FT(a, b) + "\\;\\text{ and }\\;" + FT(c, d), key: "p" + a + "/" + b + "|" + c + "/" + d };
+        }
+        function ORD(list) {
+          return {
+            tex: list.map(function (f) { return FT(f[0], f[1]); }).join(" \\lt "),
+            key: "o" + list.map(function (f) { return f[0] + "/" + f[1]; }).join("|")
+          };
+        }
+
+        /* four(): 중복 검사는 화면에 찍히는 tex 로 한다. key 로만 보면 보기가 3개로 줄어든다. */
+        function four(correct, cands, spare) {
+          const seen = [correct.tex], keep = [];
+          const take = function (c) {
+            if (!c || keep.length >= 3 || typeof c.tex !== "string" || !c.tex) return;
+            if (seen.indexOf(c.tex) !== -1) return;
+            /* Dan 확정 2026-09-01: 값이 같은 오답(덜 약분한 것)은 Easy 전용. */
+            if (LEVEL === 2 && typeof c.v === "number" && typeof correct.v === "number" &&
+                Math.abs(c.v - correct.v) < 1e-9) return;
+            seen.push(c.tex); keep.push(c);
+          };
+          (cands || []).forEach(take);
+          for (let k = 0; keep.length < 3 && k < 400; k++) take(spare(k));
+          if (keep.length < 3) return null;
+          return mcBuild(M(correct.tex), keep.map(function (c) { return M(c.tex); }));
+        }
+        /* 값이 정답과 다른 것만 통과시킨다 (t1·t3·t4 용). */
+        function diffVal(correct) {
+          return function (c) { return c && Math.abs(c.v - correct.v) > 1e-9 ? c : null; };
+        }
+
+        /* 기약 진분수 하나 뽑기 */
+        function baseFrac() {
+          for (let i = 0; i < 200; i++) {
+            const d = MCF.pick([2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12]);
+            const n = MCF.randInt(1, d - 1);
+            if (gcd2(n, d) === 1) return [n, d];
+          }
+          return [1, 2];
+        }
+
+        const EQ_RULE =
+          "<b>Rule.</b> Multiply <strong>or</strong> divide the top and the bottom by the " +
+          "<strong>same</strong> number and the fraction keeps its value: " +
+          M("\\dfrac{3}{4} = \\dfrac{3 \\times 5}{4 \\times 5} = \\dfrac{15}{20}") +
+          ". Adding the same number to both does not work.";
+        const LOW_RULE =
+          "<b>Rule.</b> A fraction is in <strong>lowest terms</strong> when the top and the bottom " +
+          "share no factor bigger than " + M("1") + ". Divide both by their greatest common factor: " +
+          M("\\dfrac{18}{24} = \\dfrac{3}{4}") + ", because the GCF of " + M("18") + " and " +
+          M("24") + " is " + M("6") + ".";
+
+        /* ══════════════ t1  Equivalent Fractions ══════════════ */
+
+        function t1(lvl) {
+          const b = baseFrac(), a = b[0], d = b[1];
+          const k = MCF.randInt(2, 6);
+
+          if (lvl === 1) {
+            /* K — 넷 중 하나만 같은 값이다. */
+            const A = F(a * k, d * k);
+            const ok = diffVal(A);
+            const mc = four(A,
+              [ok(F(a + k, d + k)), ok(F(a * k, d * (k + 1))), ok(F(a * k + 1, d * k)),
+               ok(F(a * (k + 1), d * k))].filter(Boolean),
+              function (j) { return ok(F(a * k + j + 1, d * k + 1)); });
+            if (!mc) return t1(1);
+            return {
+              title: "Type 1: Equivalent Fractions", type: "mc", assetType: "none",
+              fullStatement: "Look at the fraction " + M(FT(a, d)) + ".",
+              prompt: "Which fraction is <strong>equivalent</strong> to " + M(FT(a, d)) + "?",
+              hint: "Equivalent fractions come from multiplying the top and the bottom by the same " +
+                    "number. Check each choice: what would you have to multiply " + M(String(d)) +
+                    " by to get its bottom number, and does the same multiplier work on the top?",
+              options: mc.options, ans: mc.ans, rawAns: mc.rawAns,
+              steps: [
+                { title: "Step 1 — Recall what makes fractions equivalent",
+                  math: "\\dfrac{3}{4} = \\dfrac{3 \\times 5}{4 \\times 5} = \\dfrac{15}{20}",
+                  explanation: EQ_RULE },
+                { title: "Step 2 — Multiply the bottom by " + k,
+                  math: d + " \\times " + k + " = " + (d * k),
+                  explanation: "Growing " + M(String(d)) + " into " + M(String(d * k)) +
+                    " takes a multiplier of " + M(String(k)) + ". That is the number the top must use too." },
+                { title: "Step 3 — Multiply the top by the same number",
+                  math: a + " \\times " + k + " = " + (a * k),
+                  explanation: "The top becomes " + M(String(a * k)) + ", so " + M(FT(a, d)) + " and " +
+                    M(FT(a * k, d * k)) + " are the same amount cut into smaller pieces." },
+                { title: "Step 4 — Check the others",
+                  math: FT(a, d) + " = " + FT(a * k, d * k),
+                  explanation: "The other three used a different multiplier on the top than on the bottom, " +
+                    "or added instead of multiplying. Both of those change the value of the fraction." }
+              ],
+              ansBox: FT(a * k, d * k), finalLabel: "An equivalent fraction"
+            };
+          }
+
+          /* A — 빈칸. 키우는 방향과 줄이는 방향을 섞는다. */
+          const up = MCF.pick([true, false]);          /* true: 키우기, false: 약분 */
+          const topBlank = MCF.pick([true, false]);
+          const bigN = a * k, bigD = d * k;
+          const fromN = up ? a : bigN, fromD = up ? d : bigD;
+          const toN = up ? bigN : a, toD = up ? bigD : d;
+          const ansV = topBlank ? toN : toD;
+          const shown = topBlank
+            ? FT(fromN, fromD) + " = \\dfrac{\\square}{" + toD + "}"
+            : FT(fromN, fromD) + " = \\dfrac{" + toN + "}{\\square}";
+          const A = V(ansV);
+          const ok = diffVal(A);
+          const mc = four(A,
+            [ok(V(Math.max(1, topBlank
+                ? fromN + (toD - fromD)
+                : fromD + (toN - fromN)))),                             /* 더하기로 착각 */
+             ok(V(k)),                                                   /* 배수 자체를 답으로 */
+             ok(V(topBlank ? ansV + k : ansV + k)),
+             ok(V(topBlank ? Math.max(1, toD - toN) : Math.max(1, toN + toD)))].filter(Boolean),
+            function (j) { return ok(V(ansV + j + 2)); });
+          if (!mc) return t1(2);
+          return {
+            title: "Type 1: Equivalent Fractions", type: "mc", assetType: "none",
+            fullStatement: "These two fractions are equal: " + M(shown) + ".",
+            prompt: "What number belongs in the box?",
+            hint: "Compare the two " + (topBlank ? "bottom" : "top") + " numbers first. Work out what " +
+                  M(String(topBlank ? fromD : fromN)) + " was " + (up ? "multiplied" : "divided") +
+                  " by, then do the same thing to the other row.",
+            options: mc.options, ans: mc.ans, rawAns: mc.rawAns,
+            steps: [
+              { title: "Step 1 — Recall the rule", math: "\\dfrac{3}{4} = \\dfrac{15}{20}",
+                explanation: EQ_RULE },
+              { title: "Step 2 — Find the multiplier from the row you can see",
+                math: (topBlank
+                  ? (up ? fromD + " \\times " + k + " = " + toD : fromD + " \\div " + k + " = " + toD)
+                  : (up ? fromN + " \\times " + k + " = " + toN : fromN + " \\div " + k + " = " + toN)),
+                explanation: "One row is complete on both sides, so start there. It was " +
+                  (up ? "multiplied" : "divided") + " by " + M(String(k)) + "." },
+              { title: "Step 3 — Do the same to the other row",
+                math: (topBlank
+                  ? (up ? fromN + " \\times " + k + " = " + toN : fromN + " \\div " + k + " = " + toN)
+                  : (up ? fromD + " \\times " + k + " = " + toD : fromD + " \\div " + k + " = " + toD)),
+                explanation: "The top and the bottom must use the same number, so the box is " +
+                  M(String(ansV)) + ". Using a different number would change the value." },
+              { title: "Step 4 — Check by simplifying",
+                math: FT(bigN, bigD) + " = " + FT(a, d),
+                explanation: "Both sides reduce to " + M(FT(a, d)) + ", so the two fractions really are equal. " +
+                  "A common wrong move here is to add the difference instead of multiplying." }
+            ],
+            ansBox: String(ansV), finalLabel: "The missing number"
+          };
+        }
+
+        /* ══════════════ t2  Lowest Terms ══════════════ */
+
+        function t2(lvl) {
+          const b = baseFrac(), a = b[0], d = b[1];
+          const m = lvl === 1 ? MCF.pick([2, 3, 4, 5, 6]) : MCF.pick([12, 14, 15, 18, 21, 24]);
+          const n = a * m, dd = d * m;
+          if (dd > 220) return t2(lvl);
+
+          const A = F(a, d);
+          /* 덜 약분한 보기 하나 — 값은 같지만 "lowest terms" 라는 물음에는 거짓이다. */
+          let partial = null;
+          for (const p of [2, 3, 5, 7]) if (m % p === 0 && m / p > 1) { partial = F(n / p, dd / p); break; }
+          const mc = four(A,
+            [partial, F(a, dd), F(n, d), F(d, a)].filter(Boolean),
+            function (j) { return F(a + j + 1, d + j + 1); });
+          if (!mc) return t2(lvl);
+
+          const g = m;
+          return {
+            title: "Type 2: Lowest Terms", type: "mc", assetType: "none",
+            fullStatement: "Look at the fraction " + M(FT(n, dd)) + ".",
+            prompt: "Write it in <strong>lowest terms</strong>.",
+            hint: "Find the greatest common factor of " + M(String(n)) + " and " + M(String(dd)) +
+                  ", then divide both by it. If your answer can still be divided further, it is not " +
+                  "in lowest terms yet." +
+                  (lvl === 2 ? " The GCF here is larger than it first looks, so keep going." : ""),
+            options: mc.options, ans: mc.ans, rawAns: mc.rawAns,
+            steps: [
+              { title: "Step 1 — Recall what lowest terms means", math: "\\dfrac{18}{24} = \\dfrac{3}{4}",
+                explanation: LOW_RULE },
+              { title: "Step 2 — Find the greatest common factor",
+                math: "\\text{GCF}(" + n + ", " + dd + ") = " + g,
+                explanation: "List the factors of each number and take the biggest one they share. " +
+                  "Lesson 1 is where this came from, and this is the job it was for." },
+              { title: "Step 3 — Divide both by it",
+                math: FT(n, dd) + " = \\dfrac{" + n + " \\div " + g + "}{" + dd + " \\div " + g + "} = " + FT(a, d),
+                explanation: "Dividing the top and the bottom by the same number keeps the value and " +
+                  "makes the numbers smaller." },
+              { title: "Step 4 — Check that you are finished",
+                math: "\\text{GCF}(" + a + ", " + d + ") = 1",
+                explanation: M(String(a)) + " and " + M(String(d)) + " share no factor bigger than " +
+                  M("1") + ", so " + M(FT(a, d)) + " is in lowest terms. Stopping partway is the most " +
+                  "common mistake: dividing by a common factor that is not the greatest one leaves " +
+                  "a fraction that still simplifies." }
+            ],
+            ansBox: FT(a, d), finalLabel: "In lowest terms"
+          };
+        }
+
+        /* ══════════════ t3  Common Denominators ══════════════ */
+
+        function t3(lvl) {
+          let d1, d2;
+          if (lvl === 1) {
+            d1 = MCF.pick([2, 3, 4, 5, 6]);
+            d2 = d1 * MCF.pick([2, 3, 4]);
+            if (d2 > 24) return t3(1);
+          } else {
+            const pair = MCF.pick([[4, 6], [6, 8], [6, 9], [8, 12], [9, 12], [10, 15], [4, 10], [6, 10], [8, 10]]);
+            d1 = pair[0]; d2 = pair[1];
+          }
+          /* 주어진 분수가 기약이어야 lcm(d1,d2) 가 진짜 "최소" 공통분모가 된다.
+             3/6 과 10/24 를 주면 실제 최소공통분모는 24 가 아니라 12 다. */
+          let n1 = 0, n2 = 0;
+          for (let i = 0; i < 60 && !n1; i++) { const c = MCF.randInt(1, d1 - 1); if (gcd2(c, d1) === 1) n1 = c; }
+          for (let i = 0; i < 60 && !n2; i++) { const c = MCF.randInt(1, d2 - 1); if (gcd2(c, d2) === 1) n2 = c; }
+          if (!n1 || !n2) return t3(lvl);
+          const L = lcm2(d1, d2), k1 = L / d1, k2 = L / d2;
+          const prod = d1 * d2;
+
+          const A = PR(n1 * k1, L, n2 * k2, L);
+          const cands = [
+            PR(n1, L, n2, L),                                   /* 분모만 바꿈 */
+            PR(n1 * d2, prod, n2 * d1, prod),                   /* 곱을 씀 — 최소가 아님 */
+            PR(n1 * k2, L, n2 * k1, L)                          /* 배수를 뒤바꿈 */
+          ];
+          const mc = four(A, cands, function (j) { return PR(n1 * k1 + j + 1, L, n2 * k2, L); });
+          if (!mc) return t3(lvl);
+
+          return {
+            title: "Type 3: Common Denominators", type: "mc", assetType: "none",
+            fullStatement: "You are given the two fractions " + M(FT(n1, d1)) + " and " + M(FT(n2, d2)) + ".",
+            prompt: "Rewrite <strong>both</strong> using the <strong>lowest</strong> common denominator.",
+            hint: "The new bottom number is the lowest common multiple of " + M(String(d1)) + " and " +
+                  M(String(d2)) + ". Once you have it, ask each fraction separately what its own bottom " +
+                  "was multiplied by, and multiply that top by the same amount.",
+            options: mc.options, ans: mc.ans, rawAns: mc.rawAns,
+            steps: [
+              { title: "Step 1 — Find the lowest common denominator",
+                math: "\\text{LCM}(" + d1 + ", " + d2 + ") = " + L,
+                explanation: "Count up in " + M(String(d1)) + " and in " + M(String(d2)) +
+                  " and take the first value they share. Multiplying the two bottoms together also gives " +
+                  "a common denominator (" + M(String(prod)) + "), but it is usually not the lowest one." },
+              { title: "Step 2 — Rebuild the first fraction",
+                math: FT(n1, d1) + " = \\dfrac{" + n1 + " \\times " + k1 + "}{" + d1 + " \\times " + k1 + "} = " + FT(n1 * k1, L),
+                explanation: M(String(d1)) + " was multiplied by " + M(String(k1)) +
+                  " to reach " + M(String(L)) + ", so the top is multiplied by " + M(String(k1)) + " too." },
+              { title: "Step 3 — Rebuild the second fraction",
+                math: FT(n2, d2) + " = \\dfrac{" + n2 + " \\times " + k2 + "}{" + d2 + " \\times " + k2 + "} = " + FT(n2 * k2, L),
+                explanation: "This fraction has its own multiplier, " + M(String(k2)) +
+                  ". Using the same multiplier on both fractions is a common error — each one gets its own." },
+              { title: "Step 4 — Check that nothing changed in value",
+                math: FT(n1 * k1, L) + " = " + FT(n1, d1) + ",\\quad " + FT(n2 * k2, L) + " = " + FT(n2, d2),
+                explanation: "Each new fraction reduces back to the one you started with. Only the size " +
+                  "of the pieces changed, not how much you have." },
+              { title: "Step 5 — Why this matters",
+                math: "\\text{needed for } " + FT(n1, d1) + " + " + FT(n2, d2),
+                explanation: "In Lesson 3 you will add and subtract fractions. You can only do that once " +
+                  "both fractions are counting the same size of piece, which is exactly what this step builds." }
+            ],
+            ansBox: FT(n1 * k1, L) + "\\;\\text{ and }\\;" + FT(n2 * k2, L),
+            finalLabel: "With a common denominator"
+          };
+        }
+
+        /* ══════════════ t4  Comparing and Ordering ══════════════ */
+
+        function t4(lvl) {
+          let fr;
+          if (lvl === 1) {
+            const d = MCF.pick([5, 6, 7, 8, 9, 10, 11, 12]);
+            const ns = MCF.shuffle([1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11].filter(function (x) { return x < d; })).slice(0, 3);
+            if (ns.length < 3) return t4(1);
+            fr = ns.map(function (n) { return [n, d]; });
+          } else {
+            const ds = MCF.shuffle([2, 3, 4, 6, 8, 12]).slice(0, 3);
+            fr = ds.map(function (d) { return [MCF.randInt(1, d - 1), d]; });
+            const vs = fr.map(function (f) { return f[0] / f[1]; });
+            if (new Set(vs.map(function (v) { return v.toFixed(6); })).size !== 3) return t4(2);
+            if (lcm2(lcm2(ds[0], ds[1]), ds[2]) > 24) return t4(2);
+          }
+          const sorted = fr.slice().sort(function (p, q) { return p[0] / p[1] - q[0] / q[1]; });
+          const A = ORD(sorted);
+          const byNum = fr.slice().sort(function (p, q) { return p[0] - q[0]; });
+          const byDen = fr.slice().sort(function (p, q) { return p[1] - q[1]; });
+          const rev = sorted.slice().reverse();
+          const mc = four(A, [ORD(rev), ORD(byNum), ORD(byDen),
+                              ORD([sorted[1], sorted[0], sorted[2]])],
+            function (j) { return ORD(MCF.shuffle(fr.slice())); });
+          if (!mc) return t4(lvl);
+
+          const L = fr.reduce(function (acc, f) { return lcm2(acc, f[1]); }, 1);
+          return {
+            title: "Type 4: Comparing and Ordering", type: "mc", assetType: "none",
+            fullStatement: "You are given three fractions: " +
+              M(fr.map(function (f) { return FT(f[0], f[1]); }).join(",\\quad ")) + ".",
+            prompt: "Which line puts them in order from <strong>least to greatest</strong>?",
+            hint: lvl === 1
+              ? "All three count the same size of piece, because the bottom numbers are the same. " +
+                "So the fraction with the most pieces is the biggest."
+              : "The bottom numbers are different, so the pieces are different sizes and you cannot " +
+                "compare the tops yet. Give all three the same denominator first.",
+            options: mc.options, ans: mc.ans, rawAns: mc.rawAns,
+            steps: (lvl === 1
+              ? [
+                  { title: "Step 1 — Check the bottom numbers",
+                    math: fr.map(function (f) { return FT(f[0], f[1]); }).join(",\\quad "),
+                    explanation: "All three bottoms are " + M(String(fr[0][1])) +
+                      ", so every fraction is counting pieces of the same size." },
+                  { title: "Step 2 — Compare the tops",
+                    math: sorted.map(function (f) { return f[0]; }).join(" \\lt "),
+                    explanation: "When the pieces are the same size, more pieces means more amount. " +
+                      "So the order of the tops is the order of the fractions." },
+                  { title: "Step 3 — Write the fractions in that order",
+                    math: A.tex,
+                    explanation: "Put the fractions back with their bottoms attached, keeping the order " +
+                      "you just found for the tops." },
+                  { title: "Step 4 — Sanity check the ends",
+                    math: FT(sorted[0][0], sorted[0][1]) + " \\lt " + FT(sorted[2][0], sorted[2][1]),
+                    explanation: "The smallest and the largest should look right next to each other. " +
+                      "Reading the list backwards is the usual slip here — the question asks least first." }
+                ]
+              : [
+                  { title: "Step 1 — Notice you cannot compare tops yet",
+                    math: fr.map(function (f) { return FT(f[0], f[1]); }).join(",\\quad "),
+                    explanation: "The bottoms are different, so the pieces are different sizes. " +
+                      "A bigger top does not have to mean a bigger fraction." },
+                  { title: "Step 2 — Find a common denominator",
+                    math: "\\text{LCM}(" + fr.map(function (f) { return f[1]; }).join(", ") + ") = " + L,
+                    explanation: "Take the lowest common multiple of all three bottoms. Now every fraction " +
+                      "can be written with pieces of the same size." },
+                  { title: "Step 3 — Rewrite all three",
+                    math: fr.map(function (f) { return FT(f[0], f[1]) + " = " + FT(f[0] * (L / f[1]), L); }).join(",\\quad "),
+                    explanation: "Each fraction has its own multiplier, found by asking what its bottom " +
+                      "was multiplied by to reach " + M(String(L)) + "." },
+                  { title: "Step 4 — Now compare the tops",
+                    math: sorted.map(function (f) { return f[0] * (L / f[1]); }).join(" \\lt "),
+                    explanation: "With a shared denominator the tops can finally be compared directly." },
+                  { title: "Step 5 — Answer with the original fractions",
+                    math: A.tex,
+                    explanation: "The question asked about the fractions you were given, so put them back " +
+                      "in their original form, keeping the order you found." }
+                ]),
+            ansBox: A.tex, finalLabel: "Least to greatest"
+          };
+        }
+
+        /* ══════════════ t5  Improper and Mixed Numbers ══════════════ */
+
+        function t5(lvl) {
+          if (lvl === 1) {
+            /* K — 가분수를 대분수로. */
+            const d = MCF.pick([2, 3, 4, 5, 6, 7, 8, 9]);
+            const w = MCF.randInt(2, 5), r = MCF.randInt(1, d - 1);
+            const n = w * d + r;
+            const A = MIX(w, r, d);
+            const mc = four(A,
+              [w < d ? MIX(r, w, d) : null, MIX(w, d - r, d), MIX(w + 1, r, d),
+               r + 1 < d ? MIX(w, r + 1, d) : null].filter(Boolean),
+              function (j) { return MIX(w, ((r + j) % (d - 1)) + 1, d + 1); });
+            if (!mc) return t5(1);
+            return {
+              title: "Type 5: Improper and Mixed Numbers", type: "mc", assetType: "none",
+              fullStatement: "Look at the improper fraction " + M(FT(n, d)) + ".",
+              prompt: "Write it as a <strong>mixed number</strong>.",
+              hint: "Ask how many whole ones fit inside. Divide " + M(String(n)) + " by " + M(String(d)) +
+                    "; the quotient is the whole number and what is left over stays on top of " +
+                    M(String(d)) + ".",
+              options: mc.options, ans: mc.ans, rawAns: mc.rawAns,
+              steps: [
+                { title: "Step 1 — Recall what the bottom number tells you",
+                  math: FT(n, d),
+                  explanation: "The bottom says how many pieces make one whole. Here it takes " +
+                    M(String(d)) + " pieces to make " + M("1") + ", and you have " + M(String(n)) + " of them." },
+                { title: "Step 2 — Divide to find the whole ones",
+                  math: n + " \\div " + d + " = " + w + " \\text{ remainder } " + r,
+                  explanation: M(String(w)) + " whole ones use up " + M(w + " \\times " + d + " = " + (w * d)) +
+                    " pieces, and " + M(String(r)) + " pieces are left." },
+                { title: "Step 3 — Write the leftover as a fraction",
+                  math: FT(r, d),
+                  explanation: "The leftover pieces are still pieces of the same size, so they keep the " +
+                    "bottom number " + M(String(d)) + ". The remainder goes on top, never on the bottom." },
+                { title: "Step 4 — Put the two parts together",
+                  math: FT(n, d) + " = " + w + FT(r, d),
+                  explanation: "Check by going backwards: " + M(w + " \\times " + d + " + " + r + " = " + n) +
+                    ". In this unit you convert to a mixed number only when the question asks for one — " +
+                    "answers to calculations stay as fractions in lowest terms." }
+              ],
+              ansBox: w + FT(r, d), finalLabel: "As a mixed number"
+            };
+          }
+
+          /* A — 대분수를 가분수로, 게다가 분수 부분이 약분된다. 두 개념이 겹친다. */
+          const pair = MCF.pick([[2, 4], [3, 6], [4, 6], [2, 6], [4, 8], [6, 8], [2, 8], [6, 9], [3, 9],
+                                 [4, 10], [6, 10], [8, 10], [8, 12], [9, 12], [10, 12], [4, 12]]);
+          const r0 = pair[0], d0 = pair[1];
+          const g = gcd2(r0, d0);
+          const r1 = r0 / g, d1 = d0 / g;
+          const w = MCF.randInt(2, 5);
+          const N = w * d1 + r1;
+          const A = F(N, d1);
+          const cands = [
+            F(w * d0 + r0, d0),          /* 약분 안 함 — 값은 같지만 기약이 아니다 */
+            F(w + r1, d1),               /* 곱하지 않고 더함 */
+            F(w * d1 + r0, d1),          /* 분모만 약분 */
+            F(w * d0 + r0, d1)           /* 분모를 뒤섞음 */
+          ];
+          const mc = four(A, cands, function (j) { return F(N + j + 1, d1); });
+          if (!mc) return t5(2);
+          return {
+            title: "Type 5: Improper and Mixed Numbers", type: "mc", assetType: "none",
+            fullStatement: "Look at the mixed number " + M(w + FT(r0, d0)) + ".",
+            prompt: "Write it as an improper fraction in <strong>lowest terms</strong>.",
+            hint: "Two things are going on. The fraction part " + M(FT(r0, d0)) +
+                  " is not in lowest terms yet, and the whole number still has to be turned into " +
+                  "pieces. Doing the simplifying first keeps the numbers small.",
+            options: mc.options, ans: mc.ans, rawAns: mc.rawAns,
+            steps: [
+              { title: "Step 1 — Simplify the fraction part first",
+                math: FT(r0, d0) + " = " + FT(r1, d1),
+                explanation: "The GCF of " + M(String(r0)) + " and " + M(String(d0)) + " is " + M(String(g)) +
+                  ", so " + M(FT(r0, d0)) + " becomes " + M(FT(r1, d1)) + ". " + LOW_RULE },
+              { title: "Step 2 — Turn the whole number into pieces",
+                math: w + " = \\dfrac{" + w + " \\times " + d1 + "}{" + d1 + "} = " + FT(w * d1, d1),
+                explanation: "Each whole one is " + M(String(d1)) + " pieces, and there are " + M(String(w)) +
+                  " whole ones, so that is " + M(String(w * d1)) + " pieces. This is the step students skip." },
+              { title: "Step 3 — Add the leftover pieces",
+                math: FT(w * d1, d1) + " + " + FT(r1, d1) + " = " + FT(N, d1),
+                explanation: "Both parts are now counting the same size of piece, so the tops just add: " +
+                  M(w * d1 + " + " + r1 + " = " + N) + "." },
+              { title: "Step 4 — Check it is in lowest terms",
+                math: "\\text{GCF}(" + N + ", " + d1 + ") = " + gcd2(N, d1),
+                explanation: (gcd2(N, d1) === 1
+                  ? M(String(N)) + " and " + M(String(d1)) + " share no factor bigger than " + M("1") + ", so you are done. "
+                  : "") + "Converting first and simplifying afterwards gives " + M(FT(w * d0 + r0, d0)) +
+                  ", which is the same amount but not in lowest terms — that is the usual wrong answer here." }
+            ],
+            ansBox: FT(N, d1), finalLabel: "As an improper fraction"
+          };
+        }
+
+        /* ══════════════ 라우터 ══════════════ */
+
+        const GEN = { t1: t1, t2: t2, t3: t3, t4: t4, t5: t5 };
+
+        function generateProblem(typeId) {
+          const p = (GEN[typeId] || t1)(LEVEL);
+          p.levelTag = LEVEL_KEY[LEVEL];
+          return p;
+        }
+
+        MCF.init({ generate: generateProblem, unitId: "G7U2", lessonId: "L2" });
+
+</script>
+    <script src="../course.js"></script>
+    <script src="course.js"></script>
+    <script src="../progress.js"></script>
+</body>
+</html>

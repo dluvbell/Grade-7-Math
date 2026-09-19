@@ -1,0 +1,714 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Grade 7 Mathematics &mdash; Practice Portal</title>
+<!--
+    index.html - 손으로 고치지 않는다. tools/make index.py 가 만든다.
+    유형 수와 유형 이름은 빌드된 레슨 파일에서 그때그때 읽어 온다.
+-->
+<script src="https://cdn.tailwindcss.com"></script>
+<style>
+    body { font-family: system-ui, -apple-system, "Segoe UI", Roboto, sans-serif; }
+    details[data-unit] > summary { list-style: none; cursor: pointer; }
+    details[data-unit] > summary::-webkit-details-marker { display: none; }
+    details[open] .chevron { transform: rotate(90deg); }
+    .chevron { display: inline-block; transition: transform .18s ease; }
+
+    .unit-grid { display: grid; grid-template-columns: 1fr; gap: 16px; }
+    @media (min-width: 700px) { .unit-grid { grid-template-columns: repeat(2, 1fr); } }
+    @media (min-width: 1050px) { .unit-grid { grid-template-columns: repeat(3, 1fr); } }
+
+    .unit-tile {
+        display: flex; flex-direction: column; gap: 7px; text-align: left;
+        background: #fff; border: 2px solid #e2e8f0; border-left: 7px solid var(--accent);
+        border-radius: 16px; padding: 20px 22px; cursor: pointer; font: inherit;
+        transition: transform .16s ease, box-shadow .18s ease, border-color .18s ease;
+    }
+    .unit-tile:hover { transform: translateY(-3px); border-color: var(--accent);
+        box-shadow: 0 12px 28px rgba(15,23,42,.10); }
+    .unit-tile-tag { font-size: .68rem; font-weight: 900; letter-spacing: .11em;
+        text-transform: uppercase; color: var(--accent); }
+    .unit-tile-name { font-size: 1.2rem; font-weight: 800; color: #0f172a; }
+    .unit-tile-meta { font-size: .82rem; font-weight: 600; color: #94a3b8; }
+    .unit-tile-track { display: block; height: 8px; border-radius: 999px;
+        background: var(--soft); overflow: hidden; margin-top: 6px; }
+    .unit-tile-track i { display: block; height: 100%; background: var(--accent);
+        transition: width .5s ease; }
+    .unit-tile-prog { font-size: .78rem; font-weight: 700; color: #64748b; }
+
+    .back-bar { display: flex; align-items: center; gap: 12px; margin-bottom: 18px;
+        flex-wrap: wrap; }
+    .back-btn { background: #0f172a; color: #fff; border: 0; border-radius: 10px;
+        padding: 10px 16px; font-size: .86rem; font-weight: 800; cursor: pointer; }
+    .back-btn:hover { background: #1e3a8a; }
+</style>
+</head>
+<body class="bg-slate-50 text-slate-900">
+
+<header class="bg-[#0f172a] text-white border-b-4 border-blue-600">
+    <div class="max-w-6xl mx-auto px-4 py-10 text-center">
+        <span class="inline-block bg-blue-600 text-xs font-extrabold tracking-widest uppercase px-3 py-1.5 rounded-full">Grade 7 &middot; Ontario</span>
+        <h1 class="text-3xl md:text-4xl font-extrabold mt-4">Mathematics Practice Portal</h1>
+        <p class="text-slate-400 font-medium mt-2 max-w-2xl mx-auto">6 units of practice. Every question is generated fresh, so the numbers are never the same twice.</p>
+    </div>
+</header>
+
+<main class="max-w-6xl mx-auto px-4 py-8">
+
+    <!-- progress.js 가 학생 패널을 여기에 넣는다 -->
+    <div id="mcf3m-panel-slot"></div>
+
+    <section id="unit-home">
+        <div class="mb-5">
+            <h2 class="text-2xl font-extrabold text-[#0f172a]">Choose a unit</h2>
+            <p class="text-slate-500 text-sm mt-1">Each unit shows how much of it you have mastered so far.</p>
+        </div>
+        <div class="unit-grid">
+            <button class="unit-tile" data-unit="1" style="--accent:#2563eb;--soft:#dbeafe">
+                <span class="unit-tile-tag">Unit 1</span>
+                <span class="unit-tile-name">Integers and Rational Numbers</span>
+                <span class="unit-tile-meta">2 lessons &middot; 1 test</span>
+                <span class="unit-tile-track"><i data-unit-bar="1" style="width:0%"></i></span>
+                <span class="unit-tile-prog" data-unit-prog="1">Not practised yet</span>
+            </button>
+            <button class="unit-tile" data-unit="2" style="--accent:#7c3aed;--soft:#ede9fe">
+                <span class="unit-tile-tag">Unit 2</span>
+                <span class="unit-tile-name">Fraction Operations</span>
+                <span class="unit-tile-meta">4 lessons &middot; 1 test</span>
+                <span class="unit-tile-track"><i data-unit-bar="2" style="width:0%"></i></span>
+                <span class="unit-tile-prog" data-unit-prog="2">Not practised yet</span>
+            </button>
+            <button class="unit-tile" data-unit="3" style="--accent:#059669;--soft:#d1fae5">
+                <span class="unit-tile-tag">Unit 3</span>
+                <span class="unit-tile-name">Decimals and Order of Operations</span>
+                <span class="unit-tile-meta">3 lessons &middot; 1 test</span>
+                <span class="unit-tile-track"><i data-unit-bar="3" style="width:0%"></i></span>
+                <span class="unit-tile-prog" data-unit-prog="3">Not practised yet</span>
+            </button>
+            <button class="unit-tile" data-unit="4" style="--accent:#e11d48;--soft:#ffe4e6">
+                <span class="unit-tile-tag">Unit 4</span>
+                <span class="unit-tile-name">Algebra</span>
+                <span class="unit-tile-meta">4 lessons &middot; 1 test</span>
+                <span class="unit-tile-track"><i data-unit-bar="4" style="width:0%"></i></span>
+                <span class="unit-tile-prog" data-unit-prog="4">Not practised yet</span>
+            </button>
+            <button class="unit-tile" data-unit="5" style="--accent:#c2410c;--soft:#ffedd5">
+                <span class="unit-tile-tag">Unit 5</span>
+                <span class="unit-tile-name">Patterns and Linear Relations</span>
+                <span class="unit-tile-meta">4 lessons &middot; 1 test</span>
+                <span class="unit-tile-track"><i data-unit-bar="5" style="width:0%"></i></span>
+                <span class="unit-tile-prog" data-unit-prog="5">Not practised yet</span>
+            </button>
+            <button class="unit-tile" data-unit="6" style="--accent:#0891b2;--soft:#cffafe">
+                <span class="unit-tile-tag">Unit 6</span>
+                <span class="unit-tile-name">Percents</span>
+                <span class="unit-tile-meta">3 lessons &middot; 1 test</span>
+                <span class="unit-tile-track"><i data-unit-bar="6" style="width:0%"></i></span>
+                <span class="unit-tile-prog" data-unit-prog="6">Not practised yet</span>
+            </button>
+        </div>
+    </section>
+
+    <section id="unit-view" hidden>
+        <div class="back-bar">
+            <button type="button" class="back-btn" id="unit-back">&#8592; All units</button>
+        </div>
+        <details id="unit-1" data-unit="1" hidden class="bg-white border border-slate-200 rounded-2xl shadow-sm mb-8 overflow-hidden">
+            <summary class="flex items-center justify-between gap-4 px-6 py-5 bg-slate-50 border-b border-slate-100 hover:bg-slate-100 transition-colors">
+                <div class="flex items-center gap-4">
+                    <span class="chevron text-blue-600 text-xl font-bold">&#9656;</span>
+                    <div>
+                        <div class="text-xs font-bold text-blue-600 uppercase tracking-widest">Unit 1</div>
+                        <div class="text-lg md:text-xl font-bold text-[#0f172a]">Integers and Rational Numbers</div>
+                    </div>
+                </div>
+                <span class="text-slate-400 text-xs font-semibold whitespace-nowrap">2 lessons &middot; 1 test</span>
+            </summary>
+            <div class="p-6">
+                <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+                    <div class="bg-white border border-slate-200 rounded-2xl shadow-sm hover:shadow-md transition-all duration-300 flex flex-col overflow-hidden group">
+                        <div class="p-6 flex-grow">
+                            <div class="flex items-center justify-between mb-4">
+                                <span class="text-xs font-bold text-blue-600 bg-blue-50 px-2.5 py-1 rounded-md uppercase tracking-wider">Lesson 1</span>
+                                <span class="text-slate-400 text-xs font-semibold">7 Problem Types</span>
+                            </div>
+                            <h3 class="text-lg font-bold text-[#0f172a] group-hover:text-blue-600 transition-colors duration-200">Integer Operations</h3>
+                            <p class="text-slate-500 text-sm mt-2">Add and subtract integers using number lines and the sign rules that come from them.</p>
+                            <div class="mt-6">
+                                <div class="text-xs font-bold text-slate-400 uppercase tracking-wider mb-2">Topics Covered:</div>
+                                <a href="Unit 1 Integers and Rational Numbers/Unit 1 Lesson 1 Integer Operations.html?type=t1" class="inline-block text-xs bg-slate-100 text-slate-700 px-2.5 py-1 rounded font-medium mr-1.5 mb-1.5 border border-slate-200 hover:bg-blue-50 hover:border-blue-200">Integers on a Number Line</a><a href="Unit 1 Integers and Rational Numbers/Unit 1 Lesson 1 Integer Operations.html?type=t2" class="inline-block text-xs bg-slate-100 text-slate-700 px-2.5 py-1 rounded font-medium mr-1.5 mb-1.5 border border-slate-200 hover:bg-blue-50 hover:border-blue-200">Modelling on a Number Line</a><a href="Unit 1 Integers and Rational Numbers/Unit 1 Lesson 1 Integer Operations.html?type=t3" class="inline-block text-xs bg-slate-100 text-slate-700 px-2.5 py-1 rounded font-medium mr-1.5 mb-1.5 border border-slate-200 hover:bg-blue-50 hover:border-blue-200">Adding Integers</a><a href="Unit 1 Integers and Rational Numbers/Unit 1 Lesson 1 Integer Operations.html?type=t4" class="inline-block text-xs bg-slate-100 text-slate-700 px-2.5 py-1 rounded font-medium mr-1.5 mb-1.5 border border-slate-200 hover:bg-blue-50 hover:border-blue-200">Two Signs Together</a><a href="Unit 1 Integers and Rational Numbers/Unit 1 Lesson 1 Integer Operations.html?type=t5" class="inline-block text-xs bg-slate-100 text-slate-700 px-2.5 py-1 rounded font-medium mr-1.5 mb-1.5 border border-slate-200 hover:bg-blue-50 hover:border-blue-200">Subtracting a Positive</a><a href="Unit 1 Integers and Rational Numbers/Unit 1 Lesson 1 Integer Operations.html?type=t6" class="inline-block text-xs bg-slate-100 text-slate-700 px-2.5 py-1 rounded font-medium mr-1.5 mb-1.5 border border-slate-200 hover:bg-blue-50 hover:border-blue-200">Subtracting a Negative</a><a href="Unit 1 Integers and Rational Numbers/Unit 1 Lesson 1 Integer Operations.html?type=t7" class="inline-block text-xs bg-slate-100 text-slate-700 px-2.5 py-1 rounded font-medium mr-1.5 mb-1.5 border border-slate-200 hover:bg-blue-50 hover:border-blue-200">Integers in Context</a>
+                            </div>
+                        </div>
+                        <div class="px-6 pb-6">
+                            <a href="Unit 1 Integers and Rational Numbers/Unit 1 Lesson 1 Integer Operations.html" class="block w-full text-center bg-[#0f172a] hover:bg-blue-600 text-white font-bold py-3 rounded-lg transition-colors">Start practising</a>
+                        </div>
+                    </div>
+                    <div class="bg-white border border-slate-200 rounded-2xl shadow-sm hover:shadow-md transition-all duration-300 flex flex-col overflow-hidden group">
+                        <div class="p-6 flex-grow">
+                            <div class="flex items-center justify-between mb-4">
+                                <span class="text-xs font-bold text-blue-600 bg-blue-50 px-2.5 py-1 rounded-md uppercase tracking-wider">Lesson 2</span>
+                                <span class="text-slate-400 text-xs font-semibold">6 Problem Types</span>
+                            </div>
+                            <h3 class="text-lg font-bold text-[#0f172a] group-hover:text-blue-600 transition-colors duration-200">Rational Numbers</h3>
+                            <p class="text-slate-500 text-sm mt-2">Read, compare, and order positive and negative fractions and decimals.</p>
+                            <div class="mt-6">
+                                <div class="text-xs font-bold text-slate-400 uppercase tracking-wider mb-2">Topics Covered:</div>
+                                <a href="Unit 1 Integers and Rational Numbers/Unit 1 Lesson 2 Rational Numbers.html?type=t1" class="inline-block text-xs bg-slate-100 text-slate-700 px-2.5 py-1 rounded font-medium mr-1.5 mb-1.5 border border-slate-200 hover:bg-blue-50 hover:border-blue-200">Reading a Number Line</a><a href="Unit 1 Integers and Rational Numbers/Unit 1 Lesson 2 Rational Numbers.html?type=t2" class="inline-block text-xs bg-slate-100 text-slate-700 px-2.5 py-1 rounded font-medium mr-1.5 mb-1.5 border border-slate-200 hover:bg-blue-50 hover:border-blue-200">Placing a Number</a><a href="Unit 1 Integers and Rational Numbers/Unit 1 Lesson 2 Rational Numbers.html?type=t3" class="inline-block text-xs bg-slate-100 text-slate-700 px-2.5 py-1 rounded font-medium mr-1.5 mb-1.5 border border-slate-200 hover:bg-blue-50 hover:border-blue-200">Comparing Two Numbers</a><a href="Unit 1 Integers and Rational Numbers/Unit 1 Lesson 2 Rational Numbers.html?type=t4" class="inline-block text-xs bg-slate-100 text-slate-700 px-2.5 py-1 rounded font-medium mr-1.5 mb-1.5 border border-slate-200 hover:bg-blue-50 hover:border-blue-200">Between Two Numbers</a><a href="Unit 1 Integers and Rational Numbers/Unit 1 Lesson 2 Rational Numbers.html?type=t5" class="inline-block text-xs bg-slate-100 text-slate-700 px-2.5 py-1 rounded font-medium mr-1.5 mb-1.5 border border-slate-200 hover:bg-blue-50 hover:border-blue-200">Ordering Numbers</a><a href="Unit 1 Integers and Rational Numbers/Unit 1 Lesson 2 Rational Numbers.html?type=t6" class="inline-block text-xs bg-slate-100 text-slate-700 px-2.5 py-1 rounded font-medium mr-1.5 mb-1.5 border border-slate-200 hover:bg-blue-50 hover:border-blue-200">Fractions and Decimals</a>
+                            </div>
+                        </div>
+                        <div class="px-6 pb-6">
+                            <a href="Unit 1 Integers and Rational Numbers/Unit 1 Lesson 2 Rational Numbers.html" class="block w-full text-center bg-[#0f172a] hover:bg-blue-600 text-white font-bold py-3 rounded-lg transition-colors">Start practising</a>
+                        </div>
+                    </div>
+                    <div class="bg-white border border-slate-200 rounded-2xl shadow-sm hover:shadow-md transition-all duration-300 flex flex-col overflow-hidden group">
+                        <div class="p-6 flex-grow">
+                            <div class="flex items-center justify-between mb-4">
+                                <span class="text-xs font-bold text-blue-600 bg-blue-50 px-2.5 py-1 rounded-md uppercase tracking-wider">Practice Test</span>
+                                <span class="text-slate-400 text-xs font-semibold">2 Problem Types</span>
+                            </div>
+                            <h3 class="text-lg font-bold text-[#0f172a] group-hover:text-blue-600 transition-colors duration-200">Unit 1 Practice Test</h3>
+                            <p class="text-slate-500 text-sm mt-2">Questions that mix the types from both lessons. Get one wrong and you must earn your way past it.</p>
+                            <div class="mt-6">
+                                <div class="text-xs font-bold text-slate-400 uppercase tracking-wider mb-2">Topics Covered:</div>
+                                <a href="Unit 1 Integers and Rational Numbers/Unit 1 Practice Test.html?type=b1" class="inline-block text-xs bg-slate-100 text-slate-700 px-2.5 py-1 rounded font-medium mr-1.5 mb-1.5 border border-slate-200 hover:bg-blue-50 hover:border-blue-200">Integer Operations Combined</a><a href="Unit 1 Integers and Rational Numbers/Unit 1 Practice Test.html?type=b2" class="inline-block text-xs bg-slate-100 text-slate-700 px-2.5 py-1 rounded font-medium mr-1.5 mb-1.5 border border-slate-200 hover:bg-blue-50 hover:border-blue-200">Rational Numbers Combined</a>
+                            </div>
+                        </div>
+                        <div class="px-6 pb-6">
+                            <a href="Unit 1 Integers and Rational Numbers/Unit 1 Practice Test.html" class="block w-full text-center bg-[#0f172a] hover:bg-blue-600 text-white font-bold py-3 rounded-lg transition-colors">Start practising</a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </details>
+        <details id="unit-2" data-unit="2" hidden class="bg-white border border-slate-200 rounded-2xl shadow-sm mb-8 overflow-hidden">
+            <summary class="flex items-center justify-between gap-4 px-6 py-5 bg-slate-50 border-b border-slate-100 hover:bg-slate-100 transition-colors">
+                <div class="flex items-center gap-4">
+                    <span class="chevron text-blue-600 text-xl font-bold">&#9656;</span>
+                    <div>
+                        <div class="text-xs font-bold text-blue-600 uppercase tracking-widest">Unit 2</div>
+                        <div class="text-lg md:text-xl font-bold text-[#0f172a]">Fraction Operations</div>
+                    </div>
+                </div>
+                <span class="text-slate-400 text-xs font-semibold whitespace-nowrap">4 lessons &middot; 1 test</span>
+            </summary>
+            <div class="p-6">
+                <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+                    <div class="bg-white border border-slate-200 rounded-2xl shadow-sm hover:shadow-md transition-all duration-300 flex flex-col overflow-hidden group">
+                        <div class="p-6 flex-grow">
+                            <div class="flex items-center justify-between mb-4">
+                                <span class="text-xs font-bold text-blue-600 bg-blue-50 px-2.5 py-1 rounded-md uppercase tracking-wider">Lesson 1</span>
+                                <span class="text-slate-400 text-xs font-semibold">5 Problem Types</span>
+                            </div>
+                            <h3 class="text-lg font-bold text-[#0f172a] group-hover:text-blue-600 transition-colors duration-200">Factors and Multiples</h3>
+                            <p class="text-slate-500 text-sm mt-2">Find factors, multiples, the greatest common factor and the lowest common multiple - and decide which one a problem needs.</p>
+                            <div class="mt-6">
+                                <div class="text-xs font-bold text-slate-400 uppercase tracking-wider mb-2">Topics Covered:</div>
+                                <a href="Unit 2 Fraction Operations/Unit 2 Lesson 1 Factors and Multiples.html?type=t1" class="inline-block text-xs bg-slate-100 text-slate-700 px-2.5 py-1 rounded font-medium mr-1.5 mb-1.5 border border-slate-200 hover:bg-blue-50 hover:border-blue-200">Factors of a Number</a><a href="Unit 2 Fraction Operations/Unit 2 Lesson 1 Factors and Multiples.html?type=t2" class="inline-block text-xs bg-slate-100 text-slate-700 px-2.5 py-1 rounded font-medium mr-1.5 mb-1.5 border border-slate-200 hover:bg-blue-50 hover:border-blue-200">Greatest Common Factor</a><a href="Unit 2 Fraction Operations/Unit 2 Lesson 1 Factors and Multiples.html?type=t3" class="inline-block text-xs bg-slate-100 text-slate-700 px-2.5 py-1 rounded font-medium mr-1.5 mb-1.5 border border-slate-200 hover:bg-blue-50 hover:border-blue-200">Multiples</a><a href="Unit 2 Fraction Operations/Unit 2 Lesson 1 Factors and Multiples.html?type=t4" class="inline-block text-xs bg-slate-100 text-slate-700 px-2.5 py-1 rounded font-medium mr-1.5 mb-1.5 border border-slate-200 hover:bg-blue-50 hover:border-blue-200">Lowest Common Multiple</a><a href="Unit 2 Fraction Operations/Unit 2 Lesson 1 Factors and Multiples.html?type=t5" class="inline-block text-xs bg-slate-100 text-slate-700 px-2.5 py-1 rounded font-medium mr-1.5 mb-1.5 border border-slate-200 hover:bg-blue-50 hover:border-blue-200">Factors or Multiples?</a>
+                            </div>
+                        </div>
+                        <div class="px-6 pb-6">
+                            <a href="Unit 2 Fraction Operations/Unit 2 Lesson 1 Factors and Multiples.html" class="block w-full text-center bg-[#0f172a] hover:bg-blue-600 text-white font-bold py-3 rounded-lg transition-colors">Start practising</a>
+                        </div>
+                    </div>
+                    <div class="bg-white border border-slate-200 rounded-2xl shadow-sm hover:shadow-md transition-all duration-300 flex flex-col overflow-hidden group">
+                        <div class="p-6 flex-grow">
+                            <div class="flex items-center justify-between mb-4">
+                                <span class="text-xs font-bold text-blue-600 bg-blue-50 px-2.5 py-1 rounded-md uppercase tracking-wider">Lesson 2</span>
+                                <span class="text-slate-400 text-xs font-semibold">5 Problem Types</span>
+                            </div>
+                            <h3 class="text-lg font-bold text-[#0f172a] group-hover:text-blue-600 transition-colors duration-200">Equivalent Fractions</h3>
+                            <p class="text-slate-500 text-sm mt-2">Building, simplifying, and comparing fractions (B1.4)</p>
+                            <div class="mt-6">
+                                <div class="text-xs font-bold text-slate-400 uppercase tracking-wider mb-2">Topics Covered:</div>
+                                <a href="Unit 2 Fraction Operations/Unit 2 Lesson 2 Equivalent Fractions.html?type=t1" class="inline-block text-xs bg-slate-100 text-slate-700 px-2.5 py-1 rounded font-medium mr-1.5 mb-1.5 border border-slate-200 hover:bg-blue-50 hover:border-blue-200">Equivalent Fractions</a><a href="Unit 2 Fraction Operations/Unit 2 Lesson 2 Equivalent Fractions.html?type=t2" class="inline-block text-xs bg-slate-100 text-slate-700 px-2.5 py-1 rounded font-medium mr-1.5 mb-1.5 border border-slate-200 hover:bg-blue-50 hover:border-blue-200">Lowest Terms</a><a href="Unit 2 Fraction Operations/Unit 2 Lesson 2 Equivalent Fractions.html?type=t3" class="inline-block text-xs bg-slate-100 text-slate-700 px-2.5 py-1 rounded font-medium mr-1.5 mb-1.5 border border-slate-200 hover:bg-blue-50 hover:border-blue-200">Common Denominators</a><a href="Unit 2 Fraction Operations/Unit 2 Lesson 2 Equivalent Fractions.html?type=t4" class="inline-block text-xs bg-slate-100 text-slate-700 px-2.5 py-1 rounded font-medium mr-1.5 mb-1.5 border border-slate-200 hover:bg-blue-50 hover:border-blue-200">Comparing and Ordering</a><a href="Unit 2 Fraction Operations/Unit 2 Lesson 2 Equivalent Fractions.html?type=t5" class="inline-block text-xs bg-slate-100 text-slate-700 px-2.5 py-1 rounded font-medium mr-1.5 mb-1.5 border border-slate-200 hover:bg-blue-50 hover:border-blue-200">Improper and Mixed Numbers</a>
+                            </div>
+                        </div>
+                        <div class="px-6 pb-6">
+                            <a href="Unit 2 Fraction Operations/Unit 2 Lesson 2 Equivalent Fractions.html" class="block w-full text-center bg-[#0f172a] hover:bg-blue-600 text-white font-bold py-3 rounded-lg transition-colors">Start practising</a>
+                        </div>
+                    </div>
+                    <div class="bg-white border border-slate-200 rounded-2xl shadow-sm hover:shadow-md transition-all duration-300 flex flex-col overflow-hidden group">
+                        <div class="p-6 flex-grow">
+                            <div class="flex items-center justify-between mb-4">
+                                <span class="text-xs font-bold text-blue-600 bg-blue-50 px-2.5 py-1 rounded-md uppercase tracking-wider">Lesson 3</span>
+                                <span class="text-slate-400 text-xs font-semibold">5 Problem Types</span>
+                            </div>
+                            <h3 class="text-lg font-bold text-[#0f172a] group-hover:text-blue-600 transition-colors duration-200">Adding and Subtracting Fractions</h3>
+                            <p class="text-slate-500 text-sm mt-2">Common denominators, mixed numbers, and word problems (B2.5)</p>
+                            <div class="mt-6">
+                                <div class="text-xs font-bold text-slate-400 uppercase tracking-wider mb-2">Topics Covered:</div>
+                                <a href="Unit 2 Fraction Operations/Unit 2 Lesson 3 Adding and Subtracting Fractions.html?type=t1" class="inline-block text-xs bg-slate-100 text-slate-700 px-2.5 py-1 rounded font-medium mr-1.5 mb-1.5 border border-slate-200 hover:bg-blue-50 hover:border-blue-200">Same Denominator</a><a href="Unit 2 Fraction Operations/Unit 2 Lesson 3 Adding and Subtracting Fractions.html?type=t2" class="inline-block text-xs bg-slate-100 text-slate-700 px-2.5 py-1 rounded font-medium mr-1.5 mb-1.5 border border-slate-200 hover:bg-blue-50 hover:border-blue-200">One Denominator Divides the Other</a><a href="Unit 2 Fraction Operations/Unit 2 Lesson 3 Adding and Subtracting Fractions.html?type=t3" class="inline-block text-xs bg-slate-100 text-slate-700 px-2.5 py-1 rounded font-medium mr-1.5 mb-1.5 border border-slate-200 hover:bg-blue-50 hover:border-blue-200">Unlike Denominators</a><a href="Unit 2 Fraction Operations/Unit 2 Lesson 3 Adding and Subtracting Fractions.html?type=t4" class="inline-block text-xs bg-slate-100 text-slate-700 px-2.5 py-1 rounded font-medium mr-1.5 mb-1.5 border border-slate-200 hover:bg-blue-50 hover:border-blue-200">Mixed Numbers</a><a href="Unit 2 Fraction Operations/Unit 2 Lesson 3 Adding and Subtracting Fractions.html?type=t5" class="inline-block text-xs bg-slate-100 text-slate-700 px-2.5 py-1 rounded font-medium mr-1.5 mb-1.5 border border-slate-200 hover:bg-blue-50 hover:border-blue-200">Fractions in Context</a>
+                            </div>
+                        </div>
+                        <div class="px-6 pb-6">
+                            <a href="Unit 2 Fraction Operations/Unit 2 Lesson 3 Adding and Subtracting Fractions.html" class="block w-full text-center bg-[#0f172a] hover:bg-blue-600 text-white font-bold py-3 rounded-lg transition-colors">Start practising</a>
+                        </div>
+                    </div>
+                    <div class="bg-white border border-slate-200 rounded-2xl shadow-sm hover:shadow-md transition-all duration-300 flex flex-col overflow-hidden group">
+                        <div class="p-6 flex-grow">
+                            <div class="flex items-center justify-between mb-4">
+                                <span class="text-xs font-bold text-blue-600 bg-blue-50 px-2.5 py-1 rounded-md uppercase tracking-wider">Lesson 4</span>
+                                <span class="text-slate-400 text-xs font-semibold">5 Problem Types</span>
+                            </div>
+                            <h3 class="text-lg font-bold text-[#0f172a] group-hover:text-blue-600 transition-colors duration-200">Multiplying and Dividing Fractions</h3>
+                            <p class="text-slate-500 text-sm mt-2">Products, reciprocals, and how many fit inside (B2.8)</p>
+                            <div class="mt-6">
+                                <div class="text-xs font-bold text-slate-400 uppercase tracking-wider mb-2">Topics Covered:</div>
+                                <a href="Unit 2 Fraction Operations/Unit 2 Lesson 4 Multiplying and Dividing Fractions.html?type=t1" class="inline-block text-xs bg-slate-100 text-slate-700 px-2.5 py-1 rounded font-medium mr-1.5 mb-1.5 border border-slate-200 hover:bg-blue-50 hover:border-blue-200">Multiplying by a Whole Number</a><a href="Unit 2 Fraction Operations/Unit 2 Lesson 4 Multiplying and Dividing Fractions.html?type=t2" class="inline-block text-xs bg-slate-100 text-slate-700 px-2.5 py-1 rounded font-medium mr-1.5 mb-1.5 border border-slate-200 hover:bg-blue-50 hover:border-blue-200">Multiplying a Fraction by a Fraction</a><a href="Unit 2 Fraction Operations/Unit 2 Lesson 4 Multiplying and Dividing Fractions.html?type=t3" class="inline-block text-xs bg-slate-100 text-slate-700 px-2.5 py-1 rounded font-medium mr-1.5 mb-1.5 border border-slate-200 hover:bg-blue-50 hover:border-blue-200">Dividing with Whole Numbers</a><a href="Unit 2 Fraction Operations/Unit 2 Lesson 4 Multiplying and Dividing Fractions.html?type=t4" class="inline-block text-xs bg-slate-100 text-slate-700 px-2.5 py-1 rounded font-medium mr-1.5 mb-1.5 border border-slate-200 hover:bg-blue-50 hover:border-blue-200">Dividing a Fraction by a Fraction</a><a href="Unit 2 Fraction Operations/Unit 2 Lesson 4 Multiplying and Dividing Fractions.html?type=t5" class="inline-block text-xs bg-slate-100 text-slate-700 px-2.5 py-1 rounded font-medium mr-1.5 mb-1.5 border border-slate-200 hover:bg-blue-50 hover:border-blue-200">Fractions in Context</a>
+                            </div>
+                        </div>
+                        <div class="px-6 pb-6">
+                            <a href="Unit 2 Fraction Operations/Unit 2 Lesson 4 Multiplying and Dividing Fractions.html" class="block w-full text-center bg-[#0f172a] hover:bg-blue-600 text-white font-bold py-3 rounded-lg transition-colors">Start practising</a>
+                        </div>
+                    </div>
+                    <div class="bg-white border border-slate-200 rounded-2xl shadow-sm hover:shadow-md transition-all duration-300 flex flex-col overflow-hidden group">
+                        <div class="p-6 flex-grow">
+                            <div class="flex items-center justify-between mb-4">
+                                <span class="text-xs font-bold text-blue-600 bg-blue-50 px-2.5 py-1 rounded-md uppercase tracking-wider">Practice Test</span>
+                                <span class="text-slate-400 text-xs font-semibold">4 Problem Types</span>
+                            </div>
+                            <h3 class="text-lg font-bold text-[#0f172a] group-hover:text-blue-600 transition-colors duration-200">Unit 2 Practice Test</h3>
+                            <p class="text-slate-500 text-sm mt-2">Everything from factors to dividing fractions, mixed together. Get one wrong and you must earn your way past it.</p>
+                            <div class="mt-6">
+                                <div class="text-xs font-bold text-slate-400 uppercase tracking-wider mb-2">Topics Covered:</div>
+                                <a href="Unit 2 Fraction Operations/Unit 2 Practice Test.html?type=b1" class="inline-block text-xs bg-slate-100 text-slate-700 px-2.5 py-1 rounded font-medium mr-1.5 mb-1.5 border border-slate-200 hover:bg-blue-50 hover:border-blue-200">Factors and Multiples Combined</a><a href="Unit 2 Fraction Operations/Unit 2 Practice Test.html?type=b2" class="inline-block text-xs bg-slate-100 text-slate-700 px-2.5 py-1 rounded font-medium mr-1.5 mb-1.5 border border-slate-200 hover:bg-blue-50 hover:border-blue-200">Equivalent Fractions Combined</a><a href="Unit 2 Fraction Operations/Unit 2 Practice Test.html?type=b3" class="inline-block text-xs bg-slate-100 text-slate-700 px-2.5 py-1 rounded font-medium mr-1.5 mb-1.5 border border-slate-200 hover:bg-blue-50 hover:border-blue-200">Adding and Subtracting Combined</a><a href="Unit 2 Fraction Operations/Unit 2 Practice Test.html?type=b4" class="inline-block text-xs bg-slate-100 text-slate-700 px-2.5 py-1 rounded font-medium mr-1.5 mb-1.5 border border-slate-200 hover:bg-blue-50 hover:border-blue-200">Multiplying and Dividing Combined</a>
+                            </div>
+                        </div>
+                        <div class="px-6 pb-6">
+                            <a href="Unit 2 Fraction Operations/Unit 2 Practice Test.html" class="block w-full text-center bg-[#0f172a] hover:bg-blue-600 text-white font-bold py-3 rounded-lg transition-colors">Start practising</a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </details>
+        <details id="unit-3" data-unit="3" hidden class="bg-white border border-slate-200 rounded-2xl shadow-sm mb-8 overflow-hidden">
+            <summary class="flex items-center justify-between gap-4 px-6 py-5 bg-slate-50 border-b border-slate-100 hover:bg-slate-100 transition-colors">
+                <div class="flex items-center gap-4">
+                    <span class="chevron text-blue-600 text-xl font-bold">&#9656;</span>
+                    <div>
+                        <div class="text-xs font-bold text-blue-600 uppercase tracking-widest">Unit 3</div>
+                        <div class="text-lg md:text-xl font-bold text-[#0f172a]">Decimals and Order of Operations</div>
+                    </div>
+                </div>
+                <span class="text-slate-400 text-xs font-semibold whitespace-nowrap">3 lessons &middot; 1 test</span>
+            </summary>
+            <div class="p-6">
+                <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+                    <div class="bg-white border border-slate-200 rounded-2xl shadow-sm hover:shadow-md transition-all duration-300 flex flex-col overflow-hidden group">
+                        <div class="p-6 flex-grow">
+                            <div class="flex items-center justify-between mb-4">
+                                <span class="text-xs font-bold text-blue-600 bg-blue-50 px-2.5 py-1 rounded-md uppercase tracking-wider">Lesson 1</span>
+                                <span class="text-slate-400 text-xs font-semibold">5 Problem Types</span>
+                            </div>
+                            <h3 class="text-lg font-bold text-[#0f172a] group-hover:text-blue-600 transition-colors duration-200">Place Value and Rounding</h3>
+                            <p class="text-slate-500 text-sm mt-2">Place value, rounding, and estimating with decimals (B1.6)</p>
+                            <div class="mt-6">
+                                <div class="text-xs font-bold text-slate-400 uppercase tracking-wider mb-2">Topics Covered:</div>
+                                <a href="Unit 3 Decimals and Order of Operations/Unit 3 Lesson 1 Place Value and Rounding.html?type=t1" class="inline-block text-xs bg-slate-100 text-slate-700 px-2.5 py-1 rounded font-medium mr-1.5 mb-1.5 border border-slate-200 hover:bg-blue-50 hover:border-blue-200">Decimal Place Value</a><a href="Unit 3 Decimals and Order of Operations/Unit 3 Lesson 1 Place Value and Rounding.html?type=t2" class="inline-block text-xs bg-slate-100 text-slate-700 px-2.5 py-1 rounded font-medium mr-1.5 mb-1.5 border border-slate-200 hover:bg-blue-50 hover:border-blue-200">Rounding to a Given Place</a><a href="Unit 3 Decimals and Order of Operations/Unit 3 Lesson 1 Place Value and Rounding.html?type=t3" class="inline-block text-xs bg-slate-100 text-slate-700 px-2.5 py-1 rounded font-medium mr-1.5 mb-1.5 border border-slate-200 hover:bg-blue-50 hover:border-blue-200">Rounding in Context</a><a href="Unit 3 Decimals and Order of Operations/Unit 3 Lesson 1 Place Value and Rounding.html?type=t4" class="inline-block text-xs bg-slate-100 text-slate-700 px-2.5 py-1 rounded font-medium mr-1.5 mb-1.5 border border-slate-200 hover:bg-blue-50 hover:border-blue-200">Estimating Sums and Differences</a><a href="Unit 3 Decimals and Order of Operations/Unit 3 Lesson 1 Place Value and Rounding.html?type=t5" class="inline-block text-xs bg-slate-100 text-slate-700 px-2.5 py-1 rounded font-medium mr-1.5 mb-1.5 border border-slate-200 hover:bg-blue-50 hover:border-blue-200">Adding and Subtracting Decimals (review)</a>
+                            </div>
+                        </div>
+                        <div class="px-6 pb-6">
+                            <a href="Unit 3 Decimals and Order of Operations/Unit 3 Lesson 1 Place Value and Rounding.html" class="block w-full text-center bg-[#0f172a] hover:bg-blue-600 text-white font-bold py-3 rounded-lg transition-colors">Start practising</a>
+                        </div>
+                    </div>
+                    <div class="bg-white border border-slate-200 rounded-2xl shadow-sm hover:shadow-md transition-all duration-300 flex flex-col overflow-hidden group">
+                        <div class="p-6 flex-grow">
+                            <div class="flex items-center justify-between mb-4">
+                                <span class="text-xs font-bold text-blue-600 bg-blue-50 px-2.5 py-1 rounded-md uppercase tracking-wider">Lesson 2</span>
+                                <span class="text-slate-400 text-xs font-semibold">6 Problem Types</span>
+                            </div>
+                            <h3 class="text-lg font-bold text-[#0f172a] group-hover:text-blue-600 transition-colors duration-200">Multiplying and Dividing Decimals</h3>
+                            <p class="text-slate-500 text-sm mt-2">Products, quotients, and estimating with decimals (B2.9)</p>
+                            <div class="mt-6">
+                                <div class="text-xs font-bold text-slate-400 uppercase tracking-wider mb-2">Topics Covered:</div>
+                                <a href="Unit 3 Decimals and Order of Operations/Unit 3 Lesson 2 Multiplying and Dividing Decimals.html?type=t1" class="inline-block text-xs bg-slate-100 text-slate-700 px-2.5 py-1 rounded font-medium mr-1.5 mb-1.5 border border-slate-200 hover:bg-blue-50 hover:border-blue-200">Multiplying and Dividing by Powers of 10</a><a href="Unit 3 Decimals and Order of Operations/Unit 3 Lesson 2 Multiplying and Dividing Decimals.html?type=t2" class="inline-block text-xs bg-slate-100 text-slate-700 px-2.5 py-1 rounded font-medium mr-1.5 mb-1.5 border border-slate-200 hover:bg-blue-50 hover:border-blue-200">Multiplying Decimals</a><a href="Unit 3 Decimals and Order of Operations/Unit 3 Lesson 2 Multiplying and Dividing Decimals.html?type=t3" class="inline-block text-xs bg-slate-100 text-slate-700 px-2.5 py-1 rounded font-medium mr-1.5 mb-1.5 border border-slate-200 hover:bg-blue-50 hover:border-blue-200">Dividing by a Whole Number</a><a href="Unit 3 Decimals and Order of Operations/Unit 3 Lesson 2 Multiplying and Dividing Decimals.html?type=t4" class="inline-block text-xs bg-slate-100 text-slate-700 px-2.5 py-1 rounded font-medium mr-1.5 mb-1.5 border border-slate-200 hover:bg-blue-50 hover:border-blue-200">Dividing by a Decimal</a><a href="Unit 3 Decimals and Order of Operations/Unit 3 Lesson 2 Multiplying and Dividing Decimals.html?type=t5" class="inline-block text-xs bg-slate-100 text-slate-700 px-2.5 py-1 rounded font-medium mr-1.5 mb-1.5 border border-slate-200 hover:bg-blue-50 hover:border-blue-200">Estimating Products and Quotients</a><a href="Unit 3 Decimals and Order of Operations/Unit 3 Lesson 2 Multiplying and Dividing Decimals.html?type=t6" class="inline-block text-xs bg-slate-100 text-slate-700 px-2.5 py-1 rounded font-medium mr-1.5 mb-1.5 border border-slate-200 hover:bg-blue-50 hover:border-blue-200">Decimals in Context</a>
+                            </div>
+                        </div>
+                        <div class="px-6 pb-6">
+                            <a href="Unit 3 Decimals and Order of Operations/Unit 3 Lesson 2 Multiplying and Dividing Decimals.html" class="block w-full text-center bg-[#0f172a] hover:bg-blue-600 text-white font-bold py-3 rounded-lg transition-colors">Start practising</a>
+                        </div>
+                    </div>
+                    <div class="bg-white border border-slate-200 rounded-2xl shadow-sm hover:shadow-md transition-all duration-300 flex flex-col overflow-hidden group">
+                        <div class="p-6 flex-grow">
+                            <div class="flex items-center justify-between mb-4">
+                                <span class="text-xs font-bold text-blue-600 bg-blue-50 px-2.5 py-1 rounded-md uppercase tracking-wider">Lesson 3</span>
+                                <span class="text-slate-400 text-xs font-semibold">6 Problem Types</span>
+                            </div>
+                            <h3 class="text-lg font-bold text-[#0f172a] group-hover:text-blue-600 transition-colors duration-200">Order of Operations</h3>
+                            <p class="text-slate-500 text-sm mt-2">Brackets, then multiply and divide, then add and subtract (B2.1)</p>
+                            <div class="mt-6">
+                                <div class="text-xs font-bold text-slate-400 uppercase tracking-wider mb-2">Topics Covered:</div>
+                                <a href="Unit 3 Decimals and Order of Operations/Unit 3 Lesson 3 Order of Operations.html?type=t1" class="inline-block text-xs bg-slate-100 text-slate-700 px-2.5 py-1 rounded font-medium mr-1.5 mb-1.5 border border-slate-200 hover:bg-blue-50 hover:border-blue-200">Multiply and Divide First</a><a href="Unit 3 Decimals and Order of Operations/Unit 3 Lesson 3 Order of Operations.html?type=t2" class="inline-block text-xs bg-slate-100 text-slate-700 px-2.5 py-1 rounded font-medium mr-1.5 mb-1.5 border border-slate-200 hover:bg-blue-50 hover:border-blue-200">Brackets First</a><a href="Unit 3 Decimals and Order of Operations/Unit 3 Lesson 3 Order of Operations.html?type=t3" class="inline-block text-xs bg-slate-100 text-slate-700 px-2.5 py-1 rounded font-medium mr-1.5 mb-1.5 border border-slate-200 hover:bg-blue-50 hover:border-blue-200">Left to Right</a><a href="Unit 3 Decimals and Order of Operations/Unit 3 Lesson 3 Order of Operations.html?type=t4" class="inline-block text-xs bg-slate-100 text-slate-700 px-2.5 py-1 rounded font-medium mr-1.5 mb-1.5 border border-slate-200 hover:bg-blue-50 hover:border-blue-200">Multi-Step with Decimals</a><a href="Unit 3 Decimals and Order of Operations/Unit 3 Lesson 3 Order of Operations.html?type=t5" class="inline-block text-xs bg-slate-100 text-slate-700 px-2.5 py-1 rounded font-medium mr-1.5 mb-1.5 border border-slate-200 hover:bg-blue-50 hover:border-blue-200">Properties of Operations</a><a href="Unit 3 Decimals and Order of Operations/Unit 3 Lesson 3 Order of Operations.html?type=t6" class="inline-block text-xs bg-slate-100 text-slate-700 px-2.5 py-1 rounded font-medium mr-1.5 mb-1.5 border border-slate-200 hover:bg-blue-50 hover:border-blue-200">Order of Operations in Context</a>
+                            </div>
+                        </div>
+                        <div class="px-6 pb-6">
+                            <a href="Unit 3 Decimals and Order of Operations/Unit 3 Lesson 3 Order of Operations.html" class="block w-full text-center bg-[#0f172a] hover:bg-blue-600 text-white font-bold py-3 rounded-lg transition-colors">Start practising</a>
+                        </div>
+                    </div>
+                    <div class="bg-white border border-slate-200 rounded-2xl shadow-sm hover:shadow-md transition-all duration-300 flex flex-col overflow-hidden group">
+                        <div class="p-6 flex-grow">
+                            <div class="flex items-center justify-between mb-4">
+                                <span class="text-xs font-bold text-blue-600 bg-blue-50 px-2.5 py-1 rounded-md uppercase tracking-wider">Practice Test</span>
+                                <span class="text-slate-400 text-xs font-semibold">4 Problem Types</span>
+                            </div>
+                            <h3 class="text-lg font-bold text-[#0f172a] group-hover:text-blue-600 transition-colors duration-200">Unit 3 Practice Test</h3>
+                            <p class="text-slate-500 text-sm mt-2">Rounding, decimal arithmetic and order of operations, mixed together. Get one wrong and you must earn your way past it.</p>
+                            <div class="mt-6">
+                                <div class="text-xs font-bold text-slate-400 uppercase tracking-wider mb-2">Topics Covered:</div>
+                                <a href="Unit 3 Decimals and Order of Operations/Unit 3 Practice Test.html?type=b1" class="inline-block text-xs bg-slate-100 text-slate-700 px-2.5 py-1 rounded font-medium mr-1.5 mb-1.5 border border-slate-200 hover:bg-blue-50 hover:border-blue-200">Rounding and Estimating</a><a href="Unit 3 Decimals and Order of Operations/Unit 3 Practice Test.html?type=b2" class="inline-block text-xs bg-slate-100 text-slate-700 px-2.5 py-1 rounded font-medium mr-1.5 mb-1.5 border border-slate-200 hover:bg-blue-50 hover:border-blue-200">Decimal Operations</a><a href="Unit 3 Decimals and Order of Operations/Unit 3 Practice Test.html?type=b3" class="inline-block text-xs bg-slate-100 text-slate-700 px-2.5 py-1 rounded font-medium mr-1.5 mb-1.5 border border-slate-200 hover:bg-blue-50 hover:border-blue-200">Order of Operations</a><a href="Unit 3 Decimals and Order of Operations/Unit 3 Practice Test.html?type=b4" class="inline-block text-xs bg-slate-100 text-slate-700 px-2.5 py-1 rounded font-medium mr-1.5 mb-1.5 border border-slate-200 hover:bg-blue-50 hover:border-blue-200">Multi-Step Problems</a>
+                            </div>
+                        </div>
+                        <div class="px-6 pb-6">
+                            <a href="Unit 3 Decimals and Order of Operations/Unit 3 Practice Test.html" class="block w-full text-center bg-[#0f172a] hover:bg-blue-600 text-white font-bold py-3 rounded-lg transition-colors">Start practising</a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </details>
+        <details id="unit-4" data-unit="4" hidden class="bg-white border border-slate-200 rounded-2xl shadow-sm mb-8 overflow-hidden">
+            <summary class="flex items-center justify-between gap-4 px-6 py-5 bg-slate-50 border-b border-slate-100 hover:bg-slate-100 transition-colors">
+                <div class="flex items-center gap-4">
+                    <span class="chevron text-blue-600 text-xl font-bold">&#9656;</span>
+                    <div>
+                        <div class="text-xs font-bold text-blue-600 uppercase tracking-widest">Unit 4</div>
+                        <div class="text-lg md:text-xl font-bold text-[#0f172a]">Algebra</div>
+                    </div>
+                </div>
+                <span class="text-slate-400 text-xs font-semibold whitespace-nowrap">4 lessons &middot; 1 test</span>
+            </summary>
+            <div class="p-6">
+                <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+                    <div class="bg-white border border-slate-200 rounded-2xl shadow-sm hover:shadow-md transition-all duration-300 flex flex-col overflow-hidden group">
+                        <div class="p-6 flex-grow">
+                            <div class="flex items-center justify-between mb-4">
+                                <span class="text-xs font-bold text-blue-600 bg-blue-50 px-2.5 py-1 rounded-md uppercase tracking-wider">Lesson 1</span>
+                                <span class="text-slate-400 text-xs font-semibold">6 Problem Types</span>
+                            </div>
+                            <h3 class="text-lg font-bold text-[#0f172a] group-hover:text-blue-600 transition-colors duration-200">Variables and Expressions</h3>
+                            <p class="text-slate-500 text-sm mt-2">What a letter means, and how like terms collect (C2.1)</p>
+                            <div class="mt-6">
+                                <div class="text-xs font-bold text-slate-400 uppercase tracking-wider mb-2">Topics Covered:</div>
+                                <a href="Unit 4 Algebra/Unit 4 Lesson 1 Variables and Expressions.html?type=t1" class="inline-block text-xs bg-slate-100 text-slate-700 px-2.5 py-1 rounded font-medium mr-1.5 mb-1.5 border border-slate-200 hover:bg-blue-50 hover:border-blue-200">Reading an Expression</a><a href="Unit 4 Algebra/Unit 4 Lesson 1 Variables and Expressions.html?type=t2" class="inline-block text-xs bg-slate-100 text-slate-700 px-2.5 py-1 rounded font-medium mr-1.5 mb-1.5 border border-slate-200 hover:bg-blue-50 hover:border-blue-200">Writing an Expression from Words</a><a href="Unit 4 Algebra/Unit 4 Lesson 1 Variables and Expressions.html?type=t3" class="inline-block text-xs bg-slate-100 text-slate-700 px-2.5 py-1 rounded font-medium mr-1.5 mb-1.5 border border-slate-200 hover:bg-blue-50 hover:border-blue-200">Like Terms</a><a href="Unit 4 Algebra/Unit 4 Lesson 1 Variables and Expressions.html?type=t4" class="inline-block text-xs bg-slate-100 text-slate-700 px-2.5 py-1 rounded font-medium mr-1.5 mb-1.5 border border-slate-200 hover:bg-blue-50 hover:border-blue-200">Adding Like Terms</a><a href="Unit 4 Algebra/Unit 4 Lesson 1 Variables and Expressions.html?type=t5" class="inline-block text-xs bg-slate-100 text-slate-700 px-2.5 py-1 rounded font-medium mr-1.5 mb-1.5 border border-slate-200 hover:bg-blue-50 hover:border-blue-200">Adding and Subtracting Like Terms</a><a href="Unit 4 Algebra/Unit 4 Lesson 1 Variables and Expressions.html?type=t6" class="inline-block text-xs bg-slate-100 text-slate-700 px-2.5 py-1 rounded font-medium mr-1.5 mb-1.5 border border-slate-200 hover:bg-blue-50 hover:border-blue-200">Expressions in Context</a>
+                            </div>
+                        </div>
+                        <div class="px-6 pb-6">
+                            <a href="Unit 4 Algebra/Unit 4 Lesson 1 Variables and Expressions.html" class="block w-full text-center bg-[#0f172a] hover:bg-blue-600 text-white font-bold py-3 rounded-lg transition-colors">Start practising</a>
+                        </div>
+                    </div>
+                    <div class="bg-white border border-slate-200 rounded-2xl shadow-sm hover:shadow-md transition-all duration-300 flex flex-col overflow-hidden group">
+                        <div class="p-6 flex-grow">
+                            <div class="flex items-center justify-between mb-4">
+                                <span class="text-xs font-bold text-blue-600 bg-blue-50 px-2.5 py-1 rounded-md uppercase tracking-wider">Lesson 2</span>
+                                <span class="text-slate-400 text-xs font-semibold">5 Problem Types</span>
+                            </div>
+                            <h3 class="text-lg font-bold text-[#0f172a] group-hover:text-blue-600 transition-colors duration-200">Evaluating Expressions</h3>
+                            <p class="text-slate-500 text-sm mt-2">Putting numbers into expressions and formulas (C2.2)</p>
+                            <div class="mt-6">
+                                <div class="text-xs font-bold text-slate-400 uppercase tracking-wider mb-2">Topics Covered:</div>
+                                <a href="Unit 4 Algebra/Unit 4 Lesson 2 Evaluating Expressions.html?type=t1" class="inline-block text-xs bg-slate-100 text-slate-700 px-2.5 py-1 rounded font-medium mr-1.5 mb-1.5 border border-slate-200 hover:bg-blue-50 hover:border-blue-200">Substituting One Value</a><a href="Unit 4 Algebra/Unit 4 Lesson 2 Evaluating Expressions.html?type=t2" class="inline-block text-xs bg-slate-100 text-slate-700 px-2.5 py-1 rounded font-medium mr-1.5 mb-1.5 border border-slate-200 hover:bg-blue-50 hover:border-blue-200">Substituting Two Values</a><a href="Unit 4 Algebra/Unit 4 Lesson 2 Evaluating Expressions.html?type=t3" class="inline-block text-xs bg-slate-100 text-slate-700 px-2.5 py-1 rounded font-medium mr-1.5 mb-1.5 border border-slate-200 hover:bg-blue-50 hover:border-blue-200">Decimals and Brackets</a><a href="Unit 4 Algebra/Unit 4 Lesson 2 Evaluating Expressions.html?type=t4" class="inline-block text-xs bg-slate-100 text-slate-700 px-2.5 py-1 rounded font-medium mr-1.5 mb-1.5 border border-slate-200 hover:bg-blue-50 hover:border-blue-200">Order of Operations in an Expression</a><a href="Unit 4 Algebra/Unit 4 Lesson 2 Evaluating Expressions.html?type=t5" class="inline-block text-xs bg-slate-100 text-slate-700 px-2.5 py-1 rounded font-medium mr-1.5 mb-1.5 border border-slate-200 hover:bg-blue-50 hover:border-blue-200">Using Formulas</a>
+                            </div>
+                        </div>
+                        <div class="px-6 pb-6">
+                            <a href="Unit 4 Algebra/Unit 4 Lesson 2 Evaluating Expressions.html" class="block w-full text-center bg-[#0f172a] hover:bg-blue-600 text-white font-bold py-3 rounded-lg transition-colors">Start practising</a>
+                        </div>
+                    </div>
+                    <div class="bg-white border border-slate-200 rounded-2xl shadow-sm hover:shadow-md transition-all duration-300 flex flex-col overflow-hidden group">
+                        <div class="p-6 flex-grow">
+                            <div class="flex items-center justify-between mb-4">
+                                <span class="text-xs font-bold text-blue-600 bg-blue-50 px-2.5 py-1 rounded-md uppercase tracking-wider">Lesson 3</span>
+                                <span class="text-slate-400 text-xs font-semibold">7 Problem Types</span>
+                            </div>
+                            <h3 class="text-lg font-bold text-[#0f172a] group-hover:text-blue-600 transition-colors duration-200">Solving Equations</h3>
+                            <p class="text-slate-500 text-sm mt-2">Two methods, side by side, and always a check (C2.3)</p>
+                            <div class="mt-6">
+                                <div class="text-xs font-bold text-slate-400 uppercase tracking-wider mb-2">Topics Covered:</div>
+                                <a href="Unit 4 Algebra/Unit 4 Lesson 3 Solving Equations.html?type=t1" class="inline-block text-xs bg-slate-100 text-slate-700 px-2.5 py-1 rounded font-medium mr-1.5 mb-1.5 border border-slate-200 hover:bg-blue-50 hover:border-blue-200">One-Step Equations</a><a href="Unit 4 Algebra/Unit 4 Lesson 3 Solving Equations.html?type=t2" class="inline-block text-xs bg-slate-100 text-slate-700 px-2.5 py-1 rounded font-medium mr-1.5 mb-1.5 border border-slate-200 hover:bg-blue-50 hover:border-blue-200">Two-Step Equations</a><a href="Unit 4 Algebra/Unit 4 Lesson 3 Solving Equations.html?type=t3" class="inline-block text-xs bg-slate-100 text-slate-700 px-2.5 py-1 rounded font-medium mr-1.5 mb-1.5 border border-slate-200 hover:bg-blue-50 hover:border-blue-200">Equations with Division</a><a href="Unit 4 Algebra/Unit 4 Lesson 3 Solving Equations.html?type=t4" class="inline-block text-xs bg-slate-100 text-slate-700 px-2.5 py-1 rounded font-medium mr-1.5 mb-1.5 border border-slate-200 hover:bg-blue-50 hover:border-blue-200">Equations with Decimals</a><a href="Unit 4 Algebra/Unit 4 Lesson 3 Solving Equations.html?type=t5" class="inline-block text-xs bg-slate-100 text-slate-700 px-2.5 py-1 rounded font-medium mr-1.5 mb-1.5 border border-slate-200 hover:bg-blue-50 hover:border-blue-200">Collecting Like Terms First</a><a href="Unit 4 Algebra/Unit 4 Lesson 3 Solving Equations.html?type=t6" class="inline-block text-xs bg-slate-100 text-slate-700 px-2.5 py-1 rounded font-medium mr-1.5 mb-1.5 border border-slate-200 hover:bg-blue-50 hover:border-blue-200">Verifying a Solution</a><a href="Unit 4 Algebra/Unit 4 Lesson 3 Solving Equations.html?type=t7" class="inline-block text-xs bg-slate-100 text-slate-700 px-2.5 py-1 rounded font-medium mr-1.5 mb-1.5 border border-slate-200 hover:bg-blue-50 hover:border-blue-200">Equations in Context</a>
+                            </div>
+                        </div>
+                        <div class="px-6 pb-6">
+                            <a href="Unit 4 Algebra/Unit 4 Lesson 3 Solving Equations.html" class="block w-full text-center bg-[#0f172a] hover:bg-blue-600 text-white font-bold py-3 rounded-lg transition-colors">Start practising</a>
+                        </div>
+                    </div>
+                    <div class="bg-white border border-slate-200 rounded-2xl shadow-sm hover:shadow-md transition-all duration-300 flex flex-col overflow-hidden group">
+                        <div class="p-6 flex-grow">
+                            <div class="flex items-center justify-between mb-4">
+                                <span class="text-xs font-bold text-blue-600 bg-blue-50 px-2.5 py-1 rounded-md uppercase tracking-wider">Lesson 4</span>
+                                <span class="text-slate-400 text-xs font-semibold">5 Problem Types</span>
+                            </div>
+                            <h3 class="text-lg font-bold text-[#0f172a] group-hover:text-blue-600 transition-colors duration-200">Inequalities</h3>
+                            <p class="text-slate-500 text-sm mt-2">Solving a range of answers, and drawing it (C2.4)</p>
+                            <div class="mt-6">
+                                <div class="text-xs font-bold text-slate-400 uppercase tracking-wider mb-2">Topics Covered:</div>
+                                <a href="Unit 4 Algebra/Unit 4 Lesson 4 Inequalities.html?type=t1" class="inline-block text-xs bg-slate-100 text-slate-700 px-2.5 py-1 rounded font-medium mr-1.5 mb-1.5 border border-slate-200 hover:bg-blue-50 hover:border-blue-200">Testing Values</a><a href="Unit 4 Algebra/Unit 4 Lesson 4 Inequalities.html?type=t2" class="inline-block text-xs bg-slate-100 text-slate-700 px-2.5 py-1 rounded font-medium mr-1.5 mb-1.5 border border-slate-200 hover:bg-blue-50 hover:border-blue-200">Solving One-Step Inequalities</a><a href="Unit 4 Algebra/Unit 4 Lesson 4 Inequalities.html?type=t3" class="inline-block text-xs bg-slate-100 text-slate-700 px-2.5 py-1 rounded font-medium mr-1.5 mb-1.5 border border-slate-200 hover:bg-blue-50 hover:border-blue-200">Solving Multi-Term Inequalities</a><a href="Unit 4 Algebra/Unit 4 Lesson 4 Inequalities.html?type=t4" class="inline-block text-xs bg-slate-100 text-slate-700 px-2.5 py-1 rounded font-medium mr-1.5 mb-1.5 border border-slate-200 hover:bg-blue-50 hover:border-blue-200">Graphing the Solution</a><a href="Unit 4 Algebra/Unit 4 Lesson 4 Inequalities.html?type=t5" class="inline-block text-xs bg-slate-100 text-slate-700 px-2.5 py-1 rounded font-medium mr-1.5 mb-1.5 border border-slate-200 hover:bg-blue-50 hover:border-blue-200">Inequalities in Context</a>
+                            </div>
+                        </div>
+                        <div class="px-6 pb-6">
+                            <a href="Unit 4 Algebra/Unit 4 Lesson 4 Inequalities.html" class="block w-full text-center bg-[#0f172a] hover:bg-blue-600 text-white font-bold py-3 rounded-lg transition-colors">Start practising</a>
+                        </div>
+                    </div>
+                    <div class="bg-white border border-slate-200 rounded-2xl shadow-sm hover:shadow-md transition-all duration-300 flex flex-col overflow-hidden group">
+                        <div class="p-6 flex-grow">
+                            <div class="flex items-center justify-between mb-4">
+                                <span class="text-xs font-bold text-blue-600 bg-blue-50 px-2.5 py-1 rounded-md uppercase tracking-wider">Practice Test</span>
+                                <span class="text-slate-400 text-xs font-semibold">4 Problem Types</span>
+                            </div>
+                            <h3 class="text-lg font-bold text-[#0f172a] group-hover:text-blue-600 transition-colors duration-200">Algebra</h3>
+                            <p class="text-slate-500 text-sm mt-2">Everything from Unit 4, mixed and unlabelled (C2.1&amp;ndash;C2.4)</p>
+                            <div class="mt-6">
+                                <div class="text-xs font-bold text-slate-400 uppercase tracking-wider mb-2">Topics Covered:</div>
+                                <a href="Unit 4 Algebra/Unit 4 Practice Test.html?type=b1" class="inline-block text-xs bg-slate-100 text-slate-700 px-2.5 py-1 rounded font-medium mr-1.5 mb-1.5 border border-slate-200 hover:bg-blue-50 hover:border-blue-200">Expressions and Like Terms</a><a href="Unit 4 Algebra/Unit 4 Practice Test.html?type=b2" class="inline-block text-xs bg-slate-100 text-slate-700 px-2.5 py-1 rounded font-medium mr-1.5 mb-1.5 border border-slate-200 hover:bg-blue-50 hover:border-blue-200">Evaluating and Formulas</a><a href="Unit 4 Algebra/Unit 4 Practice Test.html?type=b3" class="inline-block text-xs bg-slate-100 text-slate-700 px-2.5 py-1 rounded font-medium mr-1.5 mb-1.5 border border-slate-200 hover:bg-blue-50 hover:border-blue-200">Equations</a><a href="Unit 4 Algebra/Unit 4 Practice Test.html?type=b4" class="inline-block text-xs bg-slate-100 text-slate-700 px-2.5 py-1 rounded font-medium mr-1.5 mb-1.5 border border-slate-200 hover:bg-blue-50 hover:border-blue-200">Inequalities</a>
+                            </div>
+                        </div>
+                        <div class="px-6 pb-6">
+                            <a href="Unit 4 Algebra/Unit 4 Practice Test.html" class="block w-full text-center bg-[#0f172a] hover:bg-blue-600 text-white font-bold py-3 rounded-lg transition-colors">Start practising</a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </details>
+        <details id="unit-5" data-unit="5" hidden class="bg-white border border-slate-200 rounded-2xl shadow-sm mb-8 overflow-hidden">
+            <summary class="flex items-center justify-between gap-4 px-6 py-5 bg-slate-50 border-b border-slate-100 hover:bg-slate-100 transition-colors">
+                <div class="flex items-center gap-4">
+                    <span class="chevron text-blue-600 text-xl font-bold">&#9656;</span>
+                    <div>
+                        <div class="text-xs font-bold text-blue-600 uppercase tracking-widest">Unit 5</div>
+                        <div class="text-lg md:text-xl font-bold text-[#0f172a]">Patterns and Linear Relations</div>
+                    </div>
+                </div>
+                <span class="text-slate-400 text-xs font-semibold whitespace-nowrap">4 lessons &middot; 1 test</span>
+            </summary>
+            <div class="p-6">
+                <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+                    <div class="bg-white border border-slate-200 rounded-2xl shadow-sm hover:shadow-md transition-all duration-300 flex flex-col overflow-hidden group">
+                        <div class="p-6 flex-grow">
+                            <div class="flex items-center justify-between mb-4">
+                                <span class="text-xs font-bold text-blue-600 bg-blue-50 px-2.5 py-1 rounded-md uppercase tracking-wider">Lesson 1</span>
+                                <span class="text-slate-400 text-xs font-semibold">6 Problem Types</span>
+                            </div>
+                            <h3 class="text-lg font-bold text-[#0f172a] group-hover:text-blue-600 transition-colors duration-200">Repeating, Growing, and Shrinking Patterns</h3>
+                            <p class="text-slate-500 text-sm mt-2">Term number and term value &amp;middot; constant rate &amp;middot; initial value</p>
+                            <div class="mt-6">
+                                <div class="text-xs font-bold text-slate-400 uppercase tracking-wider mb-2">Topics Covered:</div>
+                                <a href="Unit 5 Patterns and Linear Relations/Unit 5 Lesson 1 Repeating Growing and Shrinking Patterns.html?type=t1" class="inline-block text-xs bg-slate-100 text-slate-700 px-2.5 py-1 rounded font-medium mr-1.5 mb-1.5 border border-slate-200 hover:bg-blue-50 hover:border-blue-200">Repeating, Growing, or Shrinking?</a><a href="Unit 5 Patterns and Linear Relations/Unit 5 Lesson 1 Repeating Growing and Shrinking Patterns.html?type=t2" class="inline-block text-xs bg-slate-100 text-slate-700 px-2.5 py-1 rounded font-medium mr-1.5 mb-1.5 border border-slate-200 hover:bg-blue-50 hover:border-blue-200">The Next Terms</a><a href="Unit 5 Patterns and Linear Relations/Unit 5 Lesson 1 Repeating Growing and Shrinking Patterns.html?type=t3" class="inline-block text-xs bg-slate-100 text-slate-700 px-2.5 py-1 rounded font-medium mr-1.5 mb-1.5 border border-slate-200 hover:bg-blue-50 hover:border-blue-200">The Core of a Repeating Pattern</a><a href="Unit 5 Patterns and Linear Relations/Unit 5 Lesson 1 Repeating Growing and Shrinking Patterns.html?type=t4" class="inline-block text-xs bg-slate-100 text-slate-700 px-2.5 py-1 rounded font-medium mr-1.5 mb-1.5 border border-slate-200 hover:bg-blue-50 hover:border-blue-200">Constant Rate and Initial Value</a><a href="Unit 5 Patterns and Linear Relations/Unit 5 Lesson 1 Repeating Growing and Shrinking Patterns.html?type=t5" class="inline-block text-xs bg-slate-100 text-slate-700 px-2.5 py-1 rounded font-medium mr-1.5 mb-1.5 border border-slate-200 hover:bg-blue-50 hover:border-blue-200">Writing the Rule in Words</a><a href="Unit 5 Patterns and Linear Relations/Unit 5 Lesson 1 Repeating Growing and Shrinking Patterns.html?type=t6" class="inline-block text-xs bg-slate-100 text-slate-700 px-2.5 py-1 rounded font-medium mr-1.5 mb-1.5 border border-slate-200 hover:bg-blue-50 hover:border-blue-200">Comparing Two Patterns</a>
+                            </div>
+                        </div>
+                        <div class="px-6 pb-6">
+                            <a href="Unit 5 Patterns and Linear Relations/Unit 5 Lesson 1 Repeating Growing and Shrinking Patterns.html" class="block w-full text-center bg-[#0f172a] hover:bg-blue-600 text-white font-bold py-3 rounded-lg transition-colors">Start practising</a>
+                        </div>
+                    </div>
+                    <div class="bg-white border border-slate-200 rounded-2xl shadow-sm hover:shadow-md transition-all duration-300 flex flex-col overflow-hidden group">
+                        <div class="p-6 flex-grow">
+                            <div class="flex items-center justify-between mb-4">
+                                <span class="text-xs font-bold text-blue-600 bg-blue-50 px-2.5 py-1 rounded-md uppercase tracking-wider">Lesson 2</span>
+                                <span class="text-slate-400 text-xs font-semibold">6 Problem Types</span>
+                            </div>
+                            <h3 class="text-lg font-bold text-[#0f172a] group-hover:text-blue-600 transition-colors duration-200">Representing Patterns</h3>
+                            <p class="text-slate-500 text-sm mt-2">Pictures &amp;middot; tables &amp;middot; rules in words</p>
+                            <div class="mt-6">
+                                <div class="text-xs font-bold text-slate-400 uppercase tracking-wider mb-2">Topics Covered:</div>
+                                <a href="Unit 5 Patterns and Linear Relations/Unit 5 Lesson 2 Representing Patterns.html?type=t1" class="inline-block text-xs bg-slate-100 text-slate-700 px-2.5 py-1 rounded font-medium mr-1.5 mb-1.5 border border-slate-200 hover:bg-blue-50 hover:border-blue-200">From a Picture to a Table</a><a href="Unit 5 Patterns and Linear Relations/Unit 5 Lesson 2 Representing Patterns.html?type=t2" class="inline-block text-xs bg-slate-100 text-slate-700 px-2.5 py-1 rounded font-medium mr-1.5 mb-1.5 border border-slate-200 hover:bg-blue-50 hover:border-blue-200">From a Table to a Picture</a><a href="Unit 5 Patterns and Linear Relations/Unit 5 Lesson 2 Representing Patterns.html?type=t3" class="inline-block text-xs bg-slate-100 text-slate-700 px-2.5 py-1 rounded font-medium mr-1.5 mb-1.5 border border-slate-200 hover:bg-blue-50 hover:border-blue-200">From a Picture to a Rule</a><a href="Unit 5 Patterns and Linear Relations/Unit 5 Lesson 2 Representing Patterns.html?type=t4" class="inline-block text-xs bg-slate-100 text-slate-700 px-2.5 py-1 rounded font-medium mr-1.5 mb-1.5 border border-slate-200 hover:bg-blue-50 hover:border-blue-200">From a Rule to a Table</a><a href="Unit 5 Patterns and Linear Relations/Unit 5 Lesson 2 Representing Patterns.html?type=t5" class="inline-block text-xs bg-slate-100 text-slate-700 px-2.5 py-1 rounded font-medium mr-1.5 mb-1.5 border border-slate-200 hover:bg-blue-50 hover:border-blue-200">Missing Terms in a Table</a><a href="Unit 5 Patterns and Linear Relations/Unit 5 Lesson 2 Representing Patterns.html?type=t6" class="inline-block text-xs bg-slate-100 text-slate-700 px-2.5 py-1 rounded font-medium mr-1.5 mb-1.5 border border-slate-200 hover:bg-blue-50 hover:border-blue-200">Patterns in Context</a>
+                            </div>
+                        </div>
+                        <div class="px-6 pb-6">
+                            <a href="Unit 5 Patterns and Linear Relations/Unit 5 Lesson 2 Representing Patterns.html" class="block w-full text-center bg-[#0f172a] hover:bg-blue-600 text-white font-bold py-3 rounded-lg transition-colors">Start practising</a>
+                        </div>
+                    </div>
+                    <div class="bg-white border border-slate-200 rounded-2xl shadow-sm hover:shadow-md transition-all duration-300 flex flex-col overflow-hidden group">
+                        <div class="p-6 flex-grow">
+                            <div class="flex items-center justify-between mb-4">
+                                <span class="text-xs font-bold text-blue-600 bg-blue-50 px-2.5 py-1 rounded-md uppercase tracking-wider">Lesson 3</span>
+                                <span class="text-slate-400 text-xs font-semibold">7 Problem Types</span>
+                            </div>
+                            <h3 class="text-lg font-bold text-[#0f172a] group-hover:text-blue-600 transition-colors duration-200">Graphing Linear Relations</h3>
+                            <p class="text-slate-500 text-sm mt-2">y = mx + b &amp;middot; reading and drawing graphs</p>
+                            <div class="mt-6">
+                                <div class="text-xs font-bold text-slate-400 uppercase tracking-wider mb-2">Topics Covered:</div>
+                                <a href="Unit 5 Patterns and Linear Relations/Unit 5 Lesson 3 Graphing Linear Relations.html?type=t1" class="inline-block text-xs bg-slate-100 text-slate-700 px-2.5 py-1 rounded font-medium mr-1.5 mb-1.5 border border-slate-200 hover:bg-blue-50 hover:border-blue-200">From Words to an Equation</a><a href="Unit 5 Patterns and Linear Relations/Unit 5 Lesson 3 Graphing Linear Relations.html?type=t2" class="inline-block text-xs bg-slate-100 text-slate-700 px-2.5 py-1 rounded font-medium mr-1.5 mb-1.5 border border-slate-200 hover:bg-blue-50 hover:border-blue-200">Plotting a Relation</a><a href="Unit 5 Patterns and Linear Relations/Unit 5 Lesson 3 Graphing Linear Relations.html?type=t3" class="inline-block text-xs bg-slate-100 text-slate-700 px-2.5 py-1 rounded font-medium mr-1.5 mb-1.5 border border-slate-200 hover:bg-blue-50 hover:border-blue-200">Reading a Graph</a><a href="Unit 5 Patterns and Linear Relations/Unit 5 Lesson 3 Graphing Linear Relations.html?type=t4" class="inline-block text-xs bg-slate-100 text-slate-700 px-2.5 py-1 rounded font-medium mr-1.5 mb-1.5 border border-slate-200 hover:bg-blue-50 hover:border-blue-200">Rate of Change and Initial Value from a Graph</a><a href="Unit 5 Patterns and Linear Relations/Unit 5 Lesson 3 Graphing Linear Relations.html?type=t5" class="inline-block text-xs bg-slate-100 text-slate-700 px-2.5 py-1 rounded font-medium mr-1.5 mb-1.5 border border-slate-200 hover:bg-blue-50 hover:border-blue-200">From a Graph to an Equation</a><a href="Unit 5 Patterns and Linear Relations/Unit 5 Lesson 3 Graphing Linear Relations.html?type=t6" class="inline-block text-xs bg-slate-100 text-slate-700 px-2.5 py-1 rounded font-medium mr-1.5 mb-1.5 border border-slate-200 hover:bg-blue-50 hover:border-blue-200">Matching Table, Graph, and Equation</a><a href="Unit 5 Patterns and Linear Relations/Unit 5 Lesson 3 Graphing Linear Relations.html?type=t7" class="inline-block text-xs bg-slate-100 text-slate-700 px-2.5 py-1 rounded font-medium mr-1.5 mb-1.5 border border-slate-200 hover:bg-blue-50 hover:border-blue-200">Two Ways to See the Same Pattern</a>
+                            </div>
+                        </div>
+                        <div class="px-6 pb-6">
+                            <a href="Unit 5 Patterns and Linear Relations/Unit 5 Lesson 3 Graphing Linear Relations.html" class="block w-full text-center bg-[#0f172a] hover:bg-blue-600 text-white font-bold py-3 rounded-lg transition-colors">Start practising</a>
+                        </div>
+                    </div>
+                    <div class="bg-white border border-slate-200 rounded-2xl shadow-sm hover:shadow-md transition-all duration-300 flex flex-col overflow-hidden group">
+                        <div class="p-6 flex-grow">
+                            <div class="flex items-center justify-between mb-4">
+                                <span class="text-xs font-bold text-blue-600 bg-blue-50 px-2.5 py-1 rounded-md uppercase tracking-wider">Lesson 4</span>
+                                <span class="text-slate-400 text-xs font-semibold">6 Problem Types</span>
+                            </div>
+                            <h3 class="text-lg font-bold text-[#0f172a] group-hover:text-blue-600 transition-colors duration-200">Predicting and Solving</h3>
+                            <p class="text-slate-500 text-sm mt-2">Near and far predictions &amp;middot; missing values &amp;middot; solving for the term number</p>
+                            <div class="mt-6">
+                                <div class="text-xs font-bold text-slate-400 uppercase tracking-wider mb-2">Topics Covered:</div>
+                                <a href="Unit 5 Patterns and Linear Relations/Unit 5 Lesson 4 Predicting and Solving.html?type=t1" class="inline-block text-xs bg-slate-100 text-slate-700 px-2.5 py-1 rounded font-medium mr-1.5 mb-1.5 border border-slate-200 hover:bg-blue-50 hover:border-blue-200">Near Predictions</a><a href="Unit 5 Patterns and Linear Relations/Unit 5 Lesson 4 Predicting and Solving.html?type=t2" class="inline-block text-xs bg-slate-100 text-slate-700 px-2.5 py-1 rounded font-medium mr-1.5 mb-1.5 border border-slate-200 hover:bg-blue-50 hover:border-blue-200">Far Predictions</a><a href="Unit 5 Patterns and Linear Relations/Unit 5 Lesson 4 Predicting and Solving.html?type=t3" class="inline-block text-xs bg-slate-100 text-slate-700 px-2.5 py-1 rounded font-medium mr-1.5 mb-1.5 border border-slate-200 hover:bg-blue-50 hover:border-blue-200">Finding the Term Number for a Given Value</a><a href="Unit 5 Patterns and Linear Relations/Unit 5 Lesson 4 Predicting and Solving.html?type=t4" class="inline-block text-xs bg-slate-100 text-slate-700 px-2.5 py-1 rounded font-medium mr-1.5 mb-1.5 border border-slate-200 hover:bg-blue-50 hover:border-blue-200">Missing Values in a Table or Graph</a><a href="Unit 5 Patterns and Linear Relations/Unit 5 Lesson 4 Predicting and Solving.html?type=t5" class="inline-block text-xs bg-slate-100 text-slate-700 px-2.5 py-1 rounded font-medium mr-1.5 mb-1.5 border border-slate-200 hover:bg-blue-50 hover:border-blue-200">Which Relation Gets There First</a><a href="Unit 5 Patterns and Linear Relations/Unit 5 Lesson 4 Predicting and Solving.html?type=t6" class="inline-block text-xs bg-slate-100 text-slate-700 px-2.5 py-1 rounded font-medium mr-1.5 mb-1.5 border border-slate-200 hover:bg-blue-50 hover:border-blue-200">Multi-Step Context</a>
+                            </div>
+                        </div>
+                        <div class="px-6 pb-6">
+                            <a href="Unit 5 Patterns and Linear Relations/Unit 5 Lesson 4 Predicting and Solving.html" class="block w-full text-center bg-[#0f172a] hover:bg-blue-600 text-white font-bold py-3 rounded-lg transition-colors">Start practising</a>
+                        </div>
+                    </div>
+                    <div class="bg-white border border-slate-200 rounded-2xl shadow-sm hover:shadow-md transition-all duration-300 flex flex-col overflow-hidden group">
+                        <div class="p-6 flex-grow">
+                            <div class="flex items-center justify-between mb-4">
+                                <span class="text-xs font-bold text-blue-600 bg-blue-50 px-2.5 py-1 rounded-md uppercase tracking-wider">Practice Test</span>
+                                <span class="text-slate-400 text-xs font-semibold">4 Problem Types</span>
+                            </div>
+                            <h3 class="text-lg font-bold text-[#0f172a] group-hover:text-blue-600 transition-colors duration-200">Patterns and Linear Relations</h3>
+                            <p class="text-slate-500 text-sm mt-2">Application and Thinking &amp;middot; all four lessons mixed</p>
+                            <div class="mt-6">
+                                <div class="text-xs font-bold text-slate-400 uppercase tracking-wider mb-2">Topics Covered:</div>
+                                <a href="Unit 5 Patterns and Linear Relations/Unit 5 Practice Test.html?type=b1" class="inline-block text-xs bg-slate-100 text-slate-700 px-2.5 py-1 rounded font-medium mr-1.5 mb-1.5 border border-slate-200 hover:bg-blue-50 hover:border-blue-200">Patterns and Pattern Rules</a><a href="Unit 5 Patterns and Linear Relations/Unit 5 Practice Test.html?type=b2" class="inline-block text-xs bg-slate-100 text-slate-700 px-2.5 py-1 rounded font-medium mr-1.5 mb-1.5 border border-slate-200 hover:bg-blue-50 hover:border-blue-200">Representing Patterns</a><a href="Unit 5 Patterns and Linear Relations/Unit 5 Practice Test.html?type=b3" class="inline-block text-xs bg-slate-100 text-slate-700 px-2.5 py-1 rounded font-medium mr-1.5 mb-1.5 border border-slate-200 hover:bg-blue-50 hover:border-blue-200">Graphing Linear Relations</a><a href="Unit 5 Patterns and Linear Relations/Unit 5 Practice Test.html?type=b4" class="inline-block text-xs bg-slate-100 text-slate-700 px-2.5 py-1 rounded font-medium mr-1.5 mb-1.5 border border-slate-200 hover:bg-blue-50 hover:border-blue-200">Predicting and Solving</a>
+                            </div>
+                        </div>
+                        <div class="px-6 pb-6">
+                            <a href="Unit 5 Patterns and Linear Relations/Unit 5 Practice Test.html" class="block w-full text-center bg-[#0f172a] hover:bg-blue-600 text-white font-bold py-3 rounded-lg transition-colors">Start practising</a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </details>
+        <details id="unit-6" data-unit="6" hidden class="bg-white border border-slate-200 rounded-2xl shadow-sm mb-8 overflow-hidden">
+            <summary class="flex items-center justify-between gap-4 px-6 py-5 bg-slate-50 border-b border-slate-100 hover:bg-slate-100 transition-colors">
+                <div class="flex items-center gap-4">
+                    <span class="chevron text-blue-600 text-xl font-bold">&#9656;</span>
+                    <div>
+                        <div class="text-xs font-bold text-blue-600 uppercase tracking-widest">Unit 6</div>
+                        <div class="text-lg md:text-xl font-bold text-[#0f172a]">Percents</div>
+                    </div>
+                </div>
+                <span class="text-slate-400 text-xs font-semibold whitespace-nowrap">3 lessons &middot; 1 test</span>
+            </summary>
+            <div class="p-6">
+                <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+                    <div class="bg-white border border-slate-200 rounded-2xl shadow-sm hover:shadow-md transition-all duration-300 flex flex-col overflow-hidden group">
+                        <div class="p-6 flex-grow">
+                            <div class="flex items-center justify-between mb-4">
+                                <span class="text-xs font-bold text-blue-600 bg-blue-50 px-2.5 py-1 rounded-md uppercase tracking-wider">Lesson 1</span>
+                                <span class="text-slate-400 text-xs font-semibold">8 Problem Types</span>
+                            </div>
+                            <h3 class="text-lg font-bold text-[#0f172a] group-hover:text-blue-600 transition-colors duration-200">Unit 6 Lesson 1 Fractions, Decimals, and Percents</h3>
+                            <p class="text-slate-500 text-sm mt-2">Converting between the three ways of writing the same amount</p>
+                            <div class="mt-6">
+                                <div class="text-xs font-bold text-slate-400 uppercase tracking-wider mb-2">Topics Covered:</div>
+                                <a href="Unit 6 Percents/Unit 6 Lesson 1 Fractions Decimals and Percents.html?type=t1" class="inline-block text-xs bg-slate-100 text-slate-700 px-2.5 py-1 rounded font-medium mr-1.5 mb-1.5 border border-slate-200 hover:bg-blue-50 hover:border-blue-200">Fractions and Decimals</a><a href="Unit 6 Percents/Unit 6 Lesson 1 Fractions Decimals and Percents.html?type=t2" class="inline-block text-xs bg-slate-100 text-slate-700 px-2.5 py-1 rounded font-medium mr-1.5 mb-1.5 border border-slate-200 hover:bg-blue-50 hover:border-blue-200">Percent to a Fraction</a><a href="Unit 6 Percents/Unit 6 Lesson 1 Fractions Decimals and Percents.html?type=t3" class="inline-block text-xs bg-slate-100 text-slate-700 px-2.5 py-1 rounded font-medium mr-1.5 mb-1.5 border border-slate-200 hover:bg-blue-50 hover:border-blue-200">Fraction to a Percent — Over 100</a><a href="Unit 6 Percents/Unit 6 Lesson 1 Fractions Decimals and Percents.html?type=t4" class="inline-block text-xs bg-slate-100 text-slate-700 px-2.5 py-1 rounded font-medium mr-1.5 mb-1.5 border border-slate-200 hover:bg-blue-50 hover:border-blue-200">Fraction to a Percent — Divide</a><a href="Unit 6 Percents/Unit 6 Lesson 1 Fractions Decimals and Percents.html?type=t5" class="inline-block text-xs bg-slate-100 text-slate-700 px-2.5 py-1 rounded font-medium mr-1.5 mb-1.5 border border-slate-200 hover:bg-blue-50 hover:border-blue-200">Decimals and Percents</a><a href="Unit 6 Percents/Unit 6 Lesson 1 Fractions Decimals and Percents.html?type=t6" class="inline-block text-xs bg-slate-100 text-slate-700 px-2.5 py-1 rounded font-medium mr-1.5 mb-1.5 border border-slate-200 hover:bg-blue-50 hover:border-blue-200">Percents Greater Than 100%</a><a href="Unit 6 Percents/Unit 6 Lesson 1 Fractions Decimals and Percents.html?type=t7" class="inline-block text-xs bg-slate-100 text-slate-700 px-2.5 py-1 rounded font-medium mr-1.5 mb-1.5 border border-slate-200 hover:bg-blue-50 hover:border-blue-200">Comparing and Ordering</a><a href="Unit 6 Percents/Unit 6 Lesson 1 Fractions Decimals and Percents.html?type=t8" class="inline-block text-xs bg-slate-100 text-slate-700 px-2.5 py-1 rounded font-medium mr-1.5 mb-1.5 border border-slate-200 hover:bg-blue-50 hover:border-blue-200">The Same Amount Three Ways</a>
+                            </div>
+                        </div>
+                        <div class="px-6 pb-6">
+                            <a href="Unit 6 Percents/Unit 6 Lesson 1 Fractions Decimals and Percents.html" class="block w-full text-center bg-[#0f172a] hover:bg-blue-600 text-white font-bold py-3 rounded-lg transition-colors">Start practising</a>
+                        </div>
+                    </div>
+                    <div class="bg-white border border-slate-200 rounded-2xl shadow-sm hover:shadow-md transition-all duration-300 flex flex-col overflow-hidden group">
+                        <div class="p-6 flex-grow">
+                            <div class="flex items-center justify-between mb-4">
+                                <span class="text-xs font-bold text-blue-600 bg-blue-50 px-2.5 py-1 rounded-md uppercase tracking-wider">Lesson 2</span>
+                                <span class="text-slate-400 text-xs font-semibold">6 Problem Types</span>
+                            </div>
+                            <h3 class="text-lg font-bold text-[#0f172a] group-hover:text-blue-600 transition-colors duration-200">Unit 6 Lesson 2 Benchmarks and Mental Math</h3>
+                            <p class="text-slate-500 text-sm mt-2">Finding a percent of an amount in your head</p>
+                            <div class="mt-6">
+                                <div class="text-xs font-bold text-slate-400 uppercase tracking-wider mb-2">Topics Covered:</div>
+                                <a href="Unit 6 Percents/Unit 6 Lesson 2 Benchmarks and Mental Math.html?type=t1" class="inline-block text-xs bg-slate-100 text-slate-700 px-2.5 py-1 rounded font-medium mr-1.5 mb-1.5 border border-slate-200 hover:bg-blue-50 hover:border-blue-200">Benchmark Equivalents</a><a href="Unit 6 Percents/Unit 6 Lesson 2 Benchmarks and Mental Math.html?type=t2" class="inline-block text-xs bg-slate-100 text-slate-700 px-2.5 py-1 rounded font-medium mr-1.5 mb-1.5 border border-slate-200 hover:bg-blue-50 hover:border-blue-200">Scaling a Unit Fraction</a><a href="Unit 6 Percents/Unit 6 Lesson 2 Benchmarks and Mental Math.html?type=t3" class="inline-block text-xs bg-slate-100 text-slate-700 px-2.5 py-1 rounded font-medium mr-1.5 mb-1.5 border border-slate-200 hover:bg-blue-50 hover:border-blue-200">Finding 1%, 10%, and 100%</a><a href="Unit 6 Percents/Unit 6 Lesson 2 Benchmarks and Mental Math.html?type=t4" class="inline-block text-xs bg-slate-100 text-slate-700 px-2.5 py-1 rounded font-medium mr-1.5 mb-1.5 border border-slate-200 hover:bg-blue-50 hover:border-blue-200">Halving to 5%, 25%, and 50%</a><a href="Unit 6 Percents/Unit 6 Lesson 2 Benchmarks and Mental Math.html?type=t5" class="inline-block text-xs bg-slate-100 text-slate-700 px-2.5 py-1 rounded font-medium mr-1.5 mb-1.5 border border-slate-200 hover:bg-blue-50 hover:border-blue-200">Building a Percent</a><a href="Unit 6 Percents/Unit 6 Lesson 2 Benchmarks and Mental Math.html?type=t6" class="inline-block text-xs bg-slate-100 text-slate-700 px-2.5 py-1 rounded font-medium mr-1.5 mb-1.5 border border-slate-200 hover:bg-blue-50 hover:border-blue-200">A Percent of an Amount</a>
+                            </div>
+                        </div>
+                        <div class="px-6 pb-6">
+                            <a href="Unit 6 Percents/Unit 6 Lesson 2 Benchmarks and Mental Math.html" class="block w-full text-center bg-[#0f172a] hover:bg-blue-600 text-white font-bold py-3 rounded-lg transition-colors">Start practising</a>
+                        </div>
+                    </div>
+                    <div class="bg-white border border-slate-200 rounded-2xl shadow-sm hover:shadow-md transition-all duration-300 flex flex-col overflow-hidden group">
+                        <div class="p-6 flex-grow">
+                            <div class="flex items-center justify-between mb-4">
+                                <span class="text-xs font-bold text-blue-600 bg-blue-50 px-2.5 py-1 rounded-md uppercase tracking-wider">Lesson 3</span>
+                                <span class="text-slate-400 text-xs font-semibold">6 Problem Types</span>
+                            </div>
+                            <h3 class="text-lg font-bold text-[#0f172a] group-hover:text-blue-600 transition-colors duration-200">Unit 6 Lesson 3 Percent Increase and Decrease</h3>
+                            <p class="text-slate-500 text-sm mt-2">Working out what an amount becomes after a percent change</p>
+                            <div class="mt-6">
+                                <div class="text-xs font-bold text-slate-400 uppercase tracking-wider mb-2">Topics Covered:</div>
+                                <a href="Unit 6 Percents/Unit 6 Lesson 3 Percent Increase and Decrease.html?type=t1" class="inline-block text-xs bg-slate-100 text-slate-700 px-2.5 py-1 rounded font-medium mr-1.5 mb-1.5 border border-slate-200 hover:bg-blue-50 hover:border-blue-200">&quot;Of&quot; or &quot;By&quot;?</a><a href="Unit 6 Percents/Unit 6 Lesson 3 Percent Increase and Decrease.html?type=t2" class="inline-block text-xs bg-slate-100 text-slate-700 px-2.5 py-1 rounded font-medium mr-1.5 mb-1.5 border border-slate-200 hover:bg-blue-50 hover:border-blue-200">Decreasing by a Percent</a><a href="Unit 6 Percents/Unit 6 Lesson 3 Percent Increase and Decrease.html?type=t3" class="inline-block text-xs bg-slate-100 text-slate-700 px-2.5 py-1 rounded font-medium mr-1.5 mb-1.5 border border-slate-200 hover:bg-blue-50 hover:border-blue-200">Increasing by a Percent</a><a href="Unit 6 Percents/Unit 6 Lesson 3 Percent Increase and Decrease.html?type=t4" class="inline-block text-xs bg-slate-100 text-slate-700 px-2.5 py-1 rounded font-medium mr-1.5 mb-1.5 border border-slate-200 hover:bg-blue-50 hover:border-blue-200">Discounts and Sale Prices</a><a href="Unit 6 Percents/Unit 6 Lesson 3 Percent Increase and Decrease.html?type=t5" class="inline-block text-xs bg-slate-100 text-slate-700 px-2.5 py-1 rounded font-medium mr-1.5 mb-1.5 border border-slate-200 hover:bg-blue-50 hover:border-blue-200">Tax and Tips</a><a href="Unit 6 Percents/Unit 6 Lesson 3 Percent Increase and Decrease.html?type=t6" class="inline-block text-xs bg-slate-100 text-slate-700 px-2.5 py-1 rounded font-medium mr-1.5 mb-1.5 border border-slate-200 hover:bg-blue-50 hover:border-blue-200">Naming the Change</a>
+                            </div>
+                        </div>
+                        <div class="px-6 pb-6">
+                            <a href="Unit 6 Percents/Unit 6 Lesson 3 Percent Increase and Decrease.html" class="block w-full text-center bg-[#0f172a] hover:bg-blue-600 text-white font-bold py-3 rounded-lg transition-colors">Start practising</a>
+                        </div>
+                    </div>
+                    <div class="bg-white border border-slate-200 rounded-2xl shadow-sm hover:shadow-md transition-all duration-300 flex flex-col overflow-hidden group">
+                        <div class="p-6 flex-grow">
+                            <div class="flex items-center justify-between mb-4">
+                                <span class="text-xs font-bold text-blue-600 bg-blue-50 px-2.5 py-1 rounded-md uppercase tracking-wider">Practice Test</span>
+                                <span class="text-slate-400 text-xs font-semibold">4 Problem Types</span>
+                            </div>
+                            <h3 class="text-lg font-bold text-[#0f172a] group-hover:text-blue-600 transition-colors duration-200">Unit 6 Practice Test</h3>
+                            <p class="text-slate-500 text-sm mt-2">All three lessons mixed together</p>
+                            <div class="mt-6">
+                                <div class="text-xs font-bold text-slate-400 uppercase tracking-wider mb-2">Topics Covered:</div>
+                                <a href="Unit 6 Percents/Unit 6 Practice Test.html?type=b1" class="inline-block text-xs bg-slate-100 text-slate-700 px-2.5 py-1 rounded font-medium mr-1.5 mb-1.5 border border-slate-200 hover:bg-blue-50 hover:border-blue-200">Converting and Comparing</a><a href="Unit 6 Percents/Unit 6 Practice Test.html?type=b2" class="inline-block text-xs bg-slate-100 text-slate-700 px-2.5 py-1 rounded font-medium mr-1.5 mb-1.5 border border-slate-200 hover:bg-blue-50 hover:border-blue-200">Benchmarks and Mental Math</a><a href="Unit 6 Percents/Unit 6 Practice Test.html?type=b3" class="inline-block text-xs bg-slate-100 text-slate-700 px-2.5 py-1 rounded font-medium mr-1.5 mb-1.5 border border-slate-200 hover:bg-blue-50 hover:border-blue-200">Increase and Decrease</a><a href="Unit 6 Percents/Unit 6 Practice Test.html?type=b4" class="inline-block text-xs bg-slate-100 text-slate-700 px-2.5 py-1 rounded font-medium mr-1.5 mb-1.5 border border-slate-200 hover:bg-blue-50 hover:border-blue-200">Multi-Step Percent</a>
+                            </div>
+                        </div>
+                        <div class="px-6 pb-6">
+                            <a href="Unit 6 Percents/Unit 6 Practice Test.html" class="block w-full text-center bg-[#0f172a] hover:bg-blue-600 text-white font-bold py-3 rounded-lg transition-colors">Start practising</a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </details>
+    </section>
+
+</main>
+
+<footer class="max-w-6xl mx-auto px-4 pb-10 text-center text-slate-400 text-sm font-medium">
+    Progress is saved in this browser. Take a save code from the panel above to move it to another computer.
+</footer>
+
+<script>
+(function () {
+    "use strict";
+    var home = document.getElementById("unit-home");
+    var view = document.getElementById("unit-view");
+    var units = document.querySelectorAll("details[data-unit]");
+
+    function showHome() {
+        Array.prototype.forEach.call(units, function (d) { d.hidden = true; d.open = false; });
+        view.hidden = true;
+        home.hidden = false;
+    }
+
+    function showUnit(n) {
+        var found = null;
+        Array.prototype.forEach.call(units, function (d) {
+            var mine = d.getAttribute("data-unit") === String(n);
+            d.hidden = !mine;
+            d.open = mine;
+            if (mine) found = d;
+        });
+        if (!found) { showHome(); return; }
+        home.hidden = true;
+        view.hidden = false;
+        window.scrollTo({ top: 0, behavior: "auto" });
+    }
+
+    Array.prototype.forEach.call(document.querySelectorAll(".unit-tile"), function (b) {
+        b.addEventListener("click", function () {
+            window.location.hash = "unit-" + b.getAttribute("data-unit");
+        });
+    });
+
+    document.getElementById("unit-back").addEventListener("click", function () {
+        if (window.location.hash) { window.location.hash = ""; }
+        showHome();
+    });
+
+    function fromHash() {
+        var m = String(window.location.hash || "").match(/^#unit-(\d+)$/);
+        if (m) { showUnit(m[1]); } else { showHome(); }
+    }
+    window.addEventListener("hashchange", fromHash);
+    fromHash();
+})();
+</script>
+
+<script src="course.js"></script>
+<script src="progress.js"></script>
+</body>
+</html>

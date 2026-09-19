@@ -1,0 +1,2403 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Unit 3 Lesson 3: Order of Operations</title>
+    
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.8/dist/katex.min.css">
+    <script src="https://cdn.jsdelivr.net/npm/katex@0.16.8/dist/katex.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/katex@0.16.8/dist/contrib/auto-render.min.js"></script>
+
+    <!-- core.js 가 그리는 요소들의 기본 스타일. 아래 <style> 보다 먼저 와야
+         파일 고유 스타일이 이기고, 빠진 클래스만 여기서 메워진다.
+         폴더 위치를 몰라도 되게 두 경로를 다 건다(없는 쪽은 404 로 무시). -->
+    <link rel="stylesheet" href="../mcf-core.css">
+    <link rel="stylesheet" href="mcf-core.css">
+    <style>
+        :root {
+            --primary-color: #0f172a;
+            --secondary-color: #2563eb;
+            --disabled-color: #94a3b8;
+            --text-color: #334155;
+            --math-color: #000000;
+            --bg-color: #f8fafc;
+            --card-bg: #ffffff;
+            --border-color: #cbd5e1;
+            --highlight-bg: #eff6ff;
+            --explanation-bg: #f1f5f9;
+            --rule-bg: #fef08a;
+            --rule-text: #713f12;
+            --success-color: #16a34a;
+            --error-color: #dc2626;
+        }
+
+        body {
+            font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+            background-color: var(--bg-color);
+            color: var(--text-color);
+            line-height: 1.8;
+            margin: 0;
+            padding: 0;
+            -webkit-font-smoothing: antialiased;
+        }
+
+        header {
+            background-color: var(--primary-color);
+            color: white;
+            padding: 40px 20px;
+            text-align: center;
+        }
+
+        header h1 {
+            margin: 0;
+            font-size: 2rem;
+            font-weight: 800;
+            letter-spacing: -0.025em;
+        }
+
+        .scoreboard {
+            background-color: #1e293b;
+            color: white;
+            display: inline-flex;
+            gap: 20px;
+            padding: 12px 24px;
+            border-radius: 50px;
+            font-weight: 700;
+            margin-top: 15px;
+            box-shadow: 0 4px 6px -1px rgba(0,0,0,0.2);
+        }
+
+        .scoreboard span {
+            color: #60a5fa;
+        }
+
+        .container {
+            max-width: 850px;
+            margin: 40px auto;
+            padding: 0 20px;
+        }
+
+        .profile-box, .selector-box {
+            background-color: var(--card-bg);
+            padding: 25px;
+            border-radius: 12px;
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+            border: 1px solid var(--border-color);
+            margin-bottom: 25px;
+        }
+
+        .profile-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 15px;
+        }
+
+        .profile-grid input {
+            width: 100%;
+            padding: 12px;
+            font-size: 1rem;
+            border-radius: 6px;
+            border: 1px solid var(--border-color);
+            box-sizing: border-box;
+            outline: none;
+        }
+
+        .profile-grid input:focus {
+            border-color: var(--secondary-color);
+        }
+
+        label {
+            display: block;
+            font-weight: 700;
+            color: var(--primary-color);
+            font-size: 1.1rem;
+            margin-bottom: 12px;
+        }
+
+        .control-group {
+            display: flex;
+            gap: 15px;
+            margin-top: 10px;
+        }
+
+        select {
+            flex: 1;
+            padding: 16px;
+            font-size: 1.1rem;
+            font-family: inherit;
+            border-radius: 8px;
+            border: 2px solid var(--border-color);
+            background-color: white;
+            color: var(--primary-color);
+            outline: none;
+            cursor: pointer;
+        }
+
+        .btn-generate {
+            padding: 16px 24px;
+            font-size: 1.1rem;
+            font-weight: 700;
+            background-color: var(--primary-color);
+            color: white;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: background-color 0.2s ease;
+            white-space: nowrap;
+        }
+
+        .btn-generate:hover {
+            background-color: #1e293b;
+        }
+
+        .solution-container {
+            background-color: var(--card-bg);
+            padding: 40px;
+            border-radius: 12px;
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+            border: 1px solid var(--border-color);
+            min-height: 200px;
+        }
+
+        .placeholder-text {
+            color: #64748b;
+            text-align: center;
+            font-style: italic;
+            padding: 60px 0;
+            font-size: 1.1rem;
+        }
+
+        .quiz-interface-box {
+            background-color: var(--explanation-bg);
+            border: 1px solid var(--border-color);
+            padding: 25px;
+            border-radius: 10px;
+            margin-bottom: 30px;
+        }
+
+        .question-statement-card {
+            background: #ffffff;
+            border-left: 4px solid var(--secondary-color);
+            padding: 16px 20px;
+            font-size: 1.1rem;
+            font-weight: 600;
+            color: var(--primary-color);
+            margin-bottom: 20px;
+            border-radius: 0 6px 6px 0;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.05);
+        }
+
+        .math-render-viewport {
+            background: #ffffff;
+            border: 1px solid var(--border-color);
+            border-radius: 8px;
+            padding: 24px;
+            margin-bottom: 20px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            box-shadow: inset 0 2px 4px rgba(0,0,0,0.02);
+        }
+
+        .mc-options-list {
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+            margin-top: 10px;
+        }
+
+        .mc-option-card {
+            background: white;
+            border: 2px solid var(--border-color);
+            padding: 14px 20px;
+            border-radius: 8px;
+            cursor: pointer;
+            font-weight: 600;
+            font-size: 1.05rem;
+            transition: all 0.2s ease;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+
+        /* ── 긴 보기가 카드 밖으로 넘치는 것 막기 ─────────────────────────
+           KaTeX 는 하나의 \( \) 안에서 절대 줄을 바꾸지 않는다. 그래서 긴
+           문장 보기가 통째로 한 줄이 되어 카드를 뚫고 나간다.
+           근본 해결은 생성기 쪽에서 문장을 작은 조각으로 끊는 것이고
+           (exp-common.js 의 proseTex), 아래는 그 조각들이 카드 안에서
+           제대로 접히게 하는 규칙이다.
+           주의: 배지도 <span> 이다. 자식 span 을 통째로 늘리면 A B C D 동그라미가
+           가로로 쭉 늘어난다. 반드시 배지를 빼고 지정할 것. */
+        .mc-option-card {
+            align-items: flex-start;
+            min-width: 0;
+        }
+        .mc-option-card > .mc-badge {
+            flex: 0 0 auto;
+        }
+        .mc-option-card > span:not(.mc-badge),
+        .mc-option-card > div:not(.option-graph) {
+            flex: 1 1 auto;
+            min-width: 0;
+            overflow-wrap: anywhere;
+            line-height: 1.5;
+        }
+        .mc-option-card .katex {
+            max-width: 100%;
+            white-space: normal;
+        }
+
+        .mc-option-card:hover:not(.disabled) {
+            border-color: var(--secondary-color);
+            background-color: var(--highlight-bg);
+        }
+
+        .mc-option-card.selected {
+            border-color: var(--secondary-color);
+            background-color: #dbeafe;
+            color: #1e40af;
+        }
+
+        .mc-option-card.disabled {
+            cursor: not-allowed;
+            opacity: 0.7;
+        }
+
+        .mc-badge {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            width: 28px;
+            height: 28px;
+            border-radius: 50%;
+            background-color: #e2e8f0;
+            color: var(--primary-color);
+            font-weight: 800;
+            font-size: 0.9rem;
+        }
+
+        .mc-option-card.selected .mc-badge {
+            background-color: var(--secondary-color);
+            color: white;
+        }
+
+        .feedback-msg-area {
+            font-size: 1.1rem;
+            font-weight: 700;
+            margin-bottom: 15px;
+            display: none;
+            padding: 10px 15px;
+            border-radius: 6px;
+        }
+
+        .feedback-success {
+            background-color: #dcfce7;
+            color: var(--success-color);
+            border-left: 5px solid var(--success-color);
+        }
+
+        .feedback-error {
+            background-color: #fee2e2;
+            color: var(--error-color);
+            border-left: 5px solid var(--error-color);
+        }
+
+        .quiz-action-bar {
+            display: flex;
+            gap: 12px;
+            flex-wrap: wrap;
+        }
+
+        .solution-reveal-window {
+            display: none;
+            border-top: 3px double var(--border-color);
+            margin-top: 30px;
+            padding-top: 30px;
+        }
+
+        .step-block {
+            margin-bottom: 25px;
+            padding-bottom: 20px;
+            border-bottom: 1px solid #e2e8f0;
+            display: none;
+        }
+
+        .step-title {
+            font-weight: 800;
+            color: var(--secondary-color);
+            display: block;
+            font-size: 1.1rem;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+            margin-bottom: 8px;
+        }
+
+        .step-math {
+            font-size: 1.3rem;
+            font-weight: 700;
+            background-color: var(--explanation-bg);
+            padding: 14px 20px;
+            border-radius: 8px;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            margin: 8px 0;
+            color: var(--math-color);
+            letter-spacing: 0.02em;
+            flex-wrap: wrap;
+        }
+
+        /* hint.figure — 힌트를 눌렀을 때 나오는 상황 그림 */
+        .hint-figure {
+            display: flex;
+            justify-content: center;
+            margin-top: 10px;
+        }
+        .hint-figure svg {
+            max-width: 100%;
+            height: auto;
+        }
+
+        /* step.figure — 풀이 단계의 그림. core.js 가 그린다.
+           나중에 mcf-core.css 로 옮기면 옛 파일도 같이 받는다. */
+        .step-figure {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 14px;
+            align-items: flex-start;
+            margin: 10px 0 4px;
+        }
+        .step-figure svg {
+            max-width: 100%;
+            height: auto;
+        }
+
+        .step-explanation {
+            display: block;
+            font-size: 1.05rem;
+            color: #334155;
+            margin-top: 6px;
+        }
+
+        .final-answer-box {
+            background-color: var(--highlight-bg);
+            border-left: 6px solid var(--secondary-color);
+            padding: 20px 25px;
+            border-radius: 0 8px 8px 0;
+            margin-top: 30px;
+            display: none;
+        }
+
+        .final-answer-label {
+            font-weight: 800;
+            color: var(--secondary-color);
+            display: block;
+            font-size: 0.95rem;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+        }
+
+        .final-answer-math {
+            font-size: 1.5rem;
+            font-weight: 800;
+            color: var(--primary-color);
+            margin-top: 6px;
+            display: inline-flex;
+            align-items: center;
+            letter-spacing: 0.02em;
+        }
+
+        .control-panel {
+            display: flex;
+            justify-content: space-between;
+            margin-top: 30px;
+            padding-top: 20px;
+            border-top: 2px solid var(--border-color);
+            gap: 15px;
+        }
+
+        .btn {
+            padding: 14px 24px;
+            font-size: 1.05rem;
+            font-weight: 700;
+            border-radius: 8px;
+            cursor: pointer;
+            border: none;
+            transition: all 0.2s ease;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .btn-primary { background-color: var(--secondary-color); color: white; }
+        .btn-primary:hover:not(:disabled) { background-color: #1d4ed8; }
+        .btn-success { background-color: var(--success-color); color: white; }
+        .btn-success:hover:not(:disabled) { background-color: #166534; }
+        .btn-secondary { background-color: var(--explanation-bg); color: var(--primary-color); border: 1px solid var(--border-color); }
+        .btn-secondary:hover:not(:disabled) { background-color: #e2e8f0; }
+
+        .btn:disabled {
+            background-color: var(--disabled-color);
+            color: #f1f5f9;
+            cursor: not-allowed;
+            opacity: 0.6;
+        }
+
+        .hint-box {
+            display: none;
+            background-color: #fef9c3;
+            border-left: 5px solid #eab308;
+            color: #713f12;
+            padding: 12px 16px;
+            border-radius: 0 6px 6px 0;
+            margin-bottom: 15px;
+            font-size: 1.05rem;
+            font-weight: 600;
+        }
+
+        .btn-hint { background-color: #fde047; color: #713f12; }
+        .btn-hint:hover:not(:disabled) { background-color: #facc15; }
+
+        /* 그래프 문항용. Unit 2 Lesson 3 에서 가져왔다. */
+        .coord-svg {
+            width: 100%;
+            height: auto;
+            display: block;
+            background: #ffffff;
+            border-radius: 6px;
+        }
+        .math-render-viewport .coord-svg { width: 330px; max-width: 100%; }
+
+
+
+        /* ── 난이도 버튼 (Grade 7 부터) ─────────────────────────────
+           유형 드롭다운이 "무엇을" 이라면 이 버튼은 "얼마나 어렵게" 다.
+           온타리오 성취도 카테고리 K / A / T 에 맞춰 둘씩 짝지어 쓴다.
+           레슨 = Easy(K) / Medium(A),  보스 = Medium(A) / Hard(T) */
+        .level-group{display:flex;align-items:center;gap:9px;margin-top:13px;flex-wrap:wrap}
+        .level-label{font-size:.83rem;font-weight:700;color:#64748b;
+                     text-transform:uppercase;letter-spacing:.05em;margin-right:3px}
+        .level-btn{background:#f1f5f9;border:1.5px solid #cbd5e1;color:#475569;
+                   font-size:.93rem;font-weight:600;padding:8px 20px;border-radius:999px;
+                   cursor:pointer;transition:all .12s}
+        .level-btn:hover{background:#e2e8f0}
+        .level-btn.active{background:#4338ca;border-color:#4338ca;color:#fff}
+        .level-btn:disabled{opacity:.45;cursor:not-allowed}
+
+        /* ── 규칙 박스 (Grade 7 부터) ───────────────────────────────
+           MCR3U 는 공식을 문제 안에서만 썼는데, 7학년은 규칙 자체가
+           아직 안 굳어 있어서 화면에 상시로 띄운다. */
+        .rule-box{background:#f5f3ff;border:1px solid #ddd6fe;border-left:5px solid #7c3aed;
+                  border-radius:12px;padding:16px 20px;margin:0 0 22px}
+        .rule-title{font-size:.8rem;font-weight:800;color:#6d28d9;text-transform:uppercase;
+                    letter-spacing:.06em;margin-bottom:11px}
+        .rule-box ul{margin:0;padding-left:20px}
+        .rule-box li{margin:0 0 9px;font-size:.95rem;line-height:1.62;color:#1e293b}
+        .rule-box li:last-child{margin-bottom:0}
+        .rule-box b{color:#5b21b6}
+    </style>
+</head>
+<body>
+
+    <header>
+        <h1>Unit 3 Lesson 3: Order of Operations</h1>
+        <p>Brackets, then multiply and divide, then add and subtract (B2.1)</p>
+        <div class="scoreboard">
+            <div>Score: <span id="hud-score">0</span></div>
+            <div>Tries: <span id="hud-attempts">0</span></div>
+        </div>
+    </header>
+
+    <div class="container">
+        <div class="profile-box">
+            <label>Student Profile Setup:</label>
+            <div class="profile-grid">
+                <input type="text" id="first-name" placeholder="First name" autocomplete="off">
+                <input type="text" id="last-name" placeholder="Last name" autocomplete="off">
+            </div>
+        </div>
+
+        <div class="selector-box">
+            <label for="question-select">Practice Target Menu:</label>
+            <div class="control-group">
+                <select id="question-select">
+                    <option value="t1">Type 1: Multiply and Divide First</option>
+                    <option value="t2">Type 2: Brackets First</option>
+                    <option value="t3">Type 3: Left to Right</option>
+                    <option value="t4">Type 4: Multi-Step with Decimals</option>
+                    <option value="t5">Type 5: Properties of Operations</option>
+                    <option value="t6">Type 6: Order of Operations in Context</option>
+                </select>
+                <button class="btn-generate" onclick="generateNewProblem()">Generate</button>
+            </div>
+            <div class="level-group" id="level-group">
+                <span class="level-label">Difficulty</span>
+                <button class="level-btn active" id="lvl-1" onclick="setLevel(1)">Easy</button>
+                <button class="level-btn" id="lvl-2" onclick="setLevel(2)">Medium</button>
+            </div>
+        </div>
+
+        <!-- 규칙 박스. 문제 위에 항상 떠 있다. 학생이 풀이를 열기 전에
+             먼저 보는 자리라, 이 레슨에서 반복해 쓰이는 규칙만 짧게 박는다. -->
+        <div class="rule-box" id="rule-box">
+            <div class="rule-title">Rules to remember</div>
+            <ul>
+                <li><b>The order is: brackets first, then &times; and &divide;, then + and &minus;.</b>
+                    So 2 + 3 &times; 4 = 2 + 12 = 14, not 20.</li>
+                <li><b>&times; and &divide; are equal partners, and so are + and &minus;.</b>
+                    When two equal partners meet, work <b>left to right</b>:
+                    24 &divide; 6 &times; 2 = 4 &times; 2 = 8, and 10 &minus; 3 + 4 = 7 + 4 = 11.
+                    This is where most mistakes happen.</li>
+                <li><b>Brackets are an instruction, not decoration.</b> Everything inside them is
+                    finished before anything outside them starts &mdash; and inside the brackets the
+                    same order applies again.</li>
+                <li><b>Powers are not part of this lesson.</b> You will meet them in a later unit,
+                    and the order will grow to make room for them.</li>
+                <li><b>About the letters in Type 5.</b> In a property like a &times; b = b &times; a,
+                    the letters just mean "any number you like" &mdash; the rule holds whatever you
+                    put in. Everywhere else in this unit, every calculation and every answer is a
+                    number.</li>
+                <li><b>Check your answer against a rough estimate.</b> If 4.8 &times; 3 + 1.2 is about
+                    15 + 1, an answer of 28.8 means the order went wrong.</li>
+            </ul>
+        </div>
+
+        <div class="solution-container" id="display-window">
+            <div id="placeholder" class="placeholder-text">
+                Select a topic and click "Generate" to start practicing.
+            </div>
+
+            <div id="quiz-station" class="quiz-interface-box" style="display: none;">
+                <div id="asset-viewport-mount-point" class="math-render-viewport" style="display: none;"></div>
+
+                <div id="question-statement-display" class="question-statement-card"></div>
+
+                <label id="input-prompt-label" style="margin-bottom: 12px; font-weight: 700; display: block;"></label>
+                
+                <div id="dynamic-input-mount-point" style="margin-top: 10px;"></div>
+
+                <div id="hint-box" class="hint-box"></div>
+                <div id="feedback-msg" class="feedback-msg-area"></div>
+
+                <div class="quiz-action-bar">
+                    <button class="btn btn-success" id="check-ans-btn" onclick="evaluateStudentAnswer()">Check Answer</button>
+                    <button class="btn btn-hint" id="hint-btn" onclick="toggleHint()">Hint</button>
+                    <button class="btn btn-secondary" id="reveal-sol-btn" disabled onclick="unlockSolutionPanel()">Show Solution Steps</button>
+                </div>
+            </div>
+
+            <div class="method-toggle-container" id="method-toggle-bar"></div>
+
+            <div class="solution-reveal-window" id="solution-reveal-layer">
+                <div id="solution-workspace-injected"></div>
+                
+                <div class="control-panel" id="controls-panel">
+                    <button class="btn btn-secondary" id="restart-btn" onclick="restartSolution()">Restart Steps</button>
+                    <button class="btn btn-primary" id="next-btn" onclick="showNextStep()">Next Step &rarr;</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- core.js 는 보통 상위 폴더(index.html·progress.js 옆)에 둔다.
+         같은 폴더에 두는 경우도 있어 두 경로를 다 건다. 없는 쪽은 404 로 무시되고,
+         둘 다 있으면 두 번째는 core 내부 가드가 막는다. -->
+    <script src="../core.js"></script>
+    <script src="core.js"></script>
+    <script>
+    /* core 를 못 찾으면 Generate 가 조용히 무반응이 된다. 원인이 안 보이므로 안내를 띄운다. */
+    if (typeof MCF === "undefined") {
+      document.addEventListener("DOMContentLoaded", function () {
+        var box = document.getElementById("placeholder");
+        if (box) {
+          box.innerHTML =
+            '<strong style="color:#b91c1c">core.js \uB97C \uCC3E\uC744 \uC218 \uC5C6\uC2B5\uB2C8\uB2E4.</strong><br><br>' +
+            'This lesson needs <code>core.js</code>.<br>' +
+            'Put it next to <code>progress.js</code> and <code>index.html</code> ' +
+            '(the folder above this one), or in this same folder.';
+          box.style.display = "block";
+        }
+        var b = document.querySelector(".btn-generate");
+        if (b) b.disabled = true;
+      });
+    }
+    </script>
+    <script>
+        function gdef(v, d) { return (v === undefined || v === null) ? d : v; }
+
+        // --- SVG Graphing Engine ---
+        function buildGraph(spec) {
+            const xmin = gdef(spec.xmin, -7), xmax = gdef(spec.xmax, 7);
+            const ymin = gdef(spec.ymin, -7), ymax = gdef(spec.ymax, 7);
+            /* MCR3U Trigonometric Functions 추가 — 축 눈금 간격.
+               예전에는 격자선이 정수 한 칸으로 박혀 있어서 degree 로 그리면
+               xmax=720 일 때 격자선이 721 개 나왔다. 기본값은 예전 동작 그대로라
+               spec 에 아무것도 안 넣은 옛 파일은 픽셀 하나까지 같게 나온다.
+                 spec.xstep / spec.ystep       — 격자선 간격 (기본 1)
+                 spec.xlabelEvery / ylabelEvery — 격자 몇 칸마다 글자를 적을지 (기본 2)
+                 spec.xsuffix / spec.ysuffix    — 눈금 글자 뒤에 붙일 것 (기본 없음, 사인곡선은 "°")
+                 spec.W / spec.H                — 그림 크기 (기본 300 x 300, 사인곡선은 가로로 넓게) */
+            const xstep = gdef(spec.xstep, 1), ystep = gdef(spec.ystep, 1);
+            const xlabelEvery = gdef(spec.xlabelEvery, 2), ylabelEvery = gdef(spec.ylabelEvery, 2);
+            const xsuf = gdef(spec.xsuffix, ""), ysuf = gdef(spec.ysuffix, "");
+            const W = gdef(spec.W, 300), H = gdef(spec.H, 300), pad = 10;
+            /* 눈금 좌표를 부동소수 오차 없이 만든다. gridVals(-7, 7, 1) = -7..7 */
+            const gridVals = function (lo, hi, st) {
+                const out = [];
+                const i0 = Math.ceil(lo / st - 1e-9);
+                const i1 = Math.floor(hi / st + 1e-9);
+                for (let i = i0; i <= i1; i++) out.push(i * st);
+                return out;
+            };
+            const isLabel = function (v, st, every) {
+                if (v === 0) return false;
+                const m = st * every;
+                return Math.abs(v / m - Math.round(v / m)) < 1e-9;
+            };
+            /* 축선은 창 안에 머무른다. 0 이 창 밖이면 가장자리에 붙인다
+               (조수·기온 모형처럼 y 가 전부 양수인 그림에서 축이 사라지지 않게). */
+            const axY = Math.min(Math.max(0, ymin), ymax);
+            const axX = Math.min(Math.max(0, xmin), xmax);
+            const hasOrigin = (xmin <= 0 && 0 <= xmax && ymin <= 0 && 0 <= ymax);
+            const X = function (x) { return pad + (x - xmin) / (xmax - xmin) * (W - 2 * pad); };
+            const Y = function (y) { return pad + (ymax - y) / (ymax - ymin) * (H - 2 * pad); };
+            const uid = "g" + Math.random().toString(36).slice(2, 8);
+            
+            let s = `<svg viewBox="0 0 ${W} ${H}" xmlns="http://www.w3.org/2000/svg" class="coord-svg">`;
+            /* Arrow direction fix: orient="auto" rotates a marker to the direction the
+               path is travelling AT that point. At the start of a path that direction
+               points inward, so a start arrowhead pointed back into the curve instead of
+               away from it. The -s markers below are the same triangle mirrored, and are
+               used for every marker-start. */
+            s += '<defs>';
+            /* audit fix 2026-07-30: 화살촉은 격자 경계 바깥으로 4 * stroke-width 만큼
+               뻗기 때문에, 클립 사각형이 격자에 딱 맞으면 촉이 잘려 안 보였다.
+               곡선 자체는 drawCurve에서 이미 격자 안으로 잘라 그린다. */
+            const clipPad = 10;
+            s += `<clipPath id="clip-${uid}"><rect x="${pad - clipPad}" y="${pad - clipPad}" width="${W - 2 * pad + 2 * clipPad}" height="${H - 2 * pad + 2 * clipPad}"/></clipPath>`;
+            s += `<marker id="ax-${uid}" markerWidth="8" markerHeight="8" refX="4" refY="4" orient="auto"><path d="M0,0 L8,4 L0,8 Z" fill="#0f172a"/></marker>`;
+            s += `<marker id="ax-s-${uid}" markerWidth="8" markerHeight="8" refX="4" refY="4" orient="auto"><path d="M8,0 L0,4 L8,8 Z" fill="#0f172a"/></marker>`;
+            s += `<marker id="cv-${uid}" markerWidth="8" markerHeight="8" refX="4" refY="4" orient="auto"><path d="M0,0 L8,4 L0,8 Z" fill="#2563eb"/></marker>`;
+            s += `<marker id="cv-s-${uid}" markerWidth="8" markerHeight="8" refX="4" refY="4" orient="auto"><path d="M8,0 L0,4 L8,8 Z" fill="#2563eb"/></marker>`;
+            s += '</defs>';
+            
+            /* spec.labelHalo — 눈금 글자에 흰 테두리를 둘러 곡선이 지나가도 읽히게 한다.
+               기본은 꺼짐이라 옛 파일은 그대로다. 사인곡선은 축을 자주 가로지르므로 켠다. */
+            const halo = spec.labelHalo ? ' stroke="#ffffff" stroke-width="3.5" paint-order="stroke"' : "";
+            const gxs = gridVals(xmin, xmax, xstep), gys = gridVals(ymin, ymax, ystep);
+            for (let i = 0; i < gxs.length; i++) s += `<line x1="${X(gxs[i])}" y1="${Y(ymax)}" x2="${X(gxs[i])}" y2="${Y(ymin)}" stroke="#e8edf3" stroke-width="1"/>`;
+            for (let i = 0; i < gys.length; i++) s += `<line x1="${X(xmin)}" y1="${Y(gys[i])}" x2="${X(xmax)}" y2="${Y(gys[i])}" stroke="#e8edf3" stroke-width="1"/>`;
+            s += `<line x1="${X(xmin)}" y1="${Y(axY)}" x2="${X(xmax)}" y2="${Y(axY)}" stroke="#0f172a" stroke-width="2" marker-start="url(#ax-s-${uid})" marker-end="url(#ax-${uid})"/>`;
+            s += `<line x1="${X(axX)}" y1="${Y(ymin)}" x2="${X(axX)}" y2="${Y(ymax)}" stroke="#0f172a" stroke-width="2" marker-start="url(#ax-s-${uid})" marker-end="url(#ax-${uid})"/>`;
+            
+            /* 글자는 원래 곡선보다 먼저 그린다(옛 동작). labelHalo 를 켜면
+               곡선 위로 올려야 흰 테두리가 뜻이 있으므로 끝으로 미룬다. */
+            /* 축이 창 가장자리에 붙으면 글자가 그림 밖으로 나간다(조수 모형에서 실제로 잘렸다).
+               그때만 반대쪽으로 넘긴다. 0 이 창 안에 있는 옛 파일은 이 갈래를 타지 않는다. */
+            const labY = (Y(axY) + 12 > H - 2) ? Y(axY) - 6 : Y(axY) + 12;
+            const flipY = (X(axX) - 5 < 14);
+            const labX = flipY ? X(axX) + 5 : X(axX) - 5;
+            const anchY = flipY ? "start" : "end";
+            let lab = "";
+            for (let i = 0; i < gxs.length; i++) { const gx = gxs[i]; if (isLabel(gx, xstep, xlabelEvery)) lab += `<text x="${X(gx)}" y="${labY}" font-size="10" font-weight="bold" fill="#0f172a" text-anchor="middle"${halo}>${gx}${xsuf}</text>`; }
+            for (let i = 0; i < gys.length; i++) { const gy = gys[i]; if (isLabel(gy, ystep, ylabelEvery)) lab += `<text x="${labX}" y="${Y(gy) + 3}" font-size="10" font-weight="bold" fill="#0f172a" text-anchor="${anchY}"${halo}>${gy}${ysuf}</text>`; }
+            if (hasOrigin) lab += `<text x="${X(0) - 5}" y="${Y(0) + 12}" font-size="10" font-weight="bold" fill="#0f172a" text-anchor="end"${halo}>0</text>`;
+            if (!spec.labelHalo) s += lab;
+            
+            const curves = spec.curves || [];
+            for (let i = 0; i < curves.length; i++) s += `<g clip-path="url(#clip-${uid})">${drawCurve(curves[i], X, Y, xmin, xmax, ymin, ymax, uid)}</g>`;
+            /* MCR3U 추가 — 점근선(파선). spec.asym = [{x: 3}, {y: -1}] */
+            const asym = spec.asym || [];
+            for (let i = 0; i < asym.length; i++) {
+                const a = asym[i];
+                if (a.x !== undefined) s += `<line x1="${X(a.x)}" y1="${Y(ymax)}" x2="${X(a.x)}" y2="${Y(ymin)}" stroke="#b91c1c" stroke-width="1.6" stroke-dasharray="6 4"/>`;
+                if (a.y !== undefined) s += `<line x1="${X(xmin)}" y1="${Y(a.y)}" x2="${X(xmax)}" y2="${Y(a.y)}" stroke="#b91c1c" stroke-width="1.6" stroke-dasharray="6 4"/>`;
+            }
+            /* MCR3U 추가 — 안내선(회색 파선). spec.guides = [{m:1, b:0}]
+               역함수 레슨에서 y = x 대칭선을 깔아 주는 데 쓴다. */
+            const guides = spec.guides || [];
+            for (let i = 0; i < guides.length; i++) {
+                const gd = guides[i];
+                const x1 = xmin, x2 = xmax;
+                const y1 = gd.m * x1 + gd.b, y2 = gd.m * x2 + gd.b;
+                s += `<line x1="${X(x1)}" y1="${Y(y1)}" x2="${X(x2)}" y2="${Y(y2)}" stroke="#94a3b8" stroke-width="1.6" stroke-dasharray="5 5"/>`;
+            }
+
+            const dots = spec.dots || [];
+            for (let i = 0; i < dots.length; i++) { 
+                const dd = dots[i]; 
+                s += `<circle cx="${X(dd.x)}" cy="${Y(dd.y)}" r="4.5" fill="${dd.open ? '#ffffff' : '#2563eb'}" stroke="#2563eb" stroke-width="2"/>`; 
+            }
+            if (spec.labelHalo) s += lab;
+            s += '</svg>';
+            return s;
+        }
+
+        /* --- audit fix 2026-07-30: 화살촉이 화면에서 사라지던 문제 ---
+           곡선은 clipPath로 잘리는데 SVG marker는 자르기 전 path 끝점에 붙는다.
+           포물선처럼 끝점이 격자 밖인 곡선은 화살촉이 통째로 잘려 나가서,
+           "화살표를 보고 무한히 뻗는지 판단하라"는 문항이 성립하지 않았다.
+           이제 곡선을 격자 안으로 먼저 자르고, 그 끝에서 화살촉을 붙인다. */
+        function mcfClipRuns(pts, xmin, xmax, ymin, ymax) {
+            const EPS = 1e-9;
+            /* Liang-Barsky. 선분의 양 끝이 둘 다 격자 밖이면서 격자를 가로지르는
+               경우(기울기 큰 직선)도 놓치지 않으려면 구간별 정식 클리핑이 필요하다. */
+            function clipSeg(a, b) {
+                let t0 = 0, t1 = 1;
+                const dx = b[0] - a[0], dy = b[1] - a[1];
+                const pp = [-dx, dx, -dy, dy];
+                const qq = [a[0] - xmin, xmax - a[0], a[1] - ymin, ymax - a[1]];
+                for (let i = 0; i < 4; i++) {
+                    if (Math.abs(pp[i]) < EPS) { if (qq[i] < -EPS) return null; continue; }
+                    const r = qq[i] / pp[i];
+                    if (pp[i] < 0) { if (r > t1) return null; if (r > t0) t0 = r; }
+                    else { if (r < t0) return null; if (r < t1) t1 = r; }
+                }
+                return [[a[0] + dx * t0, a[1] + dy * t0], [a[0] + dx * t1, a[1] + dy * t1]];
+            }
+            const runs = [];
+            let cur = null;
+            for (let i = 0; i + 1 < pts.length; i++) {
+                const seg = clipSeg(pts[i], pts[i + 1]);
+                if (!seg) { if (cur) { runs.push(cur); cur = null; } continue; }
+                if (!cur) { cur = [seg[0], seg[1]]; continue; }
+                const last = cur[cur.length - 1];
+                if (Math.abs(last[0] - seg[0][0]) > 1e-7 || Math.abs(last[1] - seg[0][1]) > 1e-7) {
+                    runs.push(cur); cur = [seg[0], seg[1]];
+                } else cur.push(seg[1]);
+            }
+            if (cur) runs.push(cur);
+            return runs;
+        }
+
+        /* 화살촉 자체가 약 7px이라, 경계에 정확히 놓으면 clipPath에 반쯤 잘린다.
+           화살표가 붙는 쪽만 화면 좌표로 몇 px 물러나게 해서 전부 보이게 한다. */
+        function mcfRetreat(run, px, fromStart) {
+            const pts = fromStart ? run.slice().reverse() : run.slice();
+            let need = px;
+            while (pts.length >= 2 && need > 0) {
+                const a = pts[pts.length - 2], b = pts[pts.length - 1];
+                const dx = b[0] - a[0], dy = b[1] - a[1];
+                const len = Math.sqrt(dx * dx + dy * dy);
+                if (len <= 1e-9) { pts.pop(); continue; }
+                if (len > need) {
+                    const t = (len - need) / len;
+                    pts[pts.length - 1] = [a[0] + dx * t, a[1] + dy * t];
+                    need = 0;
+                } else {
+                    need -= len;
+                    pts.pop();
+                }
+            }
+            return fromStart ? pts.reverse() : pts;
+        }
+
+        function drawCurve(c, X, Y, xmin, xmax, ymin, ymax, uid) {
+            function path(pts, aStart, aEnd) {
+                if (pts.length < 2) return "";
+                const runs = mcfClipRuns(pts, xmin, xmax, ymin, ymax);
+                if (!runs.length) return "";
+                let out = "";
+                for (let r = 0; r < runs.length; r++) {
+                    let run = [];
+                    for (let i = 0; i < runs[r].length; i++) run.push([X(runs[r][i][0]), Y(runs[r][i][1])]);
+                    const headArrow = aStart && r === 0;
+                    const tailArrow = aEnd && r === runs.length - 1;
+                    /* 화살촉은 refX=4 * stroke-width 만큼 끝점 너머로 뻗는다.
+                       그만큼 물러나야 촉 끝이 정확히 격자 경계에 놓인다. */
+                    const arrowPad = 4 * 2.5;
+                    if (headArrow) run = mcfRetreat(run, arrowPad, true);
+                    if (tailArrow) run = mcfRetreat(run, arrowPad, false);
+                    if (run.length < 2) continue;
+                    let span = 0;
+                    for (let i = 1; i < run.length; i++) span += Math.abs(run[i][0] - run[i - 1][0]) + Math.abs(run[i][1] - run[i - 1][1]);
+                    if (span < 1) continue;
+                    let d = "";
+                    for (let i = 0; i < run.length; i++) d += (i === 0 ? "M" : "L") + run[i][0].toFixed(1) + "," + run[i][1].toFixed(1) + " ";
+                    let attr = 'stroke="#2563eb" stroke-width="2.5" fill="none" stroke-linejoin="round" stroke-linecap="round"';
+                    if (tailArrow) attr += ` marker-end="url(#cv-${uid})"`;
+                    if (headArrow) attr += ` marker-start="url(#cv-s-${uid})"`;
+                    out += `<path d="${d.trim()}" ${attr}/>`;
+                }
+                return out;
+            }
+            const lo = c.dom ? c.dom[0] : xmin, hi = c.dom ? c.dom[1] : xmax;
+            if (c.kind === "line") { return path([[lo, c.m * lo + c.b], [hi, c.m * hi + c.b]], c.arrowLeft, c.arrowRight); }
+            if (c.kind === "hline") { return path([[lo, c.y], [hi, c.y]], c.arrowLeft, c.arrowRight); }
+            if (c.kind === "vline") { const a = c.dom ? c.dom[0] : ymin, b = c.dom ? c.dom[1] : ymax; return path([[c.x, a], [c.x, b]], c.arrowLeft, c.arrowRight); }
+            if (c.kind === "abs") { const f = function (x) { return c.a * Math.abs(x - c.h) + c.k; }; return path([[lo, f(lo)], [c.h, f(c.h)], [hi, f(hi)]], c.arrowLeft, c.arrowRight); }
+            if (c.kind === "circle") { const rpx = (X(c.cx + c.r) - X(c.cx)).toFixed(1); return `<circle cx="${X(c.cx)}" cy="${Y(c.cy)}" r="${rpx}" stroke="#2563eb" stroke-width="2.5" fill="none"/>`; }
+            if (c.kind === "xparab") { const a = c.ydom ? c.ydom[0] : ymin, b = c.ydom ? c.ydom[1] : ymax; let pts = []; for (let i = 0; i <= 80; i++) { const y = a + (b - a) * i / 80; pts.push([c.a * (y - c.k) * (y - c.k) + c.h, y]); } return path(pts, false, false); }
+            /* MCR3U Intro to Functions 추가 0 — 꺾은선 y = poly(pts).
+               Dan 의 함수표기 그래프가 전부 이 모양이다. 꼭짓점은 정수 좌표라
+               정수 x 마다 값이 정확히 읽힌다. 끝에 화살표는 붙이지 않는다. */
+            if (c.kind === "poly") {
+                return path(c.pts.map(function (q) { return [q[0], q[1]]; }),
+                            c.arrowLeft, c.arrowRight);
+            }
+            /* MCR3U Intro to Functions 추가 1 — 제곱근 곡선 y = a*sqrt(b(x - c)) + d.
+               뿌리 안이 음수인 구간은 아예 점을 만들지 않는다. 시작점(c, d)은 항상 포함. */
+            if (c.kind === "sqrt") {
+                const b = gdef(c.b, 1), cc = gdef(c.c, 0), dd = gdef(c.d, 0), aa = gdef(c.a, 1);
+                let sp = [];
+                for (let i = 0; i <= 120; i++) {
+                    const x = lo + (hi - lo) * i / 120;
+                    const inside = b * (x - cc);
+                    if (inside < 0) continue;
+                    sp.push([x, aa * Math.sqrt(inside) + dd]);
+                }
+                if (b < 0) sp.reverse();
+                if (sp.length && (sp[0][0] !== cc || sp[0][1] !== dd)) sp.unshift([cc, dd]);
+                return path(sp, false, c.arrowRight !== false);
+            }
+            /* MCR3U Intro to Functions 추가 2 — 유리함수 y = a/(b(x - c)) + d.
+               점근선 양쪽을 따로 그린다. 한 덩어리로 그리면 점근선을 세로선처럼 이어 그려버린다. */
+            if (c.kind === "recip") {
+                const b = gdef(c.b, 1), cc = gdef(c.c, 0), dd = gdef(c.d, 0), aa = gdef(c.a, 1);
+                const GAP = 0.02;
+                let out = "";
+                /* 화살촉은 붙이지 않는다. 바깥 끝이 축과 거의 붙어 있어서
+                   화살촉을 달면 축의 화살표와 겹쳐 지저분해진다(실제로 그랬다).
+                   곡선이 격자 끝까지 그려지는 것만으로 계속 간다는 게 보인다. */
+                [[lo, cc - GAP, false, false], [cc + GAP, hi, false, false]].forEach(function (seg) {
+                    if (seg[1] - seg[0] < 1e-6) return;
+                    let sp = [];
+                    for (let i = 0; i <= 160; i++) {
+                        const x = seg[0] + (seg[1] - seg[0]) * i / 160;
+                        const den = b * (x - cc);
+                        if (Math.abs(den) < 1e-9) continue;
+                        sp.push([x, aa / den + dd]);
+                    }
+                    out += path(sp, c.arrowLeft === false ? false : seg[2],
+                                    c.arrowRight === false ? false : seg[3]);
+                });
+                return out;
+            }
+            /* y = a * k^( b(x - c) ) + d
+               지수는 격자를 순식간에 벗어난다. 창 밖으로 나간 뒤의 점은
+               버리고, 나가는 구간만 그린다. 표본을 촘촘히 깔아야 급한
+               구간이 각지지 않는다. */
+            if (c.kind === "expo") {
+                const A = c.a === undefined ? 1 : c.a, K = c.k,
+                      B = c.b === undefined ? 1 : c.b, C = c.c || 0, D = c.d || 0;
+                const f = x => A * Math.pow(K, B * (x - C)) + D;
+                const pad = (ymax - ymin) * 0.35;
+                let run = [], out = "", first = true;
+                const flush = (lastPiece) => {
+                    if (run.length > 1) out += path(run, first ? c.arrowLeft : false,
+                                                        lastPiece ? c.arrowRight : false);
+                    if (run.length > 1) first = false;
+                    run = [];
+                };
+                const STEPS = 400;
+                for (let i = 0; i <= STEPS; i++) {
+                    const x = lo + (hi - lo) * i / STEPS, y = f(x);
+                    if (!isFinite(y) || y > ymax + pad || y < ymin - pad) { flush(false); continue; }
+                    run.push([x, y]);
+                }
+                flush(true);
+                return out;
+            }
+            /* MCR3U Trigonometric Functions 추가 — y = a f(b(x - c)) + d, f = sin | cos | tan.
+               x 는 degree. expo 갈래와 같은 구조다: 400 등분해서 창 밖으로 나가면
+               그 자리에서 선을 끊고 다시 잇는다. tan 의 점근선 양쪽이 세로선으로
+               이어져 버리는 사고를 이 구조가 그대로 막아 준다.
+               점근선 자체는 spec.asym = [{x: 90}] 로 따로 그린다. */
+            if (c.kind === "trig") {
+                const FN = c.fn || "sin";
+                const A = gdef(c.a, 1), B = gdef(c.b, 1), C = gdef(c.c, 0), D = gdef(c.d, 0);
+                const base = function (t) {
+                    const r = t * Math.PI / 180;
+                    if (FN === "cos") return Math.cos(r);
+                    if (FN === "tan") return Math.tan(r);
+                    return Math.sin(r);
+                };
+                const f = function (x) { return A * base(B * (x - C)) + D; };
+                /* sin·cos 는 창을 살짝 넘겨도 이어 그려야 곡선이 위쪽 격자선에 닿는다.
+                   tan 은 반대로 빨리 끊어야 두 가지가 붙지 않는다. */
+                const pad = (ymax - ymin) * (FN === "tan" ? 0.06 : 0.35);
+                const STEPS = FN === "tan" ? 1600 : 600;
+                let run = [], out = "", first = true;
+                const flush = function (lastPiece) {
+                    if (run.length > 1) {
+                        out += path(run, first ? c.arrowLeft : false, lastPiece ? c.arrowRight : false);
+                        first = false;
+                    }
+                    run = [];
+                };
+                for (let i = 0; i <= STEPS; i++) {
+                    const x = lo + (hi - lo) * i / STEPS, y = f(x);
+                    if (!isFinite(y) || y > ymax + pad || y < ymin - pad) { flush(false); continue; }
+                    run.push([x, y]);
+                }
+                flush(true);
+                return out;
+            }
+            let pts = [];
+            for (let i = 0; i <= 80; i++) {
+                const x = lo + (hi - lo) * i / 80; let y;
+                if (c.kind === "parab") y = c.a * (x - c.h) * (x - c.h) + c.k;
+                else if (c.kind === "cubic") y = c.a * (x - c.h) * (x - c.h) * (x - c.h) + c.k;
+                else y = 0;
+                pts.push([x, y]);
+            }
+            return path(pts, c.arrowLeft, c.arrowRight);
+        }
+
+
+        /* ====================================================================
+           if-common.js  —  Intro to Functions 유닛 공용 프렐류드
+
+           각 레슨 생성기 앞에 붙여 빌드한다. 유리식 유닛의 re-common.js 와
+           같은 역할이다. 여기 있는 것:
+             · 집합 표기 헬퍼 (Dan 표기: {x | x ∈ R, 조건})
+             · 보기 조립 (mcBuild / mcGraph)
+             · 사상도 그리기 (buildMapping)
+             · 점 만들기 (randPoints / breakPoints / distinctInts)
+           레슨마다 다른 것(생성기, MCF.init 의 lessonId)은 여기 넣지 않는다.
+           ==================================================================== */
+
+        const TEACHER_SPREADSHEET_SCRIPT_URL = "";
+
+        const randInt = MCF.randInt;
+        const mcfPick = MCF.pick, M = MCF.M, mshuffle = MCF.shuffle;
+        const fmtTerm = MCF.fmtTerm;
+        const METHODS = MCF.METHODS_FACTORING;
+
+        /* ───────────── 인수분해 두 방법 공용 (Unit 0 Review 에서 그대로 가져옴) ─────────────
+           Dan 은 인수분해를 전부 Criss-Cross 로 가르치고 Product & Sum 도 보여준다.
+           그래서 인수분해가 나오는 자리에는 두 방법을 탭으로 다 띄운다.
+           탭이 뜨려면 문제 객체에 hasMethods: true, methods: METHODS 가 있어야 하고,
+           HTML 에 #method-toggle-bar 가 있어야 한다. 둘 중 하나만 빠져도 조용히
+           Product & Sum 에 고정된다(Unit 0 에서 실제로 터졌던 자리). */
+
+        /* 음수를 문장 안에 넣을 때 괄호를 씌운다. "-4" 보다 "(-4)" 가 읽기 쉽다. */
+        function par(n) { return n < 0 ? "(" + n + ")" : String(n); }
+        /* 항상 괄호를 씌운다. 계수 옆이나 지수 밑에 들어갈 때는 부호와 상관없이 필요하다. */
+        function brk(n) { return "(" + n + ")"; }
+        function pw(v, e) { return e === 0 ? "" : e === 1 ? v : v + "^{" + e + "}"; }
+        function tm(c, v, e, isFirst) { return fmtTerm(c, pw(v, e), isFirst); }
+
+        /* |n| 의 곱 짝을 나열한다. Product & Sum 에서 학생이 실제로 손으로 적는 목록이다. */
+        function pairListTex(n) {
+          const a = Math.abs(n), out = [];
+          for (let i = 1; i * i <= a; i++) if (a % i === 0) out.push("(" + i + ")(" + (a / i) + ")");
+          return out.join(",\\ ");
+        }
+
+        /* (a1 v + c1)(a2 v + c2) 한 벌에서 대각선 곱 상자의 칸을 만든다. */
+        function ccData(v, a1, c1, a2, c2) {
+          return {
+            lt: tm(a1, v, 1, true), lb: tm(a2, v, 1, true),
+            rt: fmtTerm(c1, "", true), rb: fmtTerm(c2, "", true),
+            pt: tm(a1 * c2, v, 1, true), pb: tm(a2 * c1, v, 1, true),
+            sum: tm(a1 * c2 + a2 * c1, v, 1, true)
+          };
+        }
+        function ccBoxStep(stepNo, d, explanation) {
+          return {
+            title: "Step " + stepNo + " (Criss-Cross): Fill In the Box",
+            mode: "cc", isMatrix: true, matrixData: d,
+            explanation: explanation
+          };
+        }
+        function ccCheckStep(stepNo, d, extra) {
+          return {
+            title: "Step " + stepNo + " (Criss-Cross): Check the Diagonals",
+            mode: "cc",
+            math: "(" + d.pt + ") + (" + d.pb + ") = " + (String(d.sum).trim() || "0"),
+            explanation: "Multiply along each arrow, then add the two answers together. You get " +
+              M(d.sum) + ", and that matches the middle term. " +
+              "Trap: if it does not match, swap the two numbers on the right side and try again." +
+              (extra || "")
+          };
+        }
+
+        /* ───────────── 집합 표기 (Dan 표기) ───────────── */
+
+        const RSET = "\\mathbb{R}";
+        function sAll(v) { return "\\{" + v + " \\mid " + v + " \\in " + RSET + "\\}"; }
+        function sCond(v, cond) { return "\\{" + v + " \\mid " + v + " \\in " + RSET + ", " + cond + "\\}"; }
+        function sList(v, vals) {
+          const u = [];
+          vals.forEach(function (x) { if (u.indexOf(x) === -1) u.push(x); });
+          u.sort(function (a, b) { return a - b; });
+          return "\\{" + v + " \\mid " + v + " = " + u.join(", ") + "\\}";
+        }
+        /* 보기 한 덩어리 = 정의역 + 치역. 통째로 \( \) 로 감싸 둔다.
+           코어의 wrapMath 는 \( 로 시작하는 문자열을 그대로 통과시킨다. */
+        function DR(d, r) { return M("\\text{D: }" + d + "\\quad \\text{R: }" + r); }
+
+        /* 부등호 방향만 뒤집는다. 전체집합이면 "0 이상"이라는 흔한 오해로 바꾼다.
+           오답 보기를 만들 때만 쓴다. */
+        function flipIneq(setTex, v) {
+          if (setTex.indexOf("\\ge") !== -1) return setTex.replace("\\ge", "\\le");
+          if (setTex.indexOf("\\le") !== -1) return setTex.replace("\\le", "\\ge");
+          return sCond(v, v + " \\ge 0");
+        }
+
+        function ptsTex(pts) {
+          return "\\{" + pts.map(function (p) { return "(" + p[0] + ", " + p[1] + ")"; }).join(", ") + "\\}";
+        }
+
+        /* ───────────── 보기 조립 ─────────────
+           숫자를 밀어 예비 보기를 만드는 shuffleMC 는 여기서 쓰지 않는다.
+           점 집합이나 집합 표기의 숫자를 임의로 밀면 "우연히 정답이 하나 더"
+           생길 수 있기 때문이다. 대신 서로 다른 후보 4개를 직접 확보한다. */
+        function mcBuild(correct, list, more) {
+          const pool = [correct];
+          const push = function (d) {
+            if (d && pool.length < 4 && pool.indexOf(d) === -1) pool.push(d);
+          };
+          (list || []).forEach(push);
+          for (let k = 0; k < 400 && pool.length < 4; k++) push(more ? more(k) : null);
+          const mixed = mshuffle(pool.slice(0, 4));
+          const L = ["A", "B", "C", "D"];
+          return {
+            options: mixed.map(function (m, i) { return L[i] + ") " + m; }),
+            ans: L[mixed.indexOf(correct)],
+            rawAns: correct
+          };
+        }
+
+        /* 그래프 보기: 정답 사양 1개 + 오답 사양 3개를 섞고 글자를 붙인다. */
+        function mcGraph(correctSpec, wrongSpecs) {
+          const all = mshuffle([{ s: correctSpec, ok: true }].concat(
+            wrongSpecs.slice(0, 3).map(function (s) { return { s: s, ok: false }; })));
+          const L = ["A", "B", "C", "D"];
+          let ans = "A";
+          const specs = [], options = [];
+          all.forEach(function (o, i) {
+            specs.push(o.s);
+            options.push(L[i] + ") graph");
+            if (o.ok) ans = L[i];
+          });
+          return { options: options, optionSpecs: specs, ans: ans };
+        }
+
+        /* ───────────── 점 만들기 ───────────── */
+
+        function randPoints(n) {
+          const xs = [];
+          while (xs.length < n) { const x = randInt(-5, 5); if (xs.indexOf(x) === -1) xs.push(x); }
+          return xs.map(function (x) { return [x, randInt(-6, 6)]; });
+        }
+        /* 첫 번째 숫자 하나를 일부러 반복시켜 함수가 아니게 만든다. */
+        function breakPoints(pts) {
+          const p = pts.slice();
+          const i = randInt(0, p.length - 1);
+          const rx = p[i][0];
+          let ny = randInt(-6, 6);
+          while (ny === p[i][1]) ny = randInt(-6, 6);
+          p.splice(randInt(0, p.length), 0, [rx, ny]);
+          return { pts: p, repeated: rx };
+        }
+        function xsOf(pts) { return pts.map(function (p) { return p[0]; }); }
+        function ysOf(pts) { return pts.map(function (p) { return p[1]; }); }
+
+        /* ───────────── 사상도 (mapping diagram) ───────────── */
+
+        let mapSeq = 0;
+        function buildMapping(ins, outs, links) {
+          const uid = "mp" + (++mapSeq);
+          const step = 30, W = 330;
+          const rows = Math.max(ins.length, outs.length);
+          const H = 66 + rows * step;
+          const cy = H / 2 + 8;
+          const ryL = 14 + ins.length * step / 2;
+          const ryR = 14 + outs.length * step / 2;
+          const yAt = function (i, total) { return cy - (total - 1) * step / 2 + i * step; };
+
+          let s = '<svg viewBox="0 0 ' + W + ' ' + H + '" xmlns="http://www.w3.org/2000/svg" class="coord-svg" style="max-width:340px">';
+          s += '<defs><marker id="' + uid + '" markerWidth="8" markerHeight="8" refX="7" refY="4" orient="auto">' +
+               '<path d="M0,0 L8,4 L0,8 Z" fill="#0f172a"/></marker></defs>';
+          s += '<text x="85" y="22" font-size="13" font-weight="800" fill="#0f172a" text-anchor="middle">INPUT</text>';
+          s += '<text x="245" y="22" font-size="13" font-weight="800" fill="#0f172a" text-anchor="middle">OUTPUT</text>';
+          s += '<ellipse cx="85" cy="' + cy + '" rx="48" ry="' + ryL + '" fill="none" stroke="#0f172a" stroke-width="2"/>';
+          s += '<ellipse cx="245" cy="' + cy + '" rx="48" ry="' + ryR + '" fill="none" stroke="#0f172a" stroke-width="2"/>';
+          ins.forEach(function (v, i) {
+            s += '<text x="85" y="' + (yAt(i, ins.length) + 5) + '" font-size="15" font-weight="700" fill="#0f172a" text-anchor="middle">' + v + '</text>';
+          });
+          outs.forEach(function (v, i) {
+            s += '<text x="245" y="' + (yAt(i, outs.length) + 5) + '" font-size="15" font-weight="700" fill="#0f172a" text-anchor="middle">' + v + '</text>';
+          });
+          links.forEach(function (lk) {
+            const y1 = yAt(lk[0], ins.length), y2 = yAt(lk[1], outs.length);
+            s += '<line x1="136" y1="' + y1 + '" x2="192" y2="' + y2 + '" stroke="#2563eb" stroke-width="2" marker-end="url(#' + uid + ')"/>';
+          });
+          s += '</svg>';
+          return s;
+        }
+
+        /* 서로 다른 정수 n 개 */
+        function distinctInts(n, lo, hi) {
+          const out = [];
+          let guard = 0;
+          while (out.length < n && guard++ < 500) {
+            const v = randInt(lo, hi);
+            if (out.indexOf(v) === -1) out.push(v);
+          }
+          return out;
+        }
+
+        /* ══════════════════════════════════════════════════════════════
+           함수 이름·변수 문자, 항 쓰기 — Lesson 2 에서 만들어 Lesson 4 도 쓴다
+           ══════════════════════════════════════════════════════════════ */
+
+        /* Dan 은 f 말고도 g, h, k, P 를 쓴다. 이름과 변수 문자가 매번 바뀌어야
+           학생이 "f 와 x" 라는 겉모습이 아니라 구조를 읽게 된다. */
+        const FN_PAIRS = [
+          ["f", "x"], ["g", "x"], ["h", "a"], ["h", "m"],
+          ["k", "a"], ["P", "t"], ["C", "n"], ["g", "p"]
+        ];
+        function fnPair() { return mcfPick(FN_PAIRS); }
+
+        /* 계수를 붙여 항을 쓴다. 1 과 -1 은 숫자를 생략한다. */
+        function term(coef, sym) {
+          if (coef === 0) return "";
+          if (sym === "") return String(coef);
+          if (coef === 1) return sym;
+          if (coef === -1) return "-" + sym;
+          return coef + sym;
+        }
+        /* 뒤에 붙는 항. 부호를 앞에 띄워 쓴다. */
+        function addTerm(coef, sym) {
+          if (coef === 0) return "";
+          const t = term(Math.abs(coef), sym);
+          return (coef > 0 ? " + " : " - ") + t;
+        }
+        function sgn(n) { return n < 0 ? "(" + n + ")" : String(n); }
+
+        /* ══════════════════════════════════════════════════════════════
+           변환 어휘 — Lesson 5 에서 만들어 Lesson 7 도 그대로 쓴다
+
+             y = a f( b(x - c) ) + d
+
+           a 와 d 는 함수 바깥이라 y 를 건드리고,
+           b 와 c 는 함수 안쪽이라 x 를 건드린다.
+           점 옮기기: (x, y) -> (x/b + c, ay + d)
+
+           약어도 Dan 것을 그대로 쓴다. 화면 위 범례와 글자 하나까지 같아야
+           한다: VS / VC / VROX / HS / HC / HROY / b.f.o
+           ══════════════════════════════════════════════════════════════ */
+
+        /* 분수를 사람이 읽는 모양으로. 정수면 정수로. */
+        function fracTex(n, d) {
+          if (d === 0) return "0";
+          let s = (n < 0) !== (d < 0) ? -1 : 1;
+          let N = Math.abs(n), D = Math.abs(d);
+          const g = (function gg(x, y) { return y === 0 ? x : gg(y, x % y); })(N, D);
+          N /= g; D /= g;
+          if (D === 1) return (s < 0 ? "-" : "") + N;
+          return (s < 0 ? "-" : "") + "\\dfrac{" + N + "}{" + D + "}";
+        }
+        function fracWord(n, d) {
+          return fracTex(n, d).replace("\\dfrac", "\\tfrac");
+        }
+
+        /* b 값을 예쁘게 (1/2 같은 분수도 쓴다) */
+        const B_VALUES = [
+          { tex: "2", num: 2 }, { tex: "3", num: 3 }, { tex: "4", num: 4 },
+          { tex: "-2", num: -2 }, { tex: "-3", num: -3 },
+          { tex: "\\tfrac{1}{2}", num: 0.5 }, { tex: "\\tfrac{1}{3}", num: 1 / 3 },
+          { tex: "\\tfrac{1}{4}", num: 0.25 },
+          { tex: "-\\tfrac{1}{2}", num: -0.5 }, { tex: "-\\tfrac{1}{3}", num: -1 / 3 }
+        ];
+        const A_VALUES = [
+          { tex: "2", num: 2 }, { tex: "3", num: 3 }, { tex: "5", num: 5 },
+          { tex: "-2", num: -2 }, { tex: "-3", num: -3 }, { tex: "-4", num: -4 },
+          { tex: "\\tfrac{1}{2}", num: 0.5 }, { tex: "\\tfrac{1}{3}", num: 1 / 3 },
+          { tex: "-\\tfrac{1}{2}", num: -0.5 }, { tex: "-\\tfrac{1}{4}", num: -0.25 }
+        ];
+
+        /* ── a 가 하는 일을 Dan 의 말로 ── */
+        function aWords(a) {
+          const m = Math.abs(a);
+          const out = [];
+          if (m > 1) out.push("VS b.f.o " + fracWord(Math.round(m * 12), 12));
+          else if (m < 1) out.push("VC b.f.o " + fracWord(Math.round(m * 12), 12));
+          if (a < 0) out.push("VROX");
+          if (!out.length) out.push("no vertical change");
+          return out;
+        }
+        /* ── b 가 하는 일을 Dan 의 말로. 늘고 줄어드는 배율은 1/|b| 다 ── */
+        function bWords(b) {
+          const m = Math.abs(b);
+          const out = [];
+          if (m > 1) out.push("HC b.f.o " + fracWord(12, Math.round(m * 12)));
+          else if (m < 1) out.push("HS b.f.o " + fracWord(12, Math.round(m * 12)));
+          if (b < 0) out.push("HROY");
+          if (!out.length) out.push("no horizontal change");
+          return out;
+        }
+        function cWords(c) {
+          if (c === 0) return ["no horizontal shift"];
+          return ["HT " + (c > 0 ? "R" : "L") + " by " + Math.abs(c)];
+        }
+        function dWords(d) {
+          if (d === 0) return ["no vertical shift"];
+          return ["VT " + (d > 0 ? "U" : "D") + " by " + Math.abs(d)];
+        }
+        function joinWords(list) { return list.join(", "); }
+        /* 약어 문장은 반드시 \text{} 로 감싼다. 안 그러면 산문으로 판정되어
+           보기 넷의 글꼴이 갈린다(Lesson 3 에서 실제로 터진 자리).
+
+           그런데 \text{} 안에서는 \tfrac 을 쓸 수 없다. KaTeX 가 텍스트 모드
+           에서 수식 명령을 만나면 통째로 실패해서 원문을 빨간 글씨로 뱉는다
+           (Dan 화면에서 실제로 그렇게 나왔다). 그래서 분수만 \text{} 밖으로
+           빼내고 나머지 글자만 감싼다. */
+        function abbrTex(s) {
+          const parts = String(s).split(/(\\t?d?frac\{\d+\}\{\d+\})/);
+          let out = "";
+          parts.forEach(function (t) {
+            if (!t) return;
+            if (/^\\t?d?frac\{/.test(t)) out += t;
+            else out += "\\text{" + t + "}";
+          });
+          return out || "\\text{}";
+        }
+        function wordTex(s) { return M(abbrTex(s)); }
+
+        /* ── 식 조립 ── */
+        function innerTex(bTex, c, V) {
+          const shifted = c === 0 ? V : "(" + V + (c > 0 ? " - " + c : " + " + (-c)) + ")";
+          if (bTex === "1") return shifted;
+          if (bTex === "-1") return "-" + shifted;
+          return bTex + shifted;
+        }
+        function fullTex(aTex, bTex, c, d, F, V) {
+          let s = "y = ";
+          if (aTex === "1") s += "";
+          else if (aTex === "-1") s += "-";
+          else s += aTex;
+          s += F + "\\left(" + innerTex(bTex, c, V) + "\\right)";
+          if (d !== 0) s += (d > 0 ? " + " + d : " - " + (-d));
+          return s;
+        }
+
+        /* ══════════════════════════════════════════════════════════════
+           되돌리기 어휘 — Lesson 7 에서 만들어 보스 2단도 그대로 쓴다
+
+           Dan 의 손글씨 Lesson 6 을 그대로 따른다.
+
+             y = f(x)  --a, b, c, d-->  y = a f( b(x - c) ) + d
+                       <--되돌리기-----
+
+           되돌리는 순서는 d → c → b → a. 나중에 한 일을 먼저 푼다.
+           각 글자의 되돌리기:
+             d  d>0 이면 VT D by d,  d<0 이면 VT U by |d|
+             c  c>0 이면 HT L by c,  c<0 이면 HT R by |c|
+             b  |b|>1 이면 HS b.f.o |b|,  |b|<1 이면 HC b.f.o |b|,  b<0 이면 HROY
+             a  |a|>1 이면 VC b.f.o 1/|a|, |a|<1 이면 VS b.f.o 1/|a|, a<0 이면 VROX
+
+           b 와 a 의 배율이 서로 반대라는 점에 주의. 원래 변환에서 b 의 배율은
+           1/|b| 였으므로 되돌릴 때는 |b| 가 되고, a 는 |a| 였으므로 1/|a| 가 된다.
+
+           점 옮기기는 변환과 같다: (x, y) -> (x/b + c, ay + d)
+           ══════════════════════════════════════════════════════════════ */
+
+        /* ── 아주 작은 유리수 도구. 소수로 다루면 1/3 이 3333/10000 이 된다. ── */
+        function R(n, d) {
+          d = d === undefined ? 1 : d;
+          if (d < 0) { n = -n; d = -d; }
+          const g = (function gg(x, y) { return y === 0 ? Math.abs(x) : gg(y, x % y); })(Math.abs(n), Math.abs(d)) || 1;
+          return { n: n / g, d: d / g };
+        }
+        const rNum = r => r.n / r.d;
+        const rAbs = r => R(Math.abs(r.n), r.d);
+        const rInv = r => R(r.d * (r.n < 0 ? -1 : 1), Math.abs(r.n));
+        const rMul = (p, q) => R(p.n * q.n, p.d * q.d);
+        const rDiv = (p, q) => R(p.n * q.d, p.d * q.n);
+        const rAdd = (p, q) => R(p.n * q.d + q.n * p.d, p.d * q.d);
+        const rNeg = r => R(-r.n, r.d);
+        const rCmp1 = r => Math.abs(r.n) - r.d;          /* |r| 과 1 의 대소 */
+        function rTex(r) {
+          if (r.d === 1) return String(r.n);
+          return (r.n < 0 ? "-" : "") + "\\tfrac{" + Math.abs(r.n) + "}{" + r.d + "}";
+        }
+        function rDisp(r) {
+          if (r.d === 1) return String(r.n);
+          return (r.n < 0 ? "-" : "") + "\\dfrac{" + Math.abs(r.n) + "}{" + r.d + "}";
+        }
+
+        /* ── 되돌리기 문구 ── */
+        function undoD(d) {
+          if (d === 0) return [];
+          return ["VT " + (d > 0 ? "D" : "U") + " by " + Math.abs(d)];
+        }
+        function undoC(c) {
+          if (c === 0) return [];
+          return ["HT " + (c > 0 ? "L" : "R") + " by " + Math.abs(c)];
+        }
+        function undoB(bR) {
+          const m = rAbs(bR), out = [], k = rCmp1(m);
+          if (k > 0) out.push("HS b.f.o " + rTex(m));
+          else if (k < 0) out.push("HC b.f.o " + rTex(m));
+          if (bR.n < 0) out.push("HROY");
+          return out;
+        }
+        function undoA(aR) {
+          const m = rAbs(aR), out = [], k = rCmp1(m);
+          if (k > 0) out.push("VC b.f.o " + rTex(rInv(m)));
+          else if (k < 0) out.push("VS b.f.o " + rTex(rInv(m)));
+          if (aR.n < 0) out.push("VROX");
+          return out;
+        }
+        /* 되돌리는 전체 순서: d -> c -> b -> a */
+        function undoAll(aR, bR, c, d) {
+          return [].concat(undoD(d), undoC(c), undoB(bR), undoA(aR));
+        }
+        /* 부모에서 새 함수로 가는 순서: a -> b -> c -> d (Dan 의 ⑤⑥⑦ 순서) */
+        function doAll(aR, bR, c, d) {
+          const out = [];
+          const ma = rAbs(aR), ka = rCmp1(ma);
+          if (ka > 0) out.push("VS b.f.o " + rTex(ma));
+          else if (ka < 0) out.push("VC b.f.o " + rTex(ma));
+          if (aR.n < 0) out.push("VROX");
+          const mb = rAbs(bR), kb = rCmp1(mb);
+          if (kb > 0) out.push("HC b.f.o " + rTex(rInv(mb)));
+          else if (kb < 0) out.push("HS b.f.o " + rTex(rInv(mb)));
+          if (bR.n < 0) out.push("HROY");
+          if (c !== 0) out.push("HT " + (c > 0 ? "R" : "L") + " by " + Math.abs(c));
+          if (d !== 0) out.push("VT " + (d > 0 ? "U" : "D") + " by " + Math.abs(d));
+          return out;
+        }
+        function numbered(list) {
+          return list.map(function (s, i) { return (i + 1) + ". " + s; }).join("  ");
+        }
+
+        /* ── 식 조립 (유리수 계수) ── */
+        const AR = [R(2), R(3), R(-2), R(-3), R(1, 2), R(1, 3), R(3, 2), R(-1, 2), R(2, 5), R(-4)];
+        const BR = [R(2), R(3), R(-2), R(1, 2), R(1, 4), R(-1, 3), R(4, 5), R(-4, 5), R(8, 7)];
+
+        function innerR(bR, c, V) {
+          const shifted = c === 0 ? V : "(" + V + (c > 0 ? " - " + c : " + " + (-c)) + ")";
+          if (bR.n === 1 && bR.d === 1) return shifted;
+          if (bR.n === -1 && bR.d === 1) return "-" + shifted;
+          return rTex(bR) + shifted;
+        }
+        function eqR(aR, bR, c, d, F, V) {
+          let s = "y = ";
+          if (aR.n === 1 && aR.d === 1) s += "";
+          else if (aR.n === -1 && aR.d === 1) s += "-";
+          else s += rTex(aR);
+          s += F + "\\left(" + innerR(bR, c, V) + "\\right)";
+          if (d !== 0) s += (d > 0 ? " + " + d : " - " + (-d));
+          return s;
+        }
+
+
+        /* ══════════════════════════════════════════════════════════════
+           Grade 7 — Unit 3 Lesson 3: Order of Operations            (B2.1)
+
+             t1  Multiply and Divide First
+             t2  Brackets First
+             t3  Left to Right              같은 등급끼리는 나온 순서대로
+             t4  Multi-Step with Decimals
+             t5  Properties of Operations   ← 이 유형에서만 문자를 쓴다
+             t6  Order of Operations in Context
+
+           Dan 확정:
+             · 지수는 쓰지 않는다 (U8). 순서는 괄호 → × ÷ → + − 까지만.
+             · 문자(변수)는 **t5 에서만** 쓴다. 커리큘럼 B2.1 조문 자체가
+               a + b = b + a 로 쓰기 때문이다. 그 예외를 규칙 상자에 적어 뒀다.
+             · 소수와 분수를 섞는 것은 t4 Medium 에서만. 분모는 나누어떨어지는
+               것(2·4·5·8·10·20·25)이고 답은 소수로 통일한다.
+
+           이 레슨의 나눗셈은 **딱 떨어지게** 만든다 (L2 와 다르다).
+           연산순서를 가르치는 자리에서 반올림까지 얹으면, 학생이 틀렸을 때
+           순서를 틀린 건지 반올림을 틀린 건지 구분할 수 없다.
+           중간값과 답은 전부 양수다 — 음수 표기 규약이 순서 규칙과 겹쳐
+           보이지 않게 하기 위해서다.
+
+           산술은 전부 **유리수(분자/분모 정수)** 로 한다. 부동소수점은 쓰지 않는다.
+           ══════════════════════════════════════════════════════════════ */
+
+        let LEVEL = 1;
+        const LEVEL_KEY = { 1: "k", 2: "a" };
+
+        function paintLevel() {
+          for (const n of [1, 2]) {
+            const b = document.getElementById("lvl-" + n);
+            if (b) b.classList.toggle("active", n === LEVEL);
+          }
+        }
+        function setLevel(v) {
+          if (v === LEVEL) return;
+          if (MCF.setRetryLevel && MCF.setRetryLevel(LEVEL_KEY[v]) === false) return;
+          LEVEL = v;
+          paintLevel();
+          const st = document.getElementById("quiz-station");
+          if (st && st.style.display !== "none") generateNewProblem();
+        }
+        window.setLevel = setLevel;
+        if (MCF.setRetryLevel) MCF.setRetryLevel(LEVEL_KEY[1]);
+
+        /* ── 유리수 산술 ────────────────────────────────────────────── */
+
+        function gcd2(a, b) { a = Math.abs(a); b = Math.abs(b); while (b) { const t = a % b; a = b; b = t; } return a || 1; }
+        function R(n, d) {
+          d = (d === undefined ? 1 : d);
+          if (d < 0) { n = -n; d = -d; }
+          const g = gcd2(n, d);
+          return { n: n / g, d: d / g };
+        }
+        function radd(a, b) { return R(a.n * b.d + b.n * a.d, a.d * b.d); }
+        function rsub(a, b) { return R(a.n * b.d - b.n * a.d, a.d * b.d); }
+        function rmul(a, b) { return R(a.n * b.n, a.d * b.d); }
+        function rdiv(a, b) { return b.n === 0 ? null : R(a.n * b.d, a.d * b.n); }
+        function rval(a) { return a.n / a.d; }
+        function req(a, b) { return a.n * b.d === b.n * a.d; }
+
+        function P10(k) { return Math.pow(10, k); }
+        function txt(i, d) {
+          let s = String(Math.round(Math.abs(i)));
+          if (d === 0) return s;
+          while (s.length <= d) s = "0" + s;
+          return s.slice(0, s.length - d) + "." + s.slice(s.length - d);
+        }
+        function trimTxt(i, d) {
+          let s = txt(i, d);
+          if (s.indexOf(".") !== -1) s = s.replace(/0+$/, "").replace(/\.$/, "");
+          return s;
+        }
+        /* 유리수를 소수로. 넷째 자리까지 딱 떨어지고 양수일 때만 값을 준다. */
+        function dec(x) {
+          if (!x || x.n <= 0) return null;
+          const t = x.n * 10000;
+          if (t % x.d !== 0) return null;
+          return trimTxt(t / x.d, 4);
+        }
+        function RD(i, d) { return R(i, P10(d)); }        /* 소수 리터럴 */
+
+        /* 토큰열 계산. tk = [R, "op", R, "op", R, ...] (괄호는 미리 계산해 넣는다) */
+        function evalFlat(tk) {
+          const a = [tk[0]];
+          for (let i = 1; i < tk.length; i += 2) {
+            const op = tk[i], v = tk[i + 1];
+            if (op === "*") a[a.length - 1] = rmul(a[a.length - 1], v);
+            else if (op === "/") { const q = rdiv(a[a.length - 1], v); if (!q) return null; a[a.length - 1] = q; }
+            else { a.push(op); a.push(v); }
+          }
+          let acc = a[0];
+          for (let i = 1; i < a.length; i += 2)
+            acc = a[i] === "+" ? radd(acc, a[i + 1]) : rsub(acc, a[i + 1]);
+          return acc;
+        }
+        /* 순서를 무시하고 왼쪽에서 오른쪽으로 — 대표 오답 */
+        function evalLTR(tk) {
+          let acc = tk[0];
+          for (let i = 1; i < tk.length; i += 2) {
+            const op = tk[i], v = tk[i + 1];
+            if (op === "+") acc = radd(acc, v);
+            else if (op === "-") acc = rsub(acc, v);
+            else if (op === "*") acc = rmul(acc, v);
+            else { const q = rdiv(acc, v); if (!q) return null; acc = q; }
+          }
+          return acc;
+        }
+        const OPTEX = { "+": " + ", "-": " - ", "*": " \\times ", "/": " \\div " };
+        function texOf(tk) {
+          let s = dec(tk[0]);
+          for (let i = 1; i < tk.length; i += 2) s += OPTEX[tk[i]] + dec(tk[i + 1]);
+          return s;
+        }
+
+        /* ── 보기 ───────────────────────────────────────────────────── */
+
+        function NR(x) { const t = dec(x); return t === null ? null : { v: rval(x), tex: t, key: "n" + t }; }
+        function TXT(s) { return { v: null, tex: s, key: "t" + s, raw: true, txt: true }; }
+
+        function four(correct, cands, spare) {
+          const seen = [correct.tex], vals = correct.v === null ? [] : [correct.v], keep = [];
+          const take = function (c) {
+            if (!c || keep.length >= 3 || typeof c.tex !== "string" || !c.tex) return;
+            if (c.v !== null && (!isFinite(c.v) || c.v <= 0)) return;
+            if (seen.indexOf(c.tex) !== -1) return;
+            if (c.v !== null) for (const x of vals) if (Math.abs(x - c.v) < 1e-9) return;
+            seen.push(c.tex); if (c.v !== null) vals.push(c.v);
+            keep.push(c);
+          };
+          (cands || []).forEach(take);
+          for (let k = 0; keep.length < 3 && k < 400; k++) take(spare ? spare(k) : null);
+          if (keep.length < 3) return null;
+          const wrap = function (c) { return c.raw ? c.tex : M(c.tex); };
+          return mcBuild(wrap(correct), keep.map(wrap));
+        }
+        /* 값을 조금씩 흔든 예비 보기 */
+        function nudge(x, step) {
+          return function (j) {
+            return NR(radd(x, R((j % 2 ? -1 : 1) * (Math.floor(j / 2) + 1) * step, step === 1 ? 1 : 10)));
+          };
+        }
+
+        /* ── 되풀이하는 규칙 문장 ──────────────────────────────────── */
+
+        const ORDER_RULE =
+          "<b>Rule.</b> Brackets first, then " + M("\\times") + " and " + M("\\div") + ", then " +
+          M("+") + " and " + M("-") + ".";
+        const LTR_RULE =
+          "<b>Rule.</b> " + M("\\times") + " and " + M("\\div") + " are equal partners, and so are " +
+          M("+") + " and " + M("-") + ". When two equal partners meet, work left to right.";
+        const BRACKET_RULE =
+          "<b>Rule.</b> Everything inside the brackets is finished before anything outside them " +
+          "starts &mdash; and inside the brackets the same order applies again.";
+        const CHECK_RULE =
+          "<b>Check.</b> A rough estimate tells you straight away whether the order went wrong.";
+
+        /* ══════════════ t1  Multiply and Divide First ══════════════ */
+
+        function t1(lvl, depth) {
+          depth = depth || 0;
+          if (depth > 14) return null;
+          let tk, hintExtra;
+
+          if (lvl === 1) {
+            const shape = MCF.pick(["mul", "div"]);
+            const plus = MCF.pick([true, false]);
+            const a = R(MCF.randInt(4, 40));
+            if (shape === "mul") {
+              const b = R(MCF.randInt(2, 9)), c = R(MCF.randInt(2, 9));
+              tk = [a, plus ? "+" : "-", b, "*", c];
+            } else {
+              const c = R(MCF.randInt(2, 9)), q = R(MCF.randInt(2, 9));
+              tk = [a, plus ? "+" : "-", rmul(c, q), "/", c];
+            }
+            hintExtra = "";
+          } else {
+            const shape = MCF.pick(["both", "three"]);
+            const a = R(MCF.randInt(2, 9)), b = R(MCF.randInt(2, 9));
+            const c = R(MCF.randInt(2, 9)), q = R(MCF.randInt(2, 9));
+            if (shape === "both") {
+              tk = [a, "*", b, "+", rmul(c, q), "/", c];
+            } else {
+              const d = R(MCF.randInt(2, 9)), e = R(MCF.randInt(2, 9));
+              tk = [R(MCF.randInt(20, 60)), "+", a, "*", b, "-", rmul(d, e), "/", d];
+            }
+            hintExtra = " There is more than one thing to do before the adding and subtracting, " +
+                        "so finish all of them first.";
+          }
+
+          const A0 = evalFlat(tk);
+          if (!A0 || A0.n <= 0) return t1(lvl, depth + 1);
+          const A = NR(A0);
+          if (!A) return t1(lvl, depth + 1);
+          const ltr = evalLTR(tk);
+          /* 왼→오로 읽어도 같은 답이면 이 유형이 가르치려는 것이 사라진다 */
+          if (!ltr || req(A0, ltr)) return t1(lvl, depth + 1);
+          const mc = four(A, [NR(ltr), NR(radd(A0, R(1))), NR(rsub(A0, R(1)))], nudge(A0, 1));
+          if (!mc) return t1(lvl, depth + 1);
+
+          const first = [];
+          for (let i = 1; i < tk.length; i += 2)
+            if (tk[i] === "*" || tk[i] === "/")
+              first.push(dec(tk[i - 1]) + OPTEX[tk[i]] + dec(tk[i + 1]) + " = " +
+                         dec(tk[i] === "*" ? rmul(tk[i - 1], tk[i + 1]) : rdiv(tk[i - 1], tk[i + 1])));
+
+          return {
+            title: "Type 1: Multiply and Divide First", type: "mc", assetType: "none",
+            fullStatement: "Work out " + M(texOf(tk)) + ".",
+            prompt: "What is the answer?",
+            hint: "Do not read it like a sentence, left to right. Find every " + M("\\times") +
+                  " and " + M("\\div") + " and finish those first." + hintExtra + " " + ORDER_RULE,
+            options: mc.options, ans: mc.ans, rawAns: mc.rawAns,
+            steps: [
+              { title: "Step 1 — Look for brackets", math: texOf(tk),
+                explanation: "There are none here, so the next thing to look for is " + M("\\times") +
+                  " and " + M("\\div") + ". " + ORDER_RULE },
+              { title: "Step 2 — Do all the multiplying and dividing",
+                math: first.join(", \\quad "),
+                explanation: "These are done wherever they appear in the line, not in the order you " +
+                  "read them." },
+              { title: "Step 3 — Now add and subtract",
+                math: texOf(tk) + " = " + A.tex,
+                explanation: "Only what is left after Step 2 gets added or subtracted." },
+              { title: "Step 4 — Check against reading it left to right",
+                math: A.tex + (ltr && !req(A0, ltr) ? " \\ne " + (dec(ltr) || "\\text{something else}") : ""),
+                explanation: ltr && !req(A0, ltr)
+                  ? "Working straight across from the left would have given " +
+                    M(dec(ltr) || "?") + ", which is the mistake this question is looking for."
+                  : "Reading straight across happens to give the same answer here, but that is luck, " +
+                    "not a method. " + CHECK_RULE }
+            ],
+            ansBox: A.tex, finalLabel: "Answer"
+          };
+        }
+
+        /* ══════════════ t2  Brackets First ══════════════ */
+
+        function t2(lvl, depth) {
+          depth = depth || 0;
+          if (depth > 16) return null;
+
+          if (lvl === 1) {
+            const shape = MCF.pick(["sumtimes", "timesdiff"]);
+            const c = R(MCF.randInt(2, 9));
+            let inner, tex, inTex, tkNo;
+            if (shape === "sumtimes") {
+              const a = R(MCF.randInt(2, 19)), b = R(MCF.randInt(2, 19));
+              inner = radd(a, b);
+              inTex = dec(a) + " + " + dec(b);
+              tex = "(" + inTex + ") \\times " + dec(c);
+              tkNo = [a, "+", b, "*", c];               /* 괄호를 무시한 식 */
+            } else {
+              const b = R(MCF.randInt(6, 19)), d = R(MCF.randInt(2, 5));
+              inner = rsub(b, d);
+              inTex = dec(b) + " - " + dec(d);
+              tex = dec(c) + " \\times (" + inTex + ")";
+              tkNo = [c, "*", b, "-", d];
+            }
+            if (inner.n <= 0) return t2(1, depth + 1);
+            const A0 = rmul(inner, c);
+            const A = NR(A0);
+            if (!A) return t2(1, depth + 1);
+            const noBr = evalFlat(tkNo);
+            const mc = four(A, [noBr ? NR(noBr) : null, NR(radd(A0, c)), NR(rsub(A0, c))],
+              nudge(A0, 1));
+            if (!mc) return t2(1, depth + 1);
+            return {
+              title: "Type 2: Brackets First", type: "mc", assetType: "none",
+              fullStatement: "Work out " + M(tex) + ".",
+              prompt: "What is the answer?",
+              hint: "The brackets are an instruction. Finish everything inside them before you touch " +
+                    "the " + M("\\times") + " outside. " + BRACKET_RULE,
+              options: mc.options, ans: mc.ans, rawAns: mc.rawAns,
+              steps: [
+                { title: "Step 1 — Brackets come first", math: tex,
+                  explanation: "Nothing outside the brackets can start until what is inside is a " +
+                    "single number. " + ORDER_RULE },
+                { title: "Step 2 — Work out the inside", math: inTex + " = " + dec(inner),
+                  explanation: "The bracket has now become one number." },
+                { title: "Step 3 — Do what is left",
+                  math: (shape === "sumtimes" ? dec(inner) + " \\times " + dec(c)
+                                              : dec(c) + " \\times " + dec(inner)) + " = " + A.tex,
+                  explanation: "One multiplication remains." },
+                { title: "Step 4 — See what the brackets changed",
+                  math: noBr && !req(A0, noBr) ? tex + " \\ne " + texOf(tkNo) : tex,
+                  explanation: noBr && !req(A0, noBr)
+                    ? "Without the brackets the answer would be " + M(dec(noBr) || "?") +
+                      ", because the multiplying would go first. The brackets exist precisely to " +
+                      "stop that."
+                    : "Removing the brackets happens not to change the answer here, but that is a " +
+                      "coincidence. " + BRACKET_RULE }
+              ],
+              ansBox: A.tex, finalLabel: "Answer"
+            };
+          }
+
+          /* Medium */
+          const shape = MCF.pick(["inside", "place"]);
+
+          if (shape === "inside") {
+            /* 괄호 안에도 순서가 있다 */
+            const a = R(MCF.randInt(2, 20)), b = R(MCF.randInt(2, 9)), c = R(MCF.randInt(2, 9));
+            const d = R(MCF.randInt(2, 9));
+            const inner = radd(a, rmul(b, c));
+            if (inner.n % d.n !== 0) return t2(2, depth + 1);      /* 딱 떨어지게 */
+            const A0 = rdiv(inner, d);
+            const A = NR(A0);
+            if (!A || A0.n <= 0) return t2(2, depth + 1);
+            const innerLTR = rmul(radd(a, b), c);                  /* 괄호 안을 왼→오 */
+            const wrong1 = rdiv(innerLTR, d);
+            const wrong2 = radd(a, rdiv(rmul(b, c), d));           /* 괄호를 무시 */
+            const tex = "(" + dec(a) + " + " + dec(b) + " \\times " + dec(c) + ") \\div " + dec(d);
+            const mc = four(A, [wrong1 ? NR(wrong1) : null, wrong2 ? NR(wrong2) : null,
+                                NR(radd(A0, R(1)))], nudge(A0, 1));
+            if (!mc) return t2(2, depth + 1);
+            return {
+              title: "Type 2: Brackets First", type: "mc", assetType: "none",
+              fullStatement: "Work out " + M(tex) + ".",
+              prompt: "What is the answer?",
+              hint: "There are two things inside the brackets. The order does not switch off just " +
+                    "because you are inside a bracket. " + BRACKET_RULE,
+              options: mc.options, ans: mc.ans, rawAns: mc.rawAns,
+              steps: [
+                { title: "Step 1 — Go inside the brackets first", math: tex,
+                  explanation: "The division outside has to wait until the bracket is one number." },
+                { title: "Step 2 — Inside the brackets, the same order applies",
+                  math: dec(b) + " \\times " + dec(c) + " = " + dec(rmul(b, c)),
+                  explanation: "Multiplying comes before adding here too. Adding " + M(dec(a)) +
+                    " and " + M(dec(b)) + " first would give " + M(dec(radd(a, b))) +
+                    ", and the whole answer would be wrong from that point on. " + ORDER_RULE },
+                { title: "Step 3 — Finish the bracket",
+                  math: dec(a) + " + " + dec(rmul(b, c)) + " = " + dec(inner),
+                  explanation: "Now the bracket is a single number." },
+                { title: "Step 4 — Do what is outside",
+                  math: dec(inner) + " \\div " + dec(d) + " = " + A.tex,
+                  explanation: CHECK_RULE }
+              ],
+              ansBox: A.tex, finalLabel: "Answer"
+            };
+          }
+
+          /* place — 괄호를 어디에 넣어야 이 값이 되나 */
+          const a = R(MCF.randInt(2, 12)), b = R(MCF.randInt(2, 9));
+          const c = R(MCF.randInt(3, 9)), d = R(MCF.randInt(1, 2));
+          const cd = rsub(c, d);
+          if (cd.n <= 0) return t2(2, depth + 1);
+          const forms = [
+            { tex: dec(a) + " + " + dec(b) + " \\times " + dec(c) + " - " + dec(d),
+              v: rsub(radd(a, rmul(b, c)), d) },
+            { tex: "(" + dec(a) + " + " + dec(b) + ") \\times " + dec(c) + " - " + dec(d),
+              v: rsub(rmul(radd(a, b), c), d) },
+            { tex: dec(a) + " + " + dec(b) + " \\times (" + dec(c) + " - " + dec(d) + ")",
+              v: radd(a, rmul(b, cd)) },
+            { tex: "(" + dec(a) + " + " + dec(b) + ") \\times (" + dec(c) + " - " + dec(d) + ")",
+              v: rmul(radd(a, b), cd) }
+          ];
+          for (const f of forms) if (!f.v || f.v.n <= 0) return t2(2, depth + 1);
+          /* 값이 겹치면 정답이 둘이 된다 */
+          for (let i = 0; i < 4; i++) for (let j = i + 1; j < 4; j++)
+            if (req(forms[i].v, forms[j].v)) return t2(2, depth + 1);
+          const pick = MCF.randInt(0, 3);
+          const target = dec(forms[pick].v);
+          if (target === null) return t2(2, depth + 1);
+          const A = { v: null, tex: M(forms[pick].tex), key: "f" + pick, raw: true };
+          const cands = forms.filter(function (f, i) { return i !== pick; })
+                             .map(function (f) { return { v: null, tex: M(f.tex), key: "g" + f.tex, raw: true }; });
+          const mc = four(A, cands, null);
+          if (!mc) return t2(2, depth + 1);
+          return {
+            title: "Type 2: Brackets First", type: "mc", assetType: "none",
+            fullStatement: "All four calculations below use the same numbers in the same order. " +
+                           "Only the brackets are different.",
+            prompt: "Which one equals " + M(target) + "?",
+            hint: "Work each one out. The brackets change which operation goes first, and that " +
+                  "changes the answer. " + BRACKET_RULE,
+            options: mc.options, ans: mc.ans, rawAns: mc.rawAns,
+            steps: [
+              { title: "Step 1 — Notice what is being asked", math: "\\square = " + target,
+                explanation: "The numbers never change. Only the brackets do, so the brackets alone " +
+                  "are what makes the answers different." },
+              { title: "Step 2 — Work out the one with no brackets",
+                math: forms[0].tex + " = " + dec(forms[0].v),
+                explanation: "Multiplying goes first, then the adding and subtracting from left to " +
+                  "right. " + ORDER_RULE },
+              { title: "Step 3 — See what each bracket forces",
+                math: forms[1].tex + " = " + dec(forms[1].v) + ", \\quad " +
+                      forms[2].tex + " = " + dec(forms[2].v),
+                explanation: "A bracket promotes whatever is inside it to the front of the queue." },
+              { title: "Step 4 — Match the target",
+                math: forms[pick].tex + " = " + target,
+                explanation: "Only one of the four lands on " + M(target) + "." }
+            ],
+            ansBox: forms[pick].tex, finalLabel: "The calculation"
+          };
+        }
+
+        /* ══════════════ t3  Left to Right ══════════════ */
+
+        function t3(lvl, depth) {
+          depth = depth || 0;
+          if (depth > 16) return null;
+          let tk, teach;
+
+          if (lvl === 1) {
+            const shape = MCF.pick(["divmul", "subadd"]);
+            if (shape === "divmul") {
+              const b = R(MCF.randInt(2, 9)), q = R(MCF.randInt(2, 12)), c = R(MCF.randInt(2, 9));
+              tk = [rmul(b, q), "/", b, "*", c];
+              teach = "div";
+            } else {
+              const a = R(MCF.randInt(10, 40)), b = R(MCF.randInt(2, 9)), c = R(MCF.randInt(2, 9));
+              tk = [a, "-", b, "+", c];
+              teach = "sub";
+            }
+          } else {
+            const shape = MCF.pick(["four", "inbrackets"]);
+            if (shape === "four") {
+              const b = R(MCF.randInt(2, 9)), q = R(MCF.randInt(3, 12)), c = R(MCF.randInt(2, 5));
+              const d = R(MCF.randInt(2, 9)), e = R(MCF.randInt(2, 9));
+              tk = [rmul(b, q), "/", b, "*", c, "-", d, "+", e];
+              teach = "both";
+            } else {
+              const a = R(MCF.randInt(15, 40)), b = R(MCF.randInt(2, 9)), c = R(MCF.randInt(2, 9));
+              const d = R(MCF.randInt(2, 9));
+              const inner = radd(rsub(a, b), c);
+              if (inner.n <= 0 || inner.n % d.n !== 0) return t3(2, depth + 1);
+              const A0 = rdiv(inner, d);
+              const A = NR(A0);
+              if (!A) return t3(2, depth + 1);
+              const innerWrong = rsub(a, radd(b, c));           /* 괄호 안을 뒤에서부터 */
+              const wrong = rdiv(innerWrong, d);
+              const tex = "(" + dec(a) + " - " + dec(b) + " + " + dec(c) + ") \\div " + dec(d);
+              const mc = four(A, [wrong ? NR(wrong) : null, NR(radd(A0, R(1))), NR(rsub(A0, R(1)))],
+                nudge(A0, 1));
+              if (!mc) return t3(2, depth + 1);
+              return {
+                title: "Type 3: Left to Right", type: "mc", assetType: "none",
+                fullStatement: "Work out " + M(tex) + ".",
+                prompt: "What is the answer?",
+                hint: "Inside the brackets there is a subtraction and an addition. They are equal " +
+                      "partners, so they go in the order they appear. " + LTR_RULE,
+                options: mc.options, ans: mc.ans, rawAns: mc.rawAns,
+                steps: [
+                  { title: "Step 1 — Brackets first", math: tex,
+                    explanation: "The division waits. " + ORDER_RULE },
+                  { title: "Step 2 — Inside, work left to right",
+                    math: dec(a) + " - " + dec(b) + " = " + dec(rsub(a, b)),
+                    explanation: "The subtraction is written first, so it happens first. Adding " +
+                      M(dec(b)) + " and " + M(dec(c)) + " first would give " +
+                      M(dec(radd(b, c))) + " to take away, which is a different calculation. " +
+                      LTR_RULE },
+                  { title: "Step 3 — Finish the bracket",
+                    math: dec(rsub(a, b)) + " + " + dec(c) + " = " + dec(inner),
+                    explanation: "Now the bracket is one number." },
+                  { title: "Step 4 — Divide",
+                    math: dec(inner) + " \\div " + dec(d) + " = " + A.tex,
+                    explanation: CHECK_RULE }
+                ],
+                ansBox: A.tex, finalLabel: "Answer"
+              };
+            }
+          }
+
+          const A0 = evalFlat(tk);
+          if (!A0 || A0.n <= 0) return t3(lvl, depth + 1);
+          const A = NR(A0);
+          if (!A) return t3(lvl, depth + 1);
+          /* 대표 오답: 뒤엣것을 먼저 한 값 */
+          let wrong = null;
+          if (teach === "div") wrong = rdiv(tk[0], rmul(tk[2], tk[4]));
+          else if (teach === "sub") wrong = rsub(tk[0], radd(tk[2], tk[4]));
+          else wrong = evalFlat([rdiv(tk[0], rmul(tk[2], tk[4])), "-", tk[6], "+", tk[8]]);
+          if (!wrong || req(A0, wrong)) return t3(lvl, depth + 1);
+          const mc = four(A, [NR(wrong), NR(radd(A0, R(1))), NR(rsub(A0, R(1)))], nudge(A0, 1));
+          if (!mc) return t3(lvl, depth + 1);
+          const firstPair = dec(tk[0]) + OPTEX[tk[1]] + dec(tk[2]) + " = " +
+                            dec(tk[1] === "/" ? rdiv(tk[0], tk[2]) : rsub(tk[0], tk[2]));
+          return {
+            title: "Type 3: Left to Right", type: "mc", assetType: "none",
+            fullStatement: "Work out " + M(texOf(tk)) + ".",
+            prompt: "What is the answer?",
+            hint: teach === "sub"
+              ? "Adding and subtracting are equal partners. Neither one jumps the queue &mdash; they " +
+                "go in the order they are written. " + LTR_RULE
+              : "Multiplying and dividing are equal partners. The " + M("\\div") + " is written " +
+                "first, so it goes first. " + LTR_RULE,
+            options: mc.options, ans: mc.ans, rawAns: mc.rawAns,
+            steps: [
+              { title: "Step 1 — Sort the operations into ranks", math: texOf(tk),
+                explanation: teach === "sub"
+                  ? "There is no bracket and nothing to multiply or divide, so everything here is in " +
+                    "the same rank."
+                  : "The " + M("\\div") + " and the " + M("\\times") + " are in the same rank, so " +
+                    "neither one has priority over the other. " + ORDER_RULE },
+              { title: "Step 2 — Equal partners go left to right", math: firstPair,
+                explanation: "Whichever is written further left happens first. This is the rule " +
+                  "people most often get wrong, because the second operation often looks easier." },
+              { title: "Step 3 — Carry on across the line",
+                math: texOf(tk) + " = " + A.tex,
+                explanation: "Keep going in reading order until the line is one number." },
+              { title: "Step 4 — See what jumping the queue would cost",
+                math: wrong && !req(A0, wrong) ? A.tex + " \\ne " + (dec(wrong) || "?") : A.tex,
+                explanation: wrong && !req(A0, wrong)
+                  ? "Doing the second operation first gives " + M(dec(wrong) || "?") +
+                    ". That is the wrong answer this question is watching for."
+                  : "Here both orders happen to agree, which is luck rather than a rule. " + LTR_RULE }
+            ],
+            ansBox: A.tex, finalLabel: "Answer"
+          };
+        }
+
+        /* ══════════════ t4  Multi-Step with Decimals ══════════════ */
+
+        const FRACS = [[1, 2], [1, 4], [3, 4], [1, 5], [2, 5], [1, 8], [3, 8], [1, 10], [3, 10]];
+
+        function t4(lvl, depth) {
+          depth = depth || 0;
+          if (depth > 20) return null;
+
+          if (lvl === 1) {
+            const plus = MCF.pick([true, false]);
+            const a = RD(MCF.randInt(15, 180), 1);
+            const b = RD(MCF.randInt(11, 49), 1);
+            const c = RD(MCF.randInt(2, 9), 1);
+            const tk = [a, plus ? "+" : "-", b, "*", c];
+            const A0 = evalFlat(tk);
+            if (!A0 || A0.n <= 0) return t4(1, depth + 1);
+            const A = NR(A0);
+            if (!A || A.tex.replace(/^\d+\.?/, "").length > 3) return t4(1, depth + 1);
+            const ltr = evalLTR(tk);
+            if (!ltr || req(A0, ltr)) return t4(1, depth + 1);
+            const mc = four(A, [NR(ltr), NR(radd(A0, RD(1, 1))), NR(rsub(A0, RD(1, 1)))],
+              function (j) { return NR(radd(A0, RD((j % 2 ? -1 : 1) * (Math.floor(j / 2) + 2), 1))); });
+            if (!mc) return t4(1, depth + 1);
+            return {
+              title: "Type 4: Multi-Step with Decimals", type: "mc", assetType: "none",
+              fullStatement: "Work out " + M(texOf(tk)) + ".",
+              prompt: "What is the answer?",
+              hint: "The decimals do not change the order. Multiply first, then " +
+                    (plus ? "add" : "subtract") + " &mdash; and line up the decimal points when you " +
+                    "do. " + ORDER_RULE,
+              options: mc.options, ans: mc.ans, rawAns: mc.rawAns,
+              steps: [
+                { title: "Step 1 — The order is the same as with whole numbers",
+                  math: texOf(tk),
+                  explanation: "Decimals change how you calculate, not what order you calculate in. " +
+                    ORDER_RULE },
+                { title: "Step 2 — Multiply first",
+                  math: dec(b) + " \\times " + dec(c) + " = " + dec(rmul(b, c)),
+                  explanation: "Count the decimal places: " + M(dec(b)) + " and " + M(dec(c)) +
+                    " have one each, so the product has two." },
+                { title: "Step 3 — Now " + (plus ? "add" : "subtract"),
+                  math: dec(a) + (plus ? " + " : " - ") + dec(rmul(b, c)) + " = " + A.tex,
+                  explanation: "Line up the decimal points and fill the short number with zeros." },
+                { title: "Step 4 — Check with an estimate",
+                  math: "\\approx " + Math.round(rval(a)) + (plus ? " + " : " - ") +
+                        Math.round(rval(rmul(b, c))),
+                  explanation: ltr && !req(A0, ltr)
+                    ? "Going left to right would have given " + M(dec(ltr) || "?") +
+                      ", which the estimate would have caught straight away. " + CHECK_RULE
+                    : CHECK_RULE }
+              ],
+              ansBox: A.tex, finalLabel: "Answer"
+            };
+          }
+
+          /* Medium */
+          const shape = MCF.pick(["deep", "fraction"]);
+
+          if (shape === "deep") {
+            const a = RD(MCF.randInt(11, 89), 1), b = RD(MCF.randInt(11, 89), 1);
+            const c = RD(MCF.randInt(2, 9), 1), d = RD(MCF.randInt(11, 49), 1);
+            const inner = radd(a, b);
+            const A0 = rsub(rmul(inner, c), d);
+            if (!A0 || A0.n <= 0) return t4(2, depth + 1);
+            const A = NR(A0);
+            if (!A || (A.tex.split(".")[1] || "").length > 3) return t4(2, depth + 1);
+            const tex = "(" + dec(a) + " + " + dec(b) + ") \\times " + dec(c) + " - " + dec(d);
+            const noBr = rsub(radd(a, rmul(b, c)), d);        /* 괄호 무시 */
+            const ltrW = rmul(inner, rsub(c, d));             /* 뒤에서부터 */
+            const mc = four(A, [noBr ? NR(noBr) : null, ltrW ? NR(ltrW) : null,
+                                NR(radd(A0, RD(1, 1)))],
+              function (j) { return NR(radd(A0, RD((j % 2 ? -1 : 1) * (Math.floor(j / 2) + 2), 1))); });
+            if (!mc) return t4(2, depth + 1);
+            return {
+              title: "Type 4: Multi-Step with Decimals", type: "mc", assetType: "none",
+              fullStatement: "Work out " + M(tex) + ".",
+              prompt: "What is the answer?",
+              hint: "Three things to do and only one right order: bracket, then " + M("\\times") +
+                    ", then " + M("-") + ". " + ORDER_RULE,
+              options: mc.options, ans: mc.ans, rawAns: mc.rawAns,
+              steps: [
+                { title: "Step 1 — Brackets first",
+                  math: dec(a) + " + " + dec(b) + " = " + dec(inner),
+                  explanation: "Line the decimal points up. " + BRACKET_RULE },
+                { title: "Step 2 — Then multiply",
+                  math: dec(inner) + " \\times " + dec(c) + " = " + dec(rmul(inner, c)),
+                  explanation: "Ignore the points, multiply, then count the decimal places back in." },
+                { title: "Step 3 — Subtract last",
+                  math: dec(rmul(inner, c)) + " - " + dec(d) + " = " + A.tex,
+                  explanation: "Subtracting is the lowest rank, so it waits until everything else is " +
+                    "finished. " + ORDER_RULE },
+                { title: "Step 4 — Check with an estimate",
+                  math: "\\approx (" + Math.round(rval(a)) + " + " + Math.round(rval(b)) + ") \\times " +
+                        Math.round(rval(c)) + " - " + Math.round(rval(d)),
+                  explanation: noBr && !req(A0, noBr)
+                    ? "Dropping the brackets would have given " + M(dec(noBr) || "?") + ". " + CHECK_RULE
+                    : CHECK_RULE }
+              ],
+              ansBox: A.tex, finalLabel: "Answer"
+            };
+          }
+
+          /* fraction — 소수와 분수를 한 줄에 (규약: 답은 소수로 통일) */
+          const fr = MCF.pick(FRACS);
+          const f = R(fr[0], fr[1]);
+          const mult = R(MCF.randInt(2, 12) * fr[1], 1);          /* 분수를 곱하면 딱 떨어지게 */
+          const x = rmul(mult, RD(MCF.randInt(1, 9), 1));
+          if (!dec(x)) return t4(2, depth + 1);
+          const add = RD(MCF.randInt(5, 95), 1);
+          const prod = rmul(f, x);
+          if (!dec(prod)) return t4(2, depth + 1);
+          const A0 = radd(prod, add);
+          const A = NR(A0);
+          if (!A || (A.tex.split(".")[1] || "").length > 3) return t4(2, depth + 1);
+          const fTex = "\\frac{" + fr[0] + "}{" + fr[1] + "}";
+          const tex = fTex + " \\times " + dec(x) + " + " + dec(add);
+          const ltr = radd(f, x) && rmul(radd(f, x), add);
+          const mc = four(A, [NR(rmul(radd(f, x), add)), NR(radd(x, add)),
+                              NR(radd(A0, RD(1, 1)))],
+            function (j) { return NR(radd(A0, RD((j % 2 ? -1 : 1) * (Math.floor(j / 2) + 2), 1))); });
+          if (!mc) return t4(2, depth + 1);
+          return {
+            title: "Type 4: Multi-Step with Decimals", type: "mc", assetType: "none",
+            fullStatement: "Work out " + M(tex) + ". Give your answer as a decimal.",
+            prompt: "What is the answer?",
+            hint: "A fraction and a decimal in the same line is fine &mdash; the order does not " +
+                  "change. Taking " + M(fTex) + " of a number is the same as dividing it by " +
+                  fr[1] + (fr[0] > 1 ? " and then multiplying by " + fr[0] : "") + ".",
+            options: mc.options, ans: mc.ans, rawAns: mc.rawAns,
+            steps: [
+              { title: "Step 1 — Multiplying still comes first", math: tex,
+                explanation: "The fraction does not change the order, only the arithmetic. " +
+                  ORDER_RULE },
+              { title: "Step 2 — Take the fraction of the decimal",
+                math: dec(x) + " \\div " + fr[1] + " = " + dec(rdiv(x, R(fr[1]))),
+                explanation: "Dividing by " + fr[1] + " gives one " +
+                  (fr[1] === 2 ? "half" : fr[1] === 4 ? "quarter" : "part of " + fr[1]) + "." },
+              { title: "Step 3 — Finish the multiplication",
+                math: fTex + " \\times " + dec(x) + " = " + dec(prod),
+                explanation: fr[0] > 1
+                  ? "There are " + fr[0] + " of those parts, so multiply by " + fr[0] + "."
+                  : "That is the whole multiplication." },
+              { title: "Step 4 — Add last",
+                math: dec(prod) + " + " + dec(add) + " = " + A.tex,
+                explanation: "The answer is written as a decimal because the question asked for one. " +
+                  CHECK_RULE }
+            ],
+            ansBox: A.tex, finalLabel: "Answer"
+          };
+        }
+
+        /* ══════════════ t5  Properties of Operations ══════════════ */
+        /* 이 유형에서만 문자를 쓴다. 커리큘럼 B2.1 조문 자체가 문자로 쓰여 있다. */
+
+        const PROPS = ["The identity property", "The commutative property",
+                       "The associative property", "The distributive property"];
+
+        function t5(lvl, depth) {
+          depth = depth || 0;
+          if (depth > 16) return null;
+
+          if (lvl === 1) {
+            const which = MCF.randInt(0, 3);
+            const a = MCF.randInt(2, 9), b = MCF.randInt(2, 9), c = MCF.randInt(2, 9);
+            const dx = trimTxt(MCF.randInt(11, 89), 1);
+            let tex, why;
+            if (which === 0) {
+              tex = MCF.pick([dx + " \\times 1 = " + dx, dx + " + 0 = " + dx]);
+              why = "One of the two numbers leaves the other one completely unchanged. Multiplying " +
+                    "by 1 and adding 0 both do nothing at all.";
+            } else if (which === 1) {
+              const op = MCF.pick(["+", "\\times"]);
+              tex = a + " " + op + " " + b + " = " + b + " " + op + " " + a;
+              why = "The same two numbers appear on both sides with the same operation. Only their " +
+                    "order has been swapped, and the answer did not change.";
+            } else if (which === 2) {
+              const op = MCF.pick(["+", "\\times"]);
+              tex = "(" + a + " " + op + " " + b + ") " + op + " " + c + " = " +
+                    a + " " + op + " (" + b + " " + op + " " + c + ")";
+              why = "The three numbers stay in the same order. Only the brackets moved, so it is the " +
+                    "grouping that changed.";
+            } else {
+              tex = "(" + a + " + " + b + ") \\times " + c + " = " + a + " \\times " + c +
+                    " + " + b + " \\times " + c;
+              why = "The multiplication was shared out over the addition: each number inside the " +
+                    "bracket was multiplied separately and the results added.";
+            }
+            const A = TXT(PROPS[which]);
+            const mc = four(A, PROPS.filter(function (_, i) { return i !== which; }).map(TXT), null);
+            if (!mc) return t5(1, depth + 1);
+            return {
+              title: "Type 5: Properties of Operations", type: "mc", assetType: "none",
+              fullStatement: "Look at " + M(tex) + ".",
+              prompt: "Which property does this show?",
+              hint: "Compare the two sides carefully. Ask what changed: the order of the numbers, " +
+                    "where the brackets are, or how a multiplication was shared out.",
+              options: mc.options, ans: mc.ans, rawAns: mc.rawAns,
+              steps: [
+                { title: "Step 1 — Check both sides really are equal", math: tex,
+                  explanation: "Work each side out. They come to the same number, so this is a " +
+                    "statement about a pattern, not a calculation to do." },
+                { title: "Step 2 — Ask what changed", math: tex,
+                  explanation: why },
+                { title: "Step 3 — Name it",
+                  math: "\\text{" + PROPS[which].replace("The ", "") + "}",
+                  explanation: "Identity leaves a number alone, commutative swaps the order, " +
+                    "associative moves the brackets, and distributive shares a multiplication out " +
+                    "over an addition." },
+                { title: "Step 4 — Why it is worth knowing", math: tex,
+                  explanation: "These properties let you rearrange a calculation into an easier one " +
+                    "without changing the answer, which is exactly what mental math is." }
+              ],
+              ansBox: PROPS[which], finalLabel: "Property"
+            };
+          }
+
+          /* Medium — 문자로 쓴 것 중 어느 것이 언제나 참인가 */
+          const TRUE_ONES = [
+            "a \\times b = b \\times a",
+            "a + b = b + a",
+            "(a + b) + c = a + (b + c)",
+            "(a \\times b) \\times c = a \\times (b \\times c)",
+            "a \\times (b + c) = a \\times b + a \\times c",
+            "a \\times 1 = a",
+            "a + 0 = a"
+          ];
+          const FALSE_ONES = [
+            "a - b = b - a",
+            "a \\div b = b \\div a",
+            "(a - b) - c = a - (b - c)",
+            "(a \\div b) \\div c = a \\div (b \\div c)",
+            "a - (b + c) = a - b + c",
+            "a \\div (b + c) = a \\div b + a \\div c",
+            "a + (b \\times c) = (a + b) \\times c"
+          ];
+          const good = MCF.pick(TRUE_ONES);
+          const bads = mshuffle(FALSE_ONES.slice()).slice(0, 3);
+          const A = { v: null, tex: M(good), key: "T" + good, raw: true };
+          const mc = four(A, bads.map(function (s) {
+            return { v: null, tex: M(s), key: "F" + s, raw: true };
+          }), null);
+          if (!mc) return t5(2, depth + 1);
+          return {
+            title: "Type 5: Properties of Operations", type: "mc", assetType: "none",
+            fullStatement: "In the statements below, the letters stand for any numbers you like.",
+            prompt: "Which statement is true <strong>whatever numbers</strong> you put in?",
+            hint: "Try some numbers in each one. A statement only counts as a property if it works " +
+                  "every single time &mdash; one set of numbers that breaks it is enough to rule it out.",
+            options: mc.options, ans: mc.ans, rawAns: mc.rawAns,
+            steps: [
+              { title: "Step 1 — Read the letters correctly",
+                math: "a, b, c \\rightarrow \\text{any numbers}",
+                explanation: "A letter here is not something to solve for. It is a way of saying " +
+                  "\"this works for every number\" without writing them all out." },
+              { title: "Step 2 — Test with easy numbers",
+                math: "a = 8, \\quad b = 4, \\quad c = 2",
+                explanation: "Put the same numbers into every statement and work out both sides. " +
+                  "Small numbers you can do in your head are best." },
+              { title: "Step 3 — One failure is enough",
+                math: "8 - 4 \\ne 4 - 8",
+                explanation: "Subtraction and division are not commutative and not associative: " +
+                  "changing the order or the grouping changes the answer. That rules those out " +
+                  "immediately." },
+              { title: "Step 4 — Confirm the survivor",
+                math: good,
+                explanation: "This one holds for the numbers you tried, and it holds in general. " +
+                  "Adding and multiplying can be reordered and regrouped freely; subtracting and " +
+                  "dividing cannot." }
+            ],
+            ansBox: good, finalLabel: "Always true"
+          };
+        }
+
+        /* ══════════════ t6  Order of Operations in Context ══════════════ */
+
+        const NAMES = ["Maya", "Rowan", "Priya", "Jonah", "Nadia", "Ellis", "Tomas", "Ines"];
+        const GOODS = [
+          { one: "notebook", many: "notebooks" }, { one: "pen", many: "pens" },
+          { one: "folder", many: "folders" }, { one: "marker", many: "markers" }
+        ];
+
+        /* 돈은 언제나 두 자리 (Lesson 1 규약의 예외 조항). dec() 는 후행 0 을 떼므로
+           돈에 쓰면 "$4.3" 이 나간다. */
+        function d2(x) {
+          if (!x || x.n <= 0) return null;
+          const c = x.n * 100 / x.d;
+          return c % 1 === 0 ? txt(Math.round(c), 2) : null;
+        }
+        function money(x) { const t = d2(x); return t === null ? null : "\\$" + t; }
+        function MO(x) {
+          const t = dec(x);
+          if (t === null || x.n <= 0) return null;
+          const cents = x.n * 100 / x.d;
+          if (cents % 1 !== 0) return null;
+          return { v: rval(x), tex: "\\$" + txt(Math.round(cents), 2), key: "m" + cents };
+        }
+
+        function t6(lvl, depth) {
+          depth = depth || 0;
+          if (depth > 20) return null;
+          const nm = MCF.pick(NAMES), g = MCF.pick(GOODS);
+
+          if (lvl === 1) {
+            const shape = MCF.pick(["change", "total"]);
+            const price = RD(MCF.randInt(105, 480), 2);
+            const n = R(MCF.randInt(2, 5));
+            const spent = rmul(n, price);
+            if (shape === "change") {
+              const paid = R(MCF.randInt(Math.ceil(rval(spent)) + 1, Math.ceil(rval(spent)) + 12));
+              const A0 = rsub(paid, spent);
+              const A = MO(A0);
+              if (!A) return t6(1, depth + 1);
+              const tex = d2(paid) + " - " + dec(n) + " \\times " + d2(price);
+              const ltr = rmul(rsub(paid, n), price);
+              const mc = four(A, [MO(ltr), MO(rsub(paid, price)), MO(radd(A0, RD(50, 2)))],
+                function (j) { return MO(radd(A0, RD((j % 2 ? -1 : 1) * (Math.floor(j / 2) + 1) * 25, 2))); });
+              if (!mc) return t6(1, depth + 1);
+              return {
+                title: "Type 6: Order of Operations in Context", type: "mc", assetType: "none",
+                fullStatement: nm + " buys " + dec(n) + " " + g.many + " at " + M(money(price)) +
+                               " each and pays with " + M(money(paid)) + ".",
+                prompt: "How much change does " + nm + " get?",
+                hint: "There is a hidden question before the real one: what did the " + g.many +
+                      " cost altogether? Answer that first, then take it away from what was paid.",
+                options: mc.options, ans: mc.ans, rawAns: mc.rawAns,
+                steps: [
+                  { title: "Step 1 — Find the hidden question",
+                    math: dec(n) + " \\times " + d2(price),
+                    explanation: "You cannot work out the change until you know the total cost, so " +
+                      "the multiplication is really the first question." },
+                  { title: "Step 2 — Write the calculation as one line",
+                    math: tex,
+                    explanation: "Written this way, the order of operations already does the right " +
+                      "thing: the multiplying happens before the subtracting. " + ORDER_RULE },
+                  { title: "Step 3 — Multiply first",
+                    math: dec(n) + " \\times " + d2(price) + " = " + d2(spent),
+                    explanation: "This is what the " + g.many + " cost altogether." },
+                  { title: "Step 4 — Subtract from what was paid",
+                    math: d2(paid) + " - " + d2(spent) + " = " + d2(A0),
+                    explanation: "Taking " + M(money(paid)) + " minus " + M(dec(n)) +
+                      " first would be meaningless &mdash; a number of " + g.many +
+                      " cannot be taken away from an amount of money." }
+                ],
+                ansBox: A.tex, finalLabel: "Change"
+              };
+            }
+            const fee = RD(MCF.randInt(150, 600), 2);
+            const A0 = radd(spent, fee);
+            const A = MO(A0);
+            if (!A) return t6(1, depth + 1);
+            const tex = dec(n) + " \\times " + d2(price) + " + " + d2(fee);
+            const ltr = evalLTR([n, "*", price, "+", fee]);
+            const mc = four(A, [MO(rmul(n, radd(price, fee))), MO(radd(price, fee)),
+                                MO(radd(A0, RD(50, 2)))],
+              function (j) { return MO(radd(A0, RD((j % 2 ? -1 : 1) * (Math.floor(j / 2) + 1) * 25, 2))); });
+            if (!mc) return t6(1, depth + 1);
+            return {
+              title: "Type 6: Order of Operations in Context", type: "mc", assetType: "none",
+              fullStatement: nm + " orders " + dec(n) + " " + g.many + " at " + M(money(price)) +
+                             " each, plus a delivery charge of " + M(money(fee)) + ".",
+              prompt: "What is the total?",
+              hint: "The delivery charge is paid once, not once per " + g.one +
+                    ". Work out the " + g.many + " first, then add the charge on at the end.",
+              options: mc.options, ans: mc.ans, rawAns: mc.rawAns,
+              steps: [
+                { title: "Step 1 — Decide what gets multiplied",
+                  math: dec(n) + " \\times " + d2(price),
+                  explanation: "Only the " + g.many + " are bought several times. The delivery " +
+                    "charge is a single amount." },
+                { title: "Step 2 — Write the calculation as one line",
+                  math: tex,
+                  explanation: "No brackets are needed: the order of operations already multiplies " +
+                    "before it adds. " + ORDER_RULE },
+                { title: "Step 3 — Multiply first",
+                  math: dec(n) + " \\times " + d2(price) + " = " + d2(spent),
+                  explanation: "This is the cost of the " + g.many + " alone." },
+                { title: "Step 4 — Add the charge once",
+                  math: d2(spent) + " + " + d2(fee) + " = " + d2(A0),
+                  explanation: "Adding the charge before multiplying would charge delivery on every " +
+                    "single " + g.one + ", which would give " +
+                    M(money(rmul(n, radd(price, fee))) || "?") + "." }
+              ],
+              ansBox: A.tex, finalLabel: "Total"
+            };
+          }
+
+          /* Medium */
+          const shape = MCF.pick(["twokinds", "shared"]);
+
+          if (shape === "twokinds") {
+            const g2 = MCF.pick(GOODS.filter(function (x) { return x.one !== g.one; }));
+            const p1 = RD(MCF.randInt(105, 380), 2), p2 = RD(MCF.randInt(105, 380), 2);
+            const n1 = R(MCF.randInt(2, 6)), n2 = R(MCF.randInt(2, 6));
+            const A0 = radd(rmul(n1, p1), rmul(n2, p2));
+            const A = MO(A0);
+            if (!A) return t6(2, depth + 1);
+            const tex = dec(n1) + " \\times " + d2(p1) + " + " + dec(n2) + " \\times " + d2(p2);
+            const ltr = evalLTR([n1, "*", p1, "+", n2, "*", p2]);
+            const mc = four(A, [MO(ltr), MO(rmul(radd(n1, n2), radd(p1, p2))),
+                                MO(radd(A0, RD(50, 2)))],
+              function (j) { return MO(radd(A0, RD((j % 2 ? -1 : 1) * (Math.floor(j / 2) + 1) * 25, 2))); });
+            if (!mc) return t6(2, depth + 1);
+            return {
+              title: "Type 6: Order of Operations in Context", type: "mc", assetType: "none",
+              fullStatement: nm + " buys " + dec(n1) + " " + g.many + " at " + M(money(p1)) +
+                             " each and " + dec(n2) + " " + g2.many + " at " + M(money(p2)) + " each.",
+              prompt: "What is the total cost?",
+              hint: "There are two multiplications here and they are independent of each other. " +
+                    "Finish both before you add anything. " + ORDER_RULE,
+              options: mc.options, ans: mc.ans, rawAns: mc.rawAns,
+              steps: [
+                { title: "Step 1 — Two hidden questions, not one",
+                  math: dec(n1) + " \\times " + d2(p1) + ", \\quad " + dec(n2) + " \\times " + d2(p2),
+                  explanation: "Each kind of item has its own cost, and neither can be found from " +
+                    "the other." },
+                { title: "Step 2 — Write the calculation as one line",
+                  math: tex,
+                  explanation: "Both multiplications outrank the addition, so they both happen " +
+                    "first even though the addition sits between them. " + ORDER_RULE },
+                { title: "Step 3 — Do both multiplications",
+                  math: d2(rmul(n1, p1)) + " \\;\\text{ and }\\; " + d2(rmul(n2, p2)),
+                  explanation: "Working straight across from the left would add " + M(d2(p1)) +
+                    " and " + M(dec(n2)) + " together, which compares a price with a number of " +
+                    g2.many + " &mdash; that cannot mean anything." },
+                { title: "Step 4 — Add the two totals",
+                  math: d2(rmul(n1, p1)) + " + " + d2(rmul(n2, p2)) + " = " + d2(A0),
+                  explanation: CHECK_RULE }
+              ],
+              ansBox: A.tex, finalLabel: "Total cost"
+            };
+          }
+
+          /* shared — 괄호가 반드시 필요한 상황 */
+          const n = R(MCF.randInt(2, 6));
+          const per = RD(MCF.randInt(6, 40) * 25, 2);             /* 딱 떨어지는 1인분 $1.50~$10 */
+          const fee = RD(MCF.randInt(150, 900), 2);
+          const total = radd(rmul(n, per), fee);
+          const A0 = per;
+          const A = MO(A0);
+          if (!A) return t6(2, depth + 1);
+          const tex = "(" + d2(total) + " - " + d2(fee) + ") \\div " + dec(n);
+          const noBr = rsub(total, rdiv(fee, n));                 /* 괄호를 빠뜨린 값 */
+          const mc = four(A, [MO(noBr), MO(rdiv(total, n)), MO(radd(A0, RD(25, 2)))],
+            function (j) { return MO(radd(A0, RD((j % 2 ? -1 : 1) * (Math.floor(j / 2) + 1) * 25, 2))); });
+          if (!mc) return t6(2, depth + 1);
+          return {
+            title: "Type 6: Order of Operations in Context", type: "mc", assetType: "none",
+            fullStatement: nm + " and " + (rval(n) - 1) +
+                           (rval(n) === 2 ? " friend share" : " friends share") + " a bill of " +
+                           M(money(total)) + ". The bill includes a " + M(money(fee)) +
+                           " service charge, which " + nm + " pays alone. The rest is split equally " +
+                           "between all " + dec(n) + " of them.",
+            prompt: "How much is each person's equal share?",
+            hint: "Take the service charge off before you divide, not after. Written as one line " +
+                  "that needs brackets, because the subtraction has to happen first.",
+            options: mc.options, ans: mc.ans, rawAns: mc.rawAns,
+            steps: [
+              { title: "Step 1 — Find the hidden question",
+                math: d2(total) + " - " + d2(fee),
+                explanation: "Only the part after the service charge gets shared, so that amount has " +
+                  "to be found before anything is divided." },
+              { title: "Step 2 — Write the calculation as one line",
+                math: tex,
+                explanation: "Here the brackets are not optional. Without them the division would go " +
+                  "first, and only the service charge would get split. " + BRACKET_RULE },
+              { title: "Step 3 — Brackets first",
+                math: d2(total) + " - " + d2(fee) + " = " + d2(rsub(total, fee)),
+                explanation: "This is the amount to be shared." },
+              { title: "Step 4 — Divide",
+                math: d2(rsub(total, fee)) + " \\div " + dec(n) + " = " + d2(A0),
+                explanation: "Leaving the brackets out would have given " +
+                  M(money(noBr) || "?") + ", which is far too big to be one person's share. " +
+                  CHECK_RULE }
+            ],
+            ansBox: A.tex, finalLabel: "Each share"
+          };
+        }
+
+        /* ══════════════════ 라우터 ══════════════════ */
+
+        const GEN = { t1: t1, t2: t2, t3: t3, t4: t4, t5: t5, t6: t6 };
+
+        function generateProblem(typeId) {
+          const fn = GEN[typeId] || t1;
+          let p = null;
+          for (let i = 0; i < 10 && !p; i++) p = fn(LEVEL, 0);
+          if (!p) p = t1(1, 0);
+          p.levelTag = LEVEL_KEY[LEVEL];
+          return p;
+        }
+
+        MCF.init({ generate: generateProblem, unitId: "G7U3", lessonId: "L3" });
+
+</script>
+    <script src="../course.js"></script>
+    <script src="course.js"></script>
+    <script src="../progress.js"></script>
+</body>
+</html>
